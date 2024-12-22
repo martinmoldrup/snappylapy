@@ -1,2 +1,126 @@
-# snappylapy
-A snapshot library for python optimized for easy of use, human readable snapshots and enabling decoupling of chained integration tests. 
+# Snappylapy
+   
+Welcome to **Snappylapy**, a powerful and intuitive snapshot testing tool for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity.  
+   
+## Key Features  
+   
+- **Human-Readable Snapshots**: Save snapshots in a format that's easy to read and understand, making it simpler to review changes and debug issues.  
+- **Serialization and Deserialization**: Snapshots can be serialized and deserialized, allowing for flexible and reusable test cases.  
+- **Integration Testing**: Use snapshots for integration testing with a clear separation layer, preventing interdependencies between code components and making it easier to isolate and identify errors.  
+- **Easy to Use**: Seamlessly integrates with pytest, allowing you to start capturing and verifying snapshots with minimal setup. For a good developer experience the package is fully typed and has a comprehensive documentation.
+- **Customizable Output**: Store snapshots in a location of your choice, enabling you to organize and manage your test data effectively.
+- **Diff Report Generation**: Generate a diff report in html format for easy comparison between test results and snapshots.
+- **Provides a wide set of assertions**: The package provides a wide set of assertions to make it easy to compare different types of data, for do fuzzy matching or ignore certain parts of the data that are variable.
+
+# Benefits of Snapshot Testing
+Snapshot testing is a powerful technique for verifying the output of your code by comparing it to a stored snapshot. This approach offers several benefits, including:
+
+- Immutability Verification: Quickly detect unintended changes or regressions by comparing current output to stored snapshots.
+- Faster Test Creation: Simplify the process of writing and maintaining tests by capturing snapshots once and letting the framework handle comparisons.
+- Documentation: Use snapshots as a form of documentation, providing a clear record of expected output and behavior.
+- Version Control Integration: Include snapshots in your version control system to aid in code reviews and track changes over time.
+- Pull Request Reviews: Enhance PR reviews by showing exactly how changes affect the application's output, ensuring thorough and effective evaluations.
+   
+## Why Snappylapy?  
+   
+When working on complex projects, it’s crucial to ensure that different parts of your codebase do not become interdependent. This can lead to situations where changes in one part of the code cause failures in unrelated areas, making it challenging to isolate and fix errors. Snappylapy addresses this by providing a mechanism to capture snapshots of your data and use them in your tests, ensuring that each component can be tested independently.  
+   
+### Example  
+   
+```python  
+from snappylapy import Snapshot  
+   
+def test_my_function(snapshot: Snapshot):  
+    result = my_function()  
+    assert snapshot == result
+```
+
+Allows users full control to select output location for snapshots so they can be stored together with testcases.
+
+```python
+import pytest
+import pathlib
+from snappylapy import Snapshot
+
+@pytest.mark.parametrize('case_dir', list(Path('test_cases').iterdir()))
+def test_my_function(case_dir: pathlib.Path, snapshot: Snapshot):
+    snapshot.snapshot_output_dir = case_dir / "__snapshots__"
+    snapshot.test_results_output_dir = case_dir / "__test_results__"
+    result = my_function(case_dir)
+    assert snapshot == result
+```
+
+In this example, `snappylapy` captures the output of `my_function` and compares it against a stored snapshot. If the output changes unexpectedly, pytest will flag the test, allowing you to review the differences and ensure your code behaves as expected.  
+   
+## Getting Started  
+   
+To get started with Snappylapy, install the package via pip:  
+   
+```bash  
+pip install snappylapy  
+```  
+   
+Add Snappylapy to your pytest configuration and start writing tests that capture and verify snapshots effortlessly.  
+
+## The output structure
+
+The results is split into two folders, for ease of comparison, and for handling stochastic/variable outputs (timestamps, generated ids, llm outputs, third party api responses etc).
+
+__test_results__: Updated every time the tests is ran. Compare with snapshots when doing snapshot style assertions.  
+__snapshots__: Updated only when --snapshot-update is used.
+
+## Usage
+
+A diff report in html can be generated with:
+´´´python
+pytest --snappylapy-html=report.html
+´´´
+
+Update snapshots with:
+´´´python
+pytest --snapshot-update
+´´´
+
+## Fixtures and roadmap
+Legend:
+✅ - Implemented
+❌ - Not implemented yet
+
+Registers fixtures:
+- snapshot ✅
+
+Supported data types
+- .txt ✅
+- .csv ❌
+- .json ❌
+- .yaml ❌
+- .jsonl ❌
+
+Planned data types:
+
+| Python Type         | Default Output file type | Implementation Status |
+|---------------------|--------------------------|-----------------------|
+| bytes               | .txt                     | ✅                    |
+| pd.DataFrame        | .csv                     | ❌                    |
+| pd.Series           | .csv                     | ❌                    |
+| np.ndarray          | .csv                     | ❌                    |
+| dict                | .json                    | ❌                    |
+| list                | .json                    | ❌                    |
+| tuple               | .json                    | ❌                    |
+| set                 | .json                    | ❌                    |
+| str                 | .txt                     | ❌                    |
+| int                 | .txt                     | ❌                    |
+| float               | .txt                     | ❌                    |
+| bool                | .txt                     | ❌                    |
+| datetime.datetime   | .txt                     | ❌                    |
+| datetime.date       | .txt                     | ❌                    |
+| datetime.time       | .txt                     | ❌                    |
+| pathlib.Path        | .txt                     | ❌                    |
+| decimal.Decimal     | .txt                     | ❌                    |
+| uuid.UUID           | .txt                     | ❌                    |
+
+
+
+---  
+   
+Snappylapy is your go-to tool for efficient and reliable snapshot testing in Python. By maintaining clear boundaries between different parts of your code, Snappylapy helps you isolate errors, streamline debugging, and ensure your code remains robust and maintainable.
