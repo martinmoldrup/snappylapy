@@ -21,7 +21,7 @@ def expect(request) -> Expect:
 
 # TODO https://github.com/pytest-dev/pytest-html/blob/master/src/pytest_html/plugin.py
 @dataclass
-class SnapylapyReportItem:
+class SnappylapyReportItem:
     name: str
     outcome: str
     expect: Expect
@@ -48,14 +48,14 @@ def pytest_addoption(parser):
 def pytest_configure(config) -> None:
     htmlpath = config.getoption("htmlpath")
     if htmlpath:
-        config._snapylapy_htmlpath = htmlpath
-        config._snapylapy_results = []
+        config._snappylapy_htmlpath = htmlpath
+        config._snappylapy_results = []
 
 def pytest_terminal_summary(terminalreporter, exitstatus, config) -> None:
-    htmlpath = getattr(config, "_snapylapy_htmlpath", None)
+    htmlpath = getattr(config, "_snappylapy_htmlpath", None)
     if htmlpath:
         # dmp = diff_match_patch()
-        results: list[SnapylapyReportItem] = getattr(config, "_snapylapy_results", [])
+        results: list[SnappylapyReportItem] = getattr(config, "_snappylapy_results", [])
         html_string = jinja2.Template(HTML_REPORT_TEMPLATE.read_text()).render(results=results)
         pathlib.Path(htmlpath).write_text(html_string)
         for result in results:
@@ -77,9 +77,9 @@ def pytest_runtest_makereport(item, call) -> None:
     if rep.when == "call" and "expect" in item.funcargs:
         config = item.config
         expect_object = item.funcargs['expect']
-        if hasattr(config, "_snapylapy_results"):
-            config._snapylapy_results.append(
-                SnapylapyReportItem(
+        if hasattr(config, "_snappylapy_results"):
+            config._snappylapy_results.append(
+                SnappylapyReportItem(
                     name=item.name,
                     outcome=rep.outcome,
                     expect=expect_object

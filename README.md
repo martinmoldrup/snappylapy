@@ -7,7 +7,7 @@ Welcome to **Snappylapy**, a powerful and intuitive snapshot testing tool for Py
 - **Human-Readable Snapshots**: Save snapshots in a format that's easy to read and understand, making it simpler to review changes and debug issues.  
 - **Serialization and Deserialization**: Snapshots can be serialized and deserialized, allowing for flexible and reusable test cases.  
 - **Integration Testing**: Use snapshots for integration testing with a clear separation layer, preventing interdependencies between code components and making it easier to isolate and identify errors.  
-- **Easy to Use**: Seamlessly integrates with pytest, allowing you to start capturing and verifying snapshots with minimal setup. For a good developer experience the package is fully typed and has a comprehensive documentation.
+- **Easy to Use**: Seamlessly integrates with pytest, allowing you to start capturing and verifying snapshots with minimal setup. For a good developer experience the package is fully typed, with docstrings to provide good editor code completion.
 - **Customizable Output**: Store snapshots in a location of your choice, enabling you to organize and manage your test data effectively.
 - **Diff Report Generation**: Generate a diff report in html format for easy comparison between test results and snapshots.
 - **Provides a wide set of assertions**: The package provides a wide set of assertions to make it easy to compare different types of data, for do fuzzy matching or ignore certain parts of the data that are variable.
@@ -23,7 +23,7 @@ Snapshot testing is a powerful technique for verifying the output of your code b
    
 ## Why Snappylapy?  
    
-When working on complex projects, it’s crucial to ensure that different parts of your codebase do not become interdependent. This can lead to situations where changes in one part of the code cause failures in unrelated areas, making it challenging to isolate and fix errors. Snappylapy addresses this by providing a mechanism to capture snapshots of your data and use them in your tests, ensuring that each component can be tested independently.  
+When working on a test suite for a project, it’s important to ensure tests are independent. This is to avoid situations where changes in one part of the code cause failures in tests for other unrelated areas, making it challenging to isolate and fix errors. Snappylapy addresses this by providing a mechanism to capture snapshots of your data and use them in your later tests, ensuring that each component can be tested independently. While also making sure that they are dependent enought to test the integration between them. It provides serialization and deserialization of the snapshots, making it easy to reuse them in different test cases. This is aimed at function working with large and complex data structures (dataframes or large nested dictionaries. 
    
 ### Example  
    
@@ -44,8 +44,8 @@ from snappylapy import Snapshot
 
 @pytest.mark.parametrize('case_dir', list(Path('test_cases').iterdir()))
 def test_my_function(case_dir: pathlib.Path, snapshot: Snapshot):
-    snapshot.snapshot_output_dir = case_dir / "__snapshots__"
-    snapshot.test_results_output_dir = case_dir / "__test_results__"
+    snapshot.snapshot_dir = case_dir / "__snapshots__"
+    snapshot.test_results_dir = case_dir / "__test_results__"
     result = my_function(case_dir)
     assert snapshot == result
 ```
@@ -67,7 +67,7 @@ Add Snappylapy to your pytest configuration and start writing tests that capture
 The results is split into two folders, for ease of comparison, and for handling stochastic/variable outputs (timestamps, generated ids, llm outputs, third party api responses etc).
 
 __test_results__: Updated every time the tests is ran. Compare with snapshots when doing snapshot style assertions.  
-__snapshots__: Updated only when --snapshot-update is used.
+__snapshots__: Updated only when --snapshot-update flag is used when running the test suite.
 
 ## Usage
 
