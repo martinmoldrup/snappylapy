@@ -1,6 +1,6 @@
 import json
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Any, Union
+from typing import TypeVar, Generic
 
 T = TypeVar('T')
 
@@ -18,7 +18,7 @@ class Serializer(ABC, Generic[T]):
 
 
 
-class JsonSerializer(Serializer):
+class JsonSerializer(Serializer, Generic[T]):
     """Serialize and deserialize a dictionary."""
     def serialize(self, data: T) -> bytes:
         return json.dumps(data).encode()
