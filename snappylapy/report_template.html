@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snapylapy Report</title>
+    <title>Snapppylapy Report</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,7 +28,7 @@
     </style>
 </head>
 <body>
-    <h1>Snapylapy Report</h1>
+    <h1>Snappylapy Report</h1>
     <table>
         <thead>
             <tr>
@@ -43,8 +43,8 @@
             <tr>
                 <td>{{ result.name }}</td>
                 <td>{{ result.outcome }}</td>
-                <td>{{ result.snapshot.read_snapshot() }}</td>
-                <td>{{ result.snapshot.read_test_results() }}</td>
+                <td>{{ result.expect.read_snapshot() }}</td>
+                <td>{{ result.expect.read_test_results() }}</td>
             </tr>
             {% endfor %}
         </tbody>

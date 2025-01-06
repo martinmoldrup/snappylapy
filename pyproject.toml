@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "snappylapy"
+version = "0.1.0"
+description = "Testing lib"
+authors = ["Martin Møldrup"]
+readme = "README.md"
+classifiers = [
+    "Framework :: Pytest",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Testing",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: MIT License",
+]
+packages = [
+    { include = "snappylapy" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pytest = "^8.1.1"
+pyyaml = "^6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.9.0"
+ruff = "^0.3.4"
+types-pyyaml = "^6.0.12.20240311"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins."pytest11"]
+"snappylapy" = "snappylapy.plugin"
