@@ -24,7 +24,7 @@ jobs:
         run: poetry install --no-interaction
 
       - name: Run ruff
-        run: ruff check snappylapy
+        run: poetry run ruff check snappylapy
 
       - name: Run mypy
-        run: mypy snappylapy
+        run: poetry run mypy snappylapy
