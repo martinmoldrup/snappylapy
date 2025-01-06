@@ -1,5 +1,5 @@
 """Jest style testing"""
-from typing import Any, TypeVar, Generic, List, Optional
+from typing import Any, TypeVar, Generic, List, Optional, Union
 from abc import ABC, abstractmethod
 import pathlib
 import inspect
@@ -154,7 +154,7 @@ class Expect:
         return self.settings.snapshot_dir
 
     @snapshot_dir.setter
-    def snapshot_dir(self, value: str | pathlib.Path) -> None:
+    def snapshot_dir(self, value: Union[str, pathlib.Path]) -> None:
         self.settings.snapshot_dir = pathlib.Path(value) if isinstance(value, str) else value
 
     @property
@@ -162,5 +162,5 @@ class Expect:
         return self.settings.test_results_dir
 
     @test_results_dir.setter
-    def test_results_dir(self, value: str | pathlib.Path) -> None:
+    def test_results_dir(self, value: Union[str, pathlib.Path]) -> None:
         self.settings.test_results_dir = pathlib.Path(value) if isinstance(value, str) else value
