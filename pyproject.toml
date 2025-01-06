@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "snappylapy"
-version = "0.1.0"
+version = "0.0.1"
 description = "Testing lib"
 authors = ["Martin Møldrup"]
-readme = "README.md"
+readme = "readme.md"
 classifiers = [
     "Framework :: Pytest",
     "Development Status :: 4 - Beta",
@@ -11,7 +11,6 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -26,9 +25,8 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-pytest = "^8.1.1"
-pyyaml = "^6.0.1"
+python = "^3.9"
+pytest = "^8"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.9.0"
