@@ -1,5 +1,4 @@
 """Jest style testing"""
-import pytest
 from typing import Any, TypeVar, Generic, List, Optional
 from abc import ABC, abstractmethod
 import pathlib
@@ -85,7 +84,7 @@ class DictExpect(BaseSnapshot[dict]):
 
     def _save_test_results(self, path: pathlib.Path, data: dict) -> None:
         """Save dictionary data to a file."""
-        data_bin = JsonSerializer().serialize(data)
+        data_bin = JsonSerializer[dict]().serialize(data)
         path.write_bytes(data_bin)
 
 class ListExpect(BaseSnapshot[List[Any]]):
@@ -99,7 +98,7 @@ class ListExpect(BaseSnapshot[List[Any]]):
 
     def _save_test_results(self, path: pathlib.Path, data: List[Any]) -> None:
         """Save list data to a file."""
-        data_bin = JsonSerializer().serialize(data)
+        data_bin = JsonSerializer[List[Any]]().serialize(data)
         path.write_bytes(data_bin)
 
 class StringExpect(BaseSnapshot[str]):
