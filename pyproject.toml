@@ -3,7 +3,7 @@ name = "snappylapy"
 version = "0.0.1"
 description = "Testing lib"
 authors = ["Martin Møldrup"]
-readme = "readme.md"
+readme = "README.md"
 classifiers = [
     "Framework :: Pytest",
     "Development Status :: 4 - Beta",
