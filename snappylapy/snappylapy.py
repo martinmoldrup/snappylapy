@@ -41,7 +41,9 @@ class BaseSnapshot(ABC, Generic[T]):
 
     def _compare_snapshot(self) -> bool:
         """Compare the snapshot with test results, updating if needed."""
-        if self.snapshot_update or not (self.settings.snapshot_dir / self.settings.filename).exists():
+        if not self.snapshot_update and not (self.settings.snapshot_dir / self.settings.filename).exists():
+            raise FileNotFoundError(f"Snapshot file not found: {self.settings.filename}, run pytest with the --snapshot-update flag to create it.")
+        if self.snapshot_update:
             self._update_snapshot()
         snapshot_data = self._read_file(self.settings.snapshot_dir / self.settings.filename)
         test_data = self._read_file(self.settings.test_results_dir / self.settings.filename)

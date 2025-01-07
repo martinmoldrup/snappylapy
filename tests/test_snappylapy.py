@@ -10,6 +10,8 @@ def test_snapshot_string(pytester: Pytester):
         expect.string("Hello World").to_match_snapshot()
     """
     pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
     result = pytester.runpytest('-v')
     assert result.ret == 0
 
@@ -22,6 +24,8 @@ def test_snapshot_bytes(pytester: Pytester):
         expect.bytes(b"Hello World", name="bytes_snapshot").to_match_snapshot()
     """
     pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
     result = pytester.runpytest('-v')
     assert result.ret == 0
 
@@ -37,6 +41,8 @@ def test_snapshot_dict(pytester: Pytester):
         }).to_match_snapshot()
     """
     pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
     result = pytester.runpytest('-v')
     assert result.ret == 0
 
@@ -49,6 +55,8 @@ def test_snapshot_list(pytester: Pytester):
         expect.list(["John Doe", 31]).to_match_snapshot()
     """
     pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
     result = pytester.runpytest('-v')
     assert result.ret == 0
 
@@ -63,6 +71,8 @@ def test_snapshot_json_bytes(pytester: Pytester):
         expect.bytes(data, name="json_bytes_snapshot").to_match_snapshot()
     """
     pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
     result = pytester.runpytest('-v')
     assert result.ret == 0
 
@@ -76,6 +86,8 @@ def test_snapshot_python_code(pytester: Pytester):
         expect.string(py_code, filetype="py", name="python_code_snapshot").to_match_snapshot()
     """
     pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
     result = pytester.runpytest('-v')
     assert result.ret == 0
 
@@ -91,6 +103,8 @@ def test_snapshot_with_custom_directories(pytester: Pytester):
         expect.string("Hello World").to_match_snapshot()
     """
     pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
     result = pytester.runpytest('-v')
     assert result.ret == 0
 
@@ -107,5 +121,7 @@ def test_snapshot_multiple_assertions(pytester: Pytester):
         }).to_match_snapshot()
     """
     pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
     result = pytester.runpytest('-v')
     assert result.ret == 0

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snappylapy"
-version = "0.0.1"
+version = "0.1.0"
 description = "A powerful and intuitive snapshot testing tool for pytest based on the Jest API."
 authors = ["Martin Møldrup"]
 readme = "README.md"
@@ -43,6 +43,8 @@ pytest = "*"
 mypy = "^1.9.0"
 ruff = "^0.3.4"
 types-pyyaml = "^6.0.12.20240311"
+toml = "^0.10.2"
+pytest-cov = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core"]
