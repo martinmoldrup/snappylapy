@@ -20,17 +20,10 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
-packages = [
-    { include = "snappylapy" },
-]
+packages = [{ include = "snappylapy" }, { include = "snappylapy/py.typed" }]
 repository = "https://github.com/martinmoldrup/snappylapy"
 
-keywords = [
-    "pytest",
-    "snapshot",
-    "testing",
-    "snapshot-testing",
-]
+keywords = ["pytest", "snapshot", "testing", "snapshot-testing"]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/martinmoldrup/snappylapy/issues"
