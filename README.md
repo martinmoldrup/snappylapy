@@ -1,7 +1,14 @@
 # Snappylapy
    
 Welcome to **Snappylapy**, a powerful and intuitive snapshot testing tool for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity.  
-   
+
+## Installation
+To install Snappylapy, use the following command:
+
+```bash
+pip install snappylapy
+```
+
 ## Key Features
 Legend:
 - ✅ Implemented
@@ -10,8 +17,8 @@ Legend:
 The features are in development:
    
 - **Human-Readable Snapshots**✅: Save snapshots in a format that's easy to read and understand, making it simpler to review changes and debug issues.  
-- **Serialization and Deserialization**❌: Snapshots can be serialized and deserialized, allowing for flexible and reusable test cases.  
-- **Integration Testing**❌: Use snapshots for integration testing with a clear separation layer, preventing interdependencies between code components and making it easier to isolate and identify errors.  
+- **Serialization and Deserialization**✅: Snapshots can be serialized and deserialized, allowing for flexible and reusable test cases.  
+- **Integration Testing**✅: Use snapshots for integration testing with a clear separation layer, preventing interdependencies between code components and making it easier to isolate and identify errors.  
 - **Easy to Use**✅: Seamlessly integrates with pytest, allowing you to start capturing and verifying snapshots with minimal setup. For a good developer experience the package is fully typed, with docstrings to provide good editor code completion.
 - **Customizable Output**✅: Store snapshots in a location of your choice, enabling you to organize and manage your test data effectively.
 - **Diff Report Generation**❌: Generate a diff report in html format for easy comparison between test results and snapshots.
@@ -57,8 +64,29 @@ def test_my_function(case_dir: pathlib.Path, expect: Expect):
     expect.dict(result).to_match_snapshot()
 ```
 
-In this example, `snappylapy` captures the output of `my_function` and compares it against a stored snapshot. If the output changes unexpectedly, pytest will flag the test, allowing you to review the differences and ensure your code behaves as expected.  
-   
+In this example, `snappylapy` captures the output of `my_function` and compares it against a stored snapshot. If the output changes unexpectedly, pytest will flag the test, allowing you to review the differences and ensure your code behaves as expected.
+
+Snappylapy can use the snapshots created for inputs in another test. You can think of it as automated/easier mock data generation and management.
+```python
+import pytest
+from snappylapy import Expect, LoadSnapshot
+
+def test_snapshot_dict(expect: Expect):
+    """Test snapshot with dictionary data."""
+    expect.dict({
+        "name": "John Doe",
+        "age": 31
+    }).to_match_snapshot()
+
+@pytest.mark.snappylapy(depends=[test_snapshot_dict])
+def test_load_snapshot_from_file(load_snapshot: LoadSnapshot):
+    """Test loading snapshot data created in test_snapshot_dict from a file using the deserializer."""
+    data = load_snapshot.dict()
+    assert data == {"name": "John Doe", "age": 31}
+```
+
+This can be great for external dependencies, for example an AI service, that might change response over time. With this approach we can isolate the changes to the service and still make succeding tests pass.
+
 ## Getting Started  
    
 To get started with Snappylapy, install the package via pip:  
@@ -92,6 +120,7 @@ pytest --snappylapy-html=report.html
 ## Fixtures and roadmap
 Registers fixtures:
 - expect ✅
+- load_snapshot ✅
 
 Supported data types
 - .txt ✅
@@ -133,6 +162,10 @@ Snappylapy is your go-to tool for efficient and reliable snapshot testing in Pyt
 We welcome contributions to Snappylapy! If you have ideas for new features, improvements, or bug fixes, please open an issue or submit a pull request on our GitHub repository. We appreciate your feedback and support in making Snappylapy even better for the community.
 
 # Change Log
+## [0.1.0]
+- Added fixture for loading snapshots from previous tests (load_snapshot fixture)
+- Added the snappylapy marker for tests that depend on previous tests (pytest.mark.snappylapy). This will be used for more advanced features in the future.
+
 ## [0.0.2]
 - 🐞 Added fix for python 3.9, by refactoring incompatible type annotation
 - Loosened the version requirements for pytest (until the lower bound have been discovered, with automated testing)

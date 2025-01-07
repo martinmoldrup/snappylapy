@@ -12,7 +12,13 @@ class Settings:
     snapshot_dir: pathlib.Path = pathlib.Path("__snapshots__")
     test_results_dir: pathlib.Path = pathlib.Path("__test_results__")
     snapshot_update: bool = False
-    filename: str = "no_filename"
+    filename_base: str = "no_filename"
+    filename_extension: str = "txt"
+
+    @property
+    def filename(self) -> str:
+        """Get the snapshot filename."""
+        return f"{self.filename_base}.{self.filename_extension}"
 
 
 T = TypeVar('T')
@@ -24,7 +30,6 @@ class BaseSnapshot(ABC, Generic[T]):
         self.settings = settings
         self.snapshot_update: bool = update_snapshots
         self._data: Optional[T] = None
-        self.settings.filename = ""
 
     def to_match_snapshot(self) -> None:
         """Assert test results match the snapshot."""
@@ -34,7 +39,10 @@ class BaseSnapshot(ABC, Generic[T]):
     def _prepare_test(self, data: T, name: str, extension: str) -> None:
         """Prepare and save test results."""
         self._data = data
-        self.settings.filename = f"{name}.{extension}" if name else self._get_filename(extension)
+        if not name:
+            name = self._get_filename_base()
+        self.settings.filename_base = name
+        self.settings.filename_extension = extension
         file_path = self.settings.test_results_dir / self.settings.filename
         file_path.parent.mkdir(parents=True, exist_ok=True)
         self._save_test_results(file_path, data)
@@ -60,12 +68,12 @@ class BaseSnapshot(ABC, Generic[T]):
         """Read file bytes or return placeholder."""
         return path.read_bytes() if path.exists() else b"<No file>"
 
-    def _get_filename(self, extension: str) -> str:
+    def _get_filename_base(self) -> str:
         """Derive a filename from the call stack."""
         frame = inspect.currentframe()
         while frame:
             if frame.f_code.co_filename != __file__:
-                return f"{frame.f_code.co_name}.{extension}"
+                return frame.f_code.co_name
             frame = frame.f_back
         raise ValueError("Could not derive filename from stack.")
 
@@ -166,3 +174,32 @@ class Expect:
     @test_results_dir.setter
     def test_results_dir(self, value: Union[str, pathlib.Path]) -> None:
         self.settings.test_results_dir = pathlib.Path(value) if isinstance(value, str) else value
+
+class LoadSnapshot:
+    """Snapshot loading class."""
+    def __init__(self, settings: Settings) -> None:
+        self.settings = settings
+
+    def _read_snapshot(self) -> bytes:
+        """Read the snapshot file."""
+        return (self.settings.snapshot_dir / self.settings.filename).read_bytes()
+
+    def dict(self) -> dict:
+        """Load dictionary snapshot."""
+        self.settings.filename_extension = "dict.json"
+        return JsonSerializer[dict]().deserialize(self._read_snapshot())
+
+    def list(self) -> List[Any]:
+        """Load list snapshot."""
+        self.settings.filename_extension = "list.json"
+        return JsonSerializer[List[Any]]().deserialize(self._read_snapshot())
+
+    def string(self) -> str:
+        """Load string snapshot."""
+        self.settings.filename_extension = "string.txt"
+        return StringSerializer().deserialize(self._read_snapshot())
+
+    def bytes(self) -> bytes:
+        """Load bytes snapshot."""
+        self.settings.filename_extension = "bytes.txt"
+        return BytesSerializer().deserialize(self._read_snapshot())
