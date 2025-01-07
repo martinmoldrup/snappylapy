@@ -37,7 +37,7 @@ keywords = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pytest = "^8"
+pytest = "*"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.9.0"
