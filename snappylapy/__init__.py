@@ -1,6 +1,6 @@
 """
 
 """
-from .snappylapy import Expect
+from .snappylapy import Expect, LoadSnapshot
 
-__all__ = ["Expect"]
+__all__ = ["Expect", "LoadSnapshot"]
