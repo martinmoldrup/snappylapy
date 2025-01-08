@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "snappylapy"
 version = "0.1.0"
-description = "A powerful and intuitive snapshot testing tool for pytest based on the Jest API."
+description = "A snapshot library for python optimized for easy of use, human readable snapshots and enabling decoupling of chained integration tests."
 authors = ["Martin Møldrup"]
 readme = "README.md"
 classifiers = [
@@ -23,7 +23,7 @@ classifiers = [
 packages = [{ include = "snappylapy" }, { include = "snappylapy/py.typed" }]
 repository = "https://github.com/martinmoldrup/snappylapy"
 
-keywords = ["pytest", "snapshot", "testing", "snapshot-testing"]
+keywords = ["pytest", "snapshot", "testing", "snapshot-testing", "integration-testing", "unit-testing"]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/martinmoldrup/snappylapy/issues"
