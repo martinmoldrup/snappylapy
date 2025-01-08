@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import pathlib
 import inspect
 from dataclasses import dataclass
-from .serialization import JsonSerializer, StringSerializer, BytesSerializer
+from .serialization import JsonPickleSerializer, StringSerializer, BytesSerializer
 
 @dataclass
 class Settings:
@@ -94,7 +94,7 @@ class DictExpect(BaseSnapshot[dict]):
 
     def _save_test_results(self, path: pathlib.Path, data: dict) -> None:
         """Save dictionary data to a file."""
-        data_bin = JsonSerializer[dict]().serialize(data)
+        data_bin = JsonPickleSerializer[dict]().serialize(data)
         path.write_bytes(data_bin)
 
 class ListExpect(BaseSnapshot[List[Any]]):
@@ -108,7 +108,7 @@ class ListExpect(BaseSnapshot[List[Any]]):
 
     def _save_test_results(self, path: pathlib.Path, data: List[Any]) -> None:
         """Save list data to a file."""
-        data_bin = JsonSerializer[List[Any]]().serialize(data)
+        data_bin = JsonPickleSerializer[List[Any]]().serialize(data)
         path.write_bytes(data_bin)
 
 class StringExpect(BaseSnapshot[str]):
@@ -187,12 +187,12 @@ class LoadSnapshot:
     def dict(self) -> dict:
         """Load dictionary snapshot."""
         self.settings.filename_extension = "dict.json"
-        return JsonSerializer[dict]().deserialize(self._read_snapshot())
+        return JsonPickleSerializer[dict]().deserialize(self._read_snapshot())
 
     def list(self) -> List[Any]:
         """Load list snapshot."""
         self.settings.filename_extension = "list.json"
-        return JsonSerializer[List[Any]]().deserialize(self._read_snapshot())
+        return JsonPickleSerializer[List[Any]]().deserialize(self._read_snapshot())
 
     def string(self) -> str:
         """Load string snapshot."""
