@@ -15,6 +15,42 @@ def test_snapshot_string(pytester: Pytester):
     result = pytester.runpytest('-v')
     assert result.ret == 0
 
+def test_fails_snapshot_not_exists(pytester: Pytester):
+    """Test the failure of a snapshot when the snapshot data does not exist."""
+    test_code = """
+    from snappylapy import Expect
+
+    def test_fails_snapshot_string(expect: Expect):
+        expect.string("Hello World").to_match_snapshot()
+    """
+    pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v')
+    assert result.ret == 1
+
+def test_fails_snapshot_mismatch(pytester: Pytester):
+    """Test the failure of a snapshot when the snapshot data does not match."""
+    test_code = """
+    from snappylapy import Expect
+
+    def test_fails_snapshot_string(expect: Expect):
+        expect.string("Hello World", name="string_snapshot").to_match_snapshot()
+    """
+    pytester.makepyfile(test_code=test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
+    
+    # Modify the test so it return a different value
+    test_code = """
+    from snappylapy import Expect
+
+    def test_fails_snapshot_string(expect: Expect):
+        expect.string("Hello World!", name="string_snapshot").to_match_snapshot()
+    """
+    pytester.makepyfile(test_code=test_code)
+
+    result = pytester.runpytest('-v')
+    assert result.ret == 1
+
 def test_snapshot_bytes(pytester: Pytester):
     """Test snapshot with bytes data."""
     test_code = """
@@ -124,4 +160,54 @@ def test_snapshot_multiple_assertions(pytester: Pytester):
     result = pytester.runpytest('-v', '--snapshot-update')
     assert result.ret == 0
     result = pytester.runpytest('-v')
+    assert result.ret == 0
+
+
+def test_load_snapshot_from_file(pytester: Pytester):
+    """Test loading snapshot data created in test_snapshot_dict from a file using the deserializer."""
+    test_code = """
+    from snappylapy import LoadSnapshot, Expect
+    import pytest
+
+    def test_snapshot_dict(expect: Expect):
+        expect.dict({
+            "name": "John Doe",
+            "age": 31
+        }).to_match_snapshot()
+
+    @pytest.mark.snappylapy(depends=[test_snapshot_dict])
+    def test_load_snapshot_from_file(load_snapshot: LoadSnapshot):
+        data = load_snapshot.dict()
+        assert data == {"name": "John Doe", "age": 31}
+    """
+    pytester.makepyfile(test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
+    assert result.ret == 0
+
+
+def test_load_snapshot_from_file_test_in_seperate_module(pytester: Pytester):
+    """Check that the reordering of tests based on dependencies works."""
+    create_snapshot_test_code = """
+    from snappylapy import Expect
+
+    def test_snapshot_dict(expect: Expect):
+        expect.dict({
+            "name": "John Doe",
+            "age": 31
+        }).to_match_snapshot()
+    """
+    load_snapshot_test_code = """
+    from snappylapy import LoadSnapshot
+    import test_create_snapshot
+    import pytest
+
+    @pytest.mark.snappylapy(depends=[test_create_snapshot.test_snapshot_dict])
+    def test_load_snapshot_from_file(load_snapshot: LoadSnapshot):
+        data = load_snapshot.dict()
+        assert data == {"name": "John Doe", "age": 31}
+    """
+
+    pytester.makepyfile(test_create_snapshot=create_snapshot_test_code)
+    pytester.makepyfile(test_a_load_snapshot=load_snapshot_test_code)
+    result = pytester.runpytest('-v', '--snapshot-update')
     assert result.ret == 0
