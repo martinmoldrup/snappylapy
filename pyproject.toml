@@ -30,8 +30,8 @@ keywords = ["pytest", "snapshot", "testing", "snapshot-testing", "integration-te
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pytest = "*"
-jsonpickle = "*"
+pytest = ">=7.0"
+jsonpickle = ">=1.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.9.0"
