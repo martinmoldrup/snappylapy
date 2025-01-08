@@ -1,0 +1,80 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Group: Linters and type Checking",
+            "dependsOn": [
+                "MyPy: Run Type Checking",
+                "ruff: Run Ruff check",
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "MyPy: Run Type Checking",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m",
+                "mypy",
+                "./snappylapy"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Pytest+Coverage: Show .html pytest coverage report from last test run",
+            "command": "explorer",
+            "windows": {
+                "command": "explorer.exe"
+            },
+            "args": [
+                "cov_html\\index.html"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Pytest: Run Unit Tests",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m",
+                "pytest",
+                "-m",
+                "not integration_test",
+                "-p",
+                "no:dotenv",
+                "--durations=0",
+                "--cov=./snappylapy",
+                "--cov-report=html:cov_html",
+                "--cov-branch",
+                "tests/"
+            ],
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "ruff: Run Ruff check",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m",
+                "ruff",
+                "check",
+                "./snappylapy"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "ruff: Run Ruff fix",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m",
+                "ruff",
+                "check",
+                "./snappylapy",
+                "--fix"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
