@@ -1,6 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
+import jsonpickle
 
 T = TypeVar('T')
 
@@ -25,6 +26,15 @@ class JsonSerializer(Serializer, Generic[T]):
 
     def deserialize(self, data: bytes) -> T:
         return json.loads(data)
+
+class JsonPickleSerializer(Serializer, Generic[T]):
+    """Serialize and deserialize a dictionary using pickle."""
+    def serialize(self, data: T) -> bytes:
+        json_string: str = jsonpickle.encode(data)
+        return json_string.encode()
+
+    def deserialize(self, data: bytes) -> T:
+        return jsonpickle.decode(data)
 
 
 class StringSerializer(Serializer[str]):
