@@ -21,7 +21,7 @@ class Serializer(ABC, Generic[T]):
 class JsonSerializer(Serializer, Generic[T]):
     """Serialize and deserialize a dictionary."""
     def serialize(self, data: T) -> bytes:
-        return json.dumps(data).encode()
+        return json.dumps(data, default=str).encode()
 
     def deserialize(self, data: bytes) -> T:
         return json.loads(data)
