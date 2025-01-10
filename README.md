@@ -162,6 +162,10 @@ Snappylapy is your go-to tool for efficient and reliable snapshot testing in Pyt
 We welcome contributions to Snappylapy! If you have ideas for new features, improvements, or bug fixes, please open an issue or submit a pull request on our GitHub repository. We appreciate your feedback and support in making Snappylapy even better for the community.
 
 # Change Log
+## [0.1.1]
+- Update dependencies with the lower bounds of package compatibility
+- Refactor to make code easier for users of package to modify and extend
+
 ## [0.1.0]
 - Added fixture for loading snapshots from previous tests (load_snapshot fixture)
 - Added the snappylapy marker for tests that depend on previous tests (pytest.mark.snappylapy). This will be used for more advanced features in the future.
