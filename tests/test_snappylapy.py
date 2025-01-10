@@ -182,7 +182,7 @@ def test_load_snapshot_from_file(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 
 def test_load_snapshot_from_file_test_in_seperate_module(pytester: Pytester):
@@ -210,4 +210,4 @@ def test_load_snapshot_from_file_test_in_seperate_module(pytester: Pytester):
     pytester.makepyfile(test_create_snapshot=create_snapshot_test_code)
     pytester.makepyfile(test_a_load_snapshot=load_snapshot_test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
