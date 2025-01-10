@@ -11,9 +11,9 @@ def test_snapshot_string(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 def test_fails_snapshot_not_exists(pytester: Pytester):
     """Test the failure of a snapshot when the snapshot data does not exist."""
@@ -25,7 +25,7 @@ def test_fails_snapshot_not_exists(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v')
-    assert result.ret == 1
+    assert result.ret == 1, "\n".join(result.outlines)
 
 def test_fails_snapshot_mismatch(pytester: Pytester):
     """Test the failure of a snapshot when the snapshot data does not match."""
@@ -37,7 +37,7 @@ def test_fails_snapshot_mismatch(pytester: Pytester):
     """
     pytester.makepyfile(test_code=test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     
     # Modify the test so it return a different value
     test_code = """
@@ -49,7 +49,7 @@ def test_fails_snapshot_mismatch(pytester: Pytester):
     pytester.makepyfile(test_code=test_code)
 
     result = pytester.runpytest('-v')
-    assert result.ret == 1
+    assert result.ret == 1, "\n".join(result.outlines)
 
 def test_snapshot_bytes(pytester: Pytester):
     """Test snapshot with bytes data."""
@@ -61,9 +61,9 @@ def test_snapshot_bytes(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 def test_snapshot_dict(pytester: Pytester):
     """Test snapshot with dictionary data."""
@@ -78,9 +78,9 @@ def test_snapshot_dict(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 def test_snapshot_list(pytester: Pytester):
     """Test snapshot with list data."""
@@ -92,9 +92,9 @@ def test_snapshot_list(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 def test_snapshot_json_bytes(pytester: Pytester):
     """Test snapshot with JSON bytes data."""
@@ -108,9 +108,9 @@ def test_snapshot_json_bytes(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 def test_snapshot_python_code(pytester: Pytester):
     """Test snapshot with Python code string."""
@@ -123,9 +123,9 @@ def test_snapshot_python_code(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 def test_snapshot_with_custom_directories(pytester: Pytester):
     """Test snapshot with custom directories."""
@@ -140,9 +140,9 @@ def test_snapshot_with_custom_directories(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 def test_snapshot_multiple_assertions(pytester: Pytester):
     """Test snapshot with multiple assertions."""
@@ -158,9 +158,9 @@ def test_snapshot_multiple_assertions(pytester: Pytester):
     """
     pytester.makepyfile(test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
-    assert result.ret == 0
+    assert result.ret == 0, "\n".join(result.outlines)
 
 
 def test_load_snapshot_from_file(pytester: Pytester):
