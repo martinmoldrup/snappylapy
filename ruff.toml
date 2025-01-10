@@ -1,0 +1,22 @@
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Assume Python 3.9
+target-version = "py39"
+
+[lint]
+preview = true
+select = ["ALL"]
+ignore = ["CPY001", "PLR6301", "D212", "D203", "TCH001"]
+
+[lint.isort]
+no-sections = true
+length-sort-straight = true
+order-by-type = true
+
+[format]
+preview = true
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
