@@ -71,8 +71,10 @@ class BaseSnapshot(ABC, Generic[T]):
     def _get_filename_base(self) -> str:
         """Derive a filename from the call stack."""
         frame = inspect.currentframe()
+        parent_module_path = pathlib.Path(__file__).parent
         while frame:
-            if frame.f_code.co_filename != __file__:
+            file_path_of_frame = pathlib.Path(frame.f_code.co_filename)
+            if parent_module_path not in file_path_of_frame.parents:
                 return frame.f_code.co_name
             frame = frame.f_back
         error_msg = "Could not derive filename from stack."
