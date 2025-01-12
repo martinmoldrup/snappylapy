@@ -52,4 +52,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.plugins."pytest11"]
-"snappylapy" = "snappylapy.plugin"
+"snappylapy" = "snappylapy._plugin"

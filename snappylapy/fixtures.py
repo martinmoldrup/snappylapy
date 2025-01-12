@@ -1,4 +1,13 @@
-"""Snapshot testing for Python."""
+"""
+The fixtures module provides classes returned by fixtures registred by pytest in snappylapy.
+
+Snappylapy provides the following fixtures.
+
+- expect: Expect
+    - Allows for validating various expectations on the test results and do snapshot testing.
+- load_snapshot: LoadSnapshot
+    - Allows loading from a snapshot created by another test.
+"""
 from __future__ import annotations
 
 import pathlib
