@@ -1,6 +1,6 @@
 site_name: Snappylapy
 repo_name: martinmoldrup/snappylapy
-repo_url: https://dev.azure.com/GFIOSvr/AI%20Circle/_git/AzureSharedPkg
+repo_url: https://github.com/martinmoldrup/snappylapy
 
 theme:
   name: material
@@ -67,3 +67,4 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Code Reference: reference/
+  - Changelog: changelog.md
