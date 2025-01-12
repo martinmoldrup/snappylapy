@@ -28,9 +28,24 @@ class BaseSnapshot(ABC, Generic[T]):
 
     def to_match_snapshot(self) -> None:
         """Assert test results match the snapshot."""
-        if not self._compare_snapshot():
-            error_msg = "Test results do not match the snapshot."
-            raise AssertionError(error_msg)
+        if not self.snapshot_update and not (self.settings.snapshot_dir /
+                                             self.settings.filename).exists():
+            error_msg = f"Snapshot file not found: {self.settings.filename}, run pytest with the --snapshot-update flag to create it."  # noqa: E501
+            raise FileNotFoundError(error_msg)
+        if self.snapshot_update:
+            self._update_snapshot()
+        snapshot_data = self._read_file(self.settings.snapshot_dir /
+                                        self.settings.filename)
+        test_data = self._read_file(self.settings.test_results_dir /
+                                    self.settings.filename)
+        try:
+            snapshot_data_str = snapshot_data.decode()
+            test_data_str = test_data.decode()
+            assert snapshot_data_str == test_data_str
+        except AssertionError as error:
+            diff_msg = str(error)
+            error_msg = f"Snapshot does not match test results. Run pytest with the --snapshot-update flag to update the snapshot.\n{diff_msg}"  # noqa: E501
+            raise AssertionError(error_msg)  # noqa: B904
 
     def _prepare_test(self, data: T, name: str, extension: str) -> None:
         """Prepare and save test results."""
@@ -42,20 +57,6 @@ class BaseSnapshot(ABC, Generic[T]):
         file_path = self.settings.test_results_dir / self.settings.filename
         file_path.parent.mkdir(parents=True, exist_ok=True)
         self._save_test_results(file_path, data)
-
-    def _compare_snapshot(self) -> bool:
-        """Compare the snapshot with test results, updating if needed."""
-        if not self.snapshot_update and not (self.settings.snapshot_dir /
-                                             self.settings.filename).exists():
-            error_msg = f"Snapshot file not found: {self.settings.filename}, run pytest with the --snapshot-update flag to create it."  # noqa: E501
-            raise FileNotFoundError(error_msg)
-        if self.snapshot_update:
-            self._update_snapshot()
-        snapshot_data = self._read_file(self.settings.snapshot_dir /
-                                        self.settings.filename)
-        test_data = self._read_file(self.settings.test_results_dir /
-                                    self.settings.filename)
-        return snapshot_data == test_data
 
     def _update_snapshot(self) -> None:
         """Write test results to the snapshot file."""

@@ -8,7 +8,7 @@ target-version = "py39"
 [lint]
 preview = true
 select = ["ALL"]
-ignore = ["CPY001", "PLR6301", "D212", "D203", "TCH001"]
+ignore = ["CPY001", "PLR6301", "D212", "D203", "TCH001", "S101"]
 
 [lint.isort]
 no-sections = true
