@@ -24,7 +24,7 @@ The features are in development:
 - **Diff Report Generation**❌: Generate a diff report in html format for easy comparison between test results and snapshots.
 - **Provides a wide set of assertions**❌: The package provides a wide set of assertions to make it easy to compare different types of data, for do fuzzy matching or ignore certain parts of the data that are variable.
 
-# Benefits of Snapshot Testing
+## Benefits of Snapshot Testing
 Snapshot testing is a powerful technique for verifying the output of your code by comparing it to a stored snapshot. This approach offers several benefits, including:
 
 - Immutability Verification: Quickly detect unintended changes or regressions by comparing current output to stored snapshots.
@@ -158,5 +158,5 @@ Planned data types:
    
 Snappylapy is your go-to tool for efficient and reliable snapshot testing in Python. By maintaining clear boundaries between different parts of your code, Snappylapy helps you isolate errors, streamline debugging, and ensure your code remains robust and maintainable.
 
-# Contributing
+## Contributing
 We welcome contributions to Snappylapy! If you have ideas for new features, improvements, or bug fixes, please open an issue or submit a pull request on our GitHub repository. We appreciate your feedback and support in making Snappylapy even better for the community.
