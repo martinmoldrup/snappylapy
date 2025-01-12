@@ -79,7 +79,7 @@ jobs:
             echo "README.md file not found."
             exit 1
           fi
-          CHANGELOG=$(awk '/^## \['${{ needs.details.outputs.new_version }}'\]/,/^## \[/' README.md | sed '1d;$d')
+          CHANGELOG=$(awk '/^## \['${{ needs.details.outputs.new_version }}'\]/,/^## \[/' CHANGELOG.md | sed '1d;$d')
           if [ -z "$CHANGELOG" ]; then
             echo "Changelog for version ${{ needs.details.outputs.new_version }} not found."
             exit 1

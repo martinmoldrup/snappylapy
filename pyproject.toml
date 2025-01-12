@@ -3,7 +3,7 @@ name = "snappylapy"
 version = "0.2.0"
 description = "A snapshot library for python optimized for easy of use, human readable snapshots and enabling decoupling of chained integration tests."
 authors = ["Martin Møldrup"]
-readme = "README.md"
+readme = ["README.md", "CHANGELOG.md"]
 classifiers = [
     "Framework :: Pytest",
     "Development Status :: 4 - Beta",
@@ -23,6 +23,7 @@ classifiers = [
 ]
 packages = [{ include = "snappylapy" }, { include = "snappylapy/py.typed" }]
 repository = "https://github.com/martinmoldrup/snappylapy"
+documentation = "https://martinmoldrup.github.io/snappylapy"
 
 keywords = ["pytest", "snapshot", "testing", "snapshot-testing", "integration-testing", "unit-testing"]
 

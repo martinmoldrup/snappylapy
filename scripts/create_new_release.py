@@ -7,7 +7,7 @@ import requests
 from packaging.version import Version
 
 PYPROJECT_TOML = pathlib.Path(__file__).parent.parent / "pyproject.toml"
-README_MD = pathlib.Path(__file__).parent.parent / "README.md"
+CHANGELOG_MD = pathlib.Path(__file__).parent.parent / "CHANGELOG.md"
 PYPI_ENDPOINT = "https://pypi.org/pypi/snappylapy/json"
 
 def read_version():
@@ -26,12 +26,12 @@ def check_version(version: str):
     
 def check_change_log(version: str):
     """Check if the version has a corresponding entry in the change log. It will be a line starting with ## [0.0.2]"""
-    with open(README_MD, "r", encoding="utf-8") as file:
+    with open(CHANGELOG_MD, "r", encoding="utf-8") as file:
         lines = file.readlines()
     version_str = f"## [{version}]"
     if not any(line.startswith(version_str) for line in lines):
         raise ValueError(f"Version {version} does not have a corresponding entry in the change log.")
-    
+
 
 
 if __name__ == "__main__":

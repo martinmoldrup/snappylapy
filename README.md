@@ -160,25 +160,3 @@ Snappylapy is your go-to tool for efficient and reliable snapshot testing in Pyt
 
 # Contributing
 We welcome contributions to Snappylapy! If you have ideas for new features, improvements, or bug fixes, please open an issue or submit a pull request on our GitHub repository. We appreciate your feedback and support in making Snappylapy even better for the community.
-
-# Change Log
-## [0.2.0]
-- Better error messages by using pytest assertion rewriting
-- Allow users to set the snapshot directory when using the load_snapshot fixture
-  
-## [0.1.1]
-- Update dependencies with the lower bounds of package compatibility
-- Refactor to make code easier for users of package to modify and extend
-
-## [0.1.0]
-- Added fixture for loading snapshots from previous tests (load_snapshot fixture)
-- Added the snappylapy marker for tests that depend on previous tests (pytest.mark.snappylapy). This will be used for more advanced features in the future.
-
-## [0.0.2]
-- 🐞 Added fix for python 3.9, by refactoring incompatible type annotation
-- Loosened the version requirements for pytest (until the lower bound have been discovered, with automated testing)
-- Improved metadata for pypi
-
-## [0.0.1]
-- Initial release of Snappylapy
-- Implemented basic snapshot testing functionality for dict, list, bytes and str data types
