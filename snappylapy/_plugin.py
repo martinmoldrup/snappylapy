@@ -1,7 +1,7 @@
 """Pytest plugin for snapshot testing."""
 import pytest
 from snappylapy import Expect, LoadSnapshot
-from snappylapy.snappylapy import Settings
+from snappylapy.fixtures import Settings
 
 
 @pytest.fixture()

@@ -66,6 +66,27 @@ jobs:
             echo "The new version $NEW_VERSION is greater than the latest version $LATEST_VERSION on PyPI."
           fi
 
+  read_changelog:
+    needs: details
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Read Changelog
+        id: changelog
+        run: |
+          if [ ! -f "README.md" ]; then
+            echo "README.md file not found."
+            exit 1
+          fi
+          CHANGELOG=$(awk '/^## \['${{ needs.details.outputs.new_version }}'\]/,/^## \[/' README.md | sed '1d;$d')
+          if [ -z "$CHANGELOG" ]; then
+            echo "Changelog for version ${{ needs.details.outputs.new_version }} not found."
+            exit 1
+          fi
+          echo "Changelog read as: $CHANGELOG"
+          echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
+                
   setup_and_build:
     needs: [details, check_pypi]
     runs-on: ubuntu-latest
@@ -119,7 +140,7 @@ jobs:
 
   github_release:
     name: Create GitHub Release
-    needs: [setup_and_build, details]
+    needs: [setup_and_build, details, read_changelog]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -140,4 +161,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create ${{ needs.details.outputs.tag_name }} dist/* --title ${{ needs.details.outputs.tag_name }} --generate-notes
+          gh release create ${{ needs.details.outputs.tag_name }} dist/* --title ${{ needs.details.outputs.tag_name }} --generate-notes --notes "${{ env.CHANGELOG }}"
