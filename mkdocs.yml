@@ -1,0 +1,69 @@
+site_name: Snappylapy
+repo_name: martinmoldrup/snappylapy
+repo_url: https://dev.azure.com/GFIOSvr/AI%20Circle/_git/AzureSharedPkg
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - toc.integrate
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: teal
+      accent: purple
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+      primary: teal
+      accent: lime
+
+plugins:
+  - search
+  - gen-files:
+      scripts:
+        - docs/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  # - section-index
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+            show_root_toc_entry: false
+            # docstring_style: numpy
+            inherited_members: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            group_by_category: true
+            show_labels: true
+            separate_signature: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+            merge_init_into_class: true
+            filters:
+            - "!^_"
+markdown_extensions:
+  - pymdownx.snippets
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Code Reference: reference/
