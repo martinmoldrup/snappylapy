@@ -71,6 +71,17 @@ class LoadSnapshot:
         """Initialize the snapshot loading."""
         self.settings = settings
 
+    @property
+    def snapshot_dir(self) -> pathlib.Path:
+        """Get the snapshot directory."""
+        return self.settings.snapshot_dir
+
+    @snapshot_dir.setter
+    def snapshot_dir(self, value: str | pathlib.Path) -> None:
+        """Set the snapshot directory."""
+        self.settings.snapshot_dir = pathlib.Path(value) if isinstance(
+            value, str) else value
+
     def _read_snapshot(self) -> bytes:
         """Read the snapshot file."""
         return (self.settings.snapshot_dir /
