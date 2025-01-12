@@ -65,6 +65,6 @@ markdown_extensions:
   - pymdownx.superfences
 
 nav:
-  - Home: home.md
+  - Home: index.md
   - Code Reference: reference/
   - Change Log: changelog.md
