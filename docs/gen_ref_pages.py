@@ -69,8 +69,7 @@ def generate_summary(nav: mkdocs_gen_files.Nav) -> None:
         nav_file.writelines(nav.build_literate_nav())
 
 
-if __name__ == "__main__":
-    generate_cli_docs()
-    nav = mkdocs_gen_files.Nav()
-    generate_documentation_for_py_files(nav)
-    generate_summary(nav)
+generate_cli_docs()
+nav = mkdocs_gen_files.Nav()
+generate_documentation_for_py_files(nav)
+generate_summary(nav)
