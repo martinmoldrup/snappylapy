@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 ## [0.2.0]
 - Better error messages by using pytest assertion rewriting
 - Allow users to set the snapshot directory when using the load_snapshot fixture
+- Add CLI for for init and clear commands
+- Added automated generation of documentation using mkdocs
   
 ## [0.1.1]
 - Update dependencies with the lower bounds of package compatibility
