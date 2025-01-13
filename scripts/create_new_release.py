@@ -31,6 +31,7 @@ def check_change_log(version: str):
     version_str = f"## [{version}]"
     if not any(line.startswith(version_str) for line in lines):
         raise ValueError(f"Version {version} does not have a corresponding entry in the change log.")
+    print(f"Version {version} has a corresponding entry in the change log.")
 
 
 

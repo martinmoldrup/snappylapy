@@ -75,8 +75,8 @@ jobs:
       - name: Read Changelog
         id: changelog
         run: |
-          if [ ! -f "README.md" ]; then
-            echo "README.md file not found."
+          if [ ! -f "CHANGELOG.md" ]; then
+            echo "CHANGELOG.md file not found."
             exit 1
           fi
           CHANGELOG=$(awk '/^## \['${{ needs.details.outputs.new_version }}'\]/,/^## \[/' CHANGELOG.md | sed '1d;$d')
@@ -122,7 +122,7 @@ jobs:
 
   pypi_publish:
     name: Upload release to PyPI
-    needs: [setup_and_build, details]
+    needs: [setup_and_build, details, read_changelog]
     runs-on: ubuntu-latest
     environment:
       name: release

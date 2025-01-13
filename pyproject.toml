@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snappylapy"
-version = "0.2.0"
+version = "0.2.1"
 description = "A snapshot library for python optimized for easy of use, human readable snapshots and enabling decoupling of chained integration tests."
 authors = ["Martin Møldrup"]
 readme = ["README.md", "CHANGELOG.md"]
