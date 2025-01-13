@@ -36,13 +36,12 @@ def init() -> None:
     typer.echo(f"Added {constants.TEST_RESULTS_DIR_NAME}/ to .gitignore.")
 
 
-
 @app.command()
 def clear() -> None:
     """Clear all test results and snapshots, recursively, using pathlib."""
     list_of_files_to_delete: list[pathlib.Path] = []
     for dir_name in [constants.TEST_RESULTS_DIR_NAME, constants.SNAPSHOT_DIR_NAME]:
-        for root_dir in pathlib.Path(".").rglob(dir_name):
+        for root_dir in pathlib.Path().rglob(dir_name):
             for file in root_dir.iterdir():
                 if file.is_file():
                     list_of_files_to_delete.append(file)
@@ -61,7 +60,7 @@ def clear() -> None:
         file.unlink()
     # Delete directories
     for dir_name in [constants.TEST_RESULTS_DIR_NAME, constants.SNAPSHOT_DIR_NAME]:
-        for root_dir in pathlib.Path(".").rglob(dir_name):
+        for root_dir in pathlib.Path().rglob(dir_name):
             root_dir.rmdir()
     typer.echo(f"Deleted {len(list_of_files_to_delete)} files.")
 
