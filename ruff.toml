@@ -1,5 +1,5 @@
-# Same as Black.
-line-length = 88
+# Support longer lines, but try to keep them under 88 for most cases (add a ruler to code editor)
+line-length = 120
 indent-width = 4
 
 # Assume Python 3.9
