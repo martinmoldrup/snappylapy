@@ -23,3 +23,5 @@ All notable changes to this project will be documented in this file.
 - Improved metadata for pypi
 
 ## [0.0.1]
+- Initial release of Snappylapy
+- Implemented basic snapshot testing functionality for dict, list, bytes and str data types
