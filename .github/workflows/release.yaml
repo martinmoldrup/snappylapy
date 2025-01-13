@@ -79,7 +79,7 @@ jobs:
 
       - name: Get changelog and add to variable
         run: |
-          python scripts/read_changelog.py ${{ needs.details.outputs.new_version }} > specific_changelog.md
+          python ./scripts/get_changelog.py ${{ needs.details.outputs.new_version }} > specific_changelog.md
           echo "Changelog for ${{ needs.details.outputs.new_version }}:"
           cat specific_changelog.md
           echo "CHANGELOG=$(cat specific_changelog.md)" >> $GITHUB_ENV
