@@ -1,5 +1,7 @@
 # Change log
 All notable changes to this project will be documented in this file.
+## [0.2.1]
+- Added missing dependency for typer to make the CLI work
 
 ## [0.2.0]
 - Better error messages by using pytest assertion rewriting
@@ -21,5 +23,3 @@ All notable changes to this project will be documented in this file.
 - Improved metadata for pypi
 
 ## [0.0.1]
-- Initial release of Snappylapy
-- Implemented basic snapshot testing functionality for dict, list, bytes and str data types
