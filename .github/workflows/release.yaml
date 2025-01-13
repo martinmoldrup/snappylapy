@@ -72,20 +72,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Read Changelog
-        id: changelog
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Get changelog and add to variable
         run: |
-          if [ ! -f "CHANGELOG.md" ]; then
-            echo "CHANGELOG.md file not found."
-            exit 1
-          fi
-          CHANGELOG=$(awk '/^## \['${{ needs.details.outputs.new_version }}'\]/,/^## \[/' CHANGELOG.md | sed '1d;$d')
-          if [ -z "$CHANGELOG" ]; then
-            echo "Changelog for version ${{ needs.details.outputs.new_version }} not found."
-            exit 1
-          fi
-          echo "Changelog read as: $CHANGELOG"
-          echo "CHANGELOG=$CHANGELOG" >> $GITHUB_ENV
+          python scripts/read_changelog.py ${{ needs.details.outputs.new_version }} > specific_changelog.md
+          echo "Changelog for ${{ needs.details.outputs.new_version }}:"
+          cat specific_changelog.md
+          echo "CHANGELOG=$(cat specific_changelog.md)" >> $GITHUB_ENV
                 
   setup_and_build:
     needs: [details, check_pypi]
