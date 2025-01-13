@@ -1,7 +1,8 @@
 """Python script for getting the change log entry from the CHANGELOG.md file."""
-import re
 import pathlib
 import argparse
+
+PATH = pathlib.Path(__file__).parent.parent / "CHANGELOG.md"
 
 parser = argparse.ArgumentParser(description="Get the change log entry for a version.")
 parser.add_argument("version", help="The version to get the change log entry for.")
@@ -11,8 +12,8 @@ version = args.version
 if not version:
     raise ValueError("No version provided.")
 
-path = pathlib.Path(__file__).parent.parent.parent / "CHANGELOG.md"
-with path.open("r", encoding="utf-8") as file:
+
+with PATH.open("r", encoding="utf-8") as file:
     lines = file.readlines()
 
 version_str = f"## [{version}]"
