@@ -68,3 +68,4 @@ nav:
   - Home: index.md
   - Code Reference: reference/
   - Change Log: changelog.md
+  - CLI: cli.md

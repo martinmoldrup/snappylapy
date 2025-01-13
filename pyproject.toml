@@ -54,3 +54,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.plugins."pytest11"]
 "snappylapy" = "snappylapy._plugin"
+
+[tool.poetry.scripts]
+snappylapy = "snappylapy._cli:app"
