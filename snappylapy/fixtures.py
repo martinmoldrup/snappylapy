@@ -30,11 +30,17 @@ class Expect:
     """Snapshot testing class."""
 
     def __init__(
-            self,
-            update_snapshots: bool,  # noqa: FBT001
+        self,
+        update_snapshots: bool,  # noqa: FBT001
+        test_filename: str,
+        test_function: str,
     ) -> None:
         """Initialize the snapshot testing."""
-        self.settings = Settings()
+        self.settings = Settings(
+            test_filename=test_filename,
+            test_function=test_function,
+            snapshot_update=update_snapshots,
+        )
         self.dict = DictExpect(update_snapshots, self.settings)
         self.list = ListExpect(update_snapshots, self.settings)
         self.string = StringExpect(update_snapshots, self.settings)

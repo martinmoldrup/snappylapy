@@ -8,7 +8,11 @@ from snappylapy.fixtures import Settings
 def expect(request: pytest.FixtureRequest) -> Expect:
     """Initialize the snapshot object with update_snapshots flag from pytest option."""
     update_snapshots = request.config.getoption("--snapshot-update")
-    return Expect(update_snapshots=update_snapshots)
+    return Expect(
+        update_snapshots=update_snapshots,
+        test_filename=request.module.__name__,
+        test_function=request.node.name,
+    )
 
 
 @pytest.fixture()
@@ -16,11 +20,15 @@ def load_snapshot(request: pytest.FixtureRequest) -> LoadSnapshot:
     """Initialize the LoadSnapshot object."""
     marker = request.node.get_closest_marker("snappylapy")
     depends = marker.kwargs.get("depends", []) if marker else []
+    settings = Settings(
+        test_filename=request.module.__name__,
+        test_function=request.node.name,
+    )
     if not depends:
-        return LoadSnapshot(Settings())
+        return LoadSnapshot(settings)
 
-    filename = depends[0].__name__
-    settings = Settings(filename_base=filename)
+    settings.test_function = depends[0].__name__
+    settings.test_filename = depends[0].__module__
     return LoadSnapshot(settings)
 
 
