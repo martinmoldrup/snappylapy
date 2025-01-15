@@ -1,7 +1,6 @@
 """Base class for snapshot testing."""
 from __future__ import annotations
 
-import inspect
 import pathlib
 from abc import ABC
 from snappylapy.models import Settings
@@ -49,10 +48,9 @@ class BaseSnapshot(ABC, Generic[T]):
 
     def _prepare_test(self, data: T, name: str, extension: str) -> None:
         """Prepare and save test results."""
+        if name:
+            self.settings.custom_name = name
         self._data = data
-        if not name:
-            name = self._get_filename_base()
-        self.settings.filename_base = name
         self.settings.filename_extension = extension
         file_path = self.settings.test_results_dir / self.settings.filename
         file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -68,18 +66,6 @@ class BaseSnapshot(ABC, Generic[T]):
     def _read_file(self, path: pathlib.Path) -> bytes:
         """Read file bytes or return placeholder."""
         return path.read_bytes() if path.exists() else b"<No file>"
-
-    def _get_filename_base(self) -> str:
-        """Derive a filename from the call stack."""
-        frame = inspect.currentframe()
-        parent_module_path = pathlib.Path(__file__).parent
-        while frame:
-            file_path_of_frame = pathlib.Path(frame.f_code.co_filename)
-            if parent_module_path not in file_path_of_frame.parents:
-                return frame.f_code.co_name
-            frame = frame.f_back
-        error_msg = "Could not derive filename from stack."
-        raise ValueError(error_msg)
 
     def _save_test_results(self, path: pathlib.Path, data: T) -> None:
         """Save data for test results."""
