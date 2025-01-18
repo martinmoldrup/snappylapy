@@ -69,6 +69,8 @@ jobs:
   read_changelog:
     needs: details
     runs-on: ubuntu-latest
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
     steps:
       - uses: actions/checkout@v2
 
@@ -78,11 +80,12 @@ jobs:
           python-version: "3.12"
 
       - name: Get changelog and add to variable
+        id: changelog
         run: |
           python ./scripts/get_changelog.py ${{ needs.details.outputs.new_version }} > specific_changelog.md
           echo "Changelog for ${{ needs.details.outputs.new_version }}:"
           cat specific_changelog.md
-          echo "CHANGELOG=$(cat specific_changelog.md)" >> $GITHUB_ENV
+          echo "changelog=$(cat specific_changelog.md)" >> $GITHUB_ENV
                 
   setup_and_build:
     needs: [details, check_pypi]
@@ -158,4 +161,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create ${{ needs.details.outputs.tag_name }} dist/* --title ${{ needs.details.outputs.tag_name }} --generate-notes --notes "${{ env.CHANGELOG }}"
+          gh release create ${{ needs.details.outputs.tag_name }} dist/* --title ${{ needs.details.outputs.tag_name }} --generate-notes --notes "${{ needs.read_changelog.outputs.changelog }}"
