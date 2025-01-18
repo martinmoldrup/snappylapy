@@ -9,7 +9,7 @@ def test_snapshot_string(pytester: Pytester):
     def test_snapshot_string(expect: Expect):
         expect.string("Hello World").to_match_snapshot()
     """
-    pytester.makepyfile(test_code)
+    pytester.makepyfile(test_code=test_code)
     result = pytester.runpytest('-v', '--snapshot-update')
     assert result.ret == 0, "\n".join(result.outlines)
     result = pytester.runpytest('-v')
@@ -23,7 +23,7 @@ def test_fails_snapshot_not_exists(pytester: Pytester):
     def test_fails_snapshot_string(expect: Expect):
         expect.string("Hello World").to_match_snapshot()
     """
-    pytester.makepyfile(test_code)
+    pytester.makepyfile(test_code=test_code)
     result = pytester.runpytest('-v')
     assert result.ret == 1, "\n".join(result.outlines)
 
