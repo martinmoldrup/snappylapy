@@ -1,7 +1,18 @@
 """Read-only constants."""
+import pathlib
+DEFEAULT_SNAPSHOT_BASE_DIR = pathlib.Path()
+class DirectoryNames:
+    """Class to enforce immutable directory names, since there is side effect if they are changed."""
 
-SNAPSHOT_DIR_NAME = "__snapshots__"
-"""Snapshot directory name."""
+    @property
+    def snapshot_dir_name(self) -> str:
+        """Snapshot directory name."""
+        return "__snapshots__"
 
-TEST_RESULTS_DIR_NAME = "__test_results__"
-"""Test results directory name."""
+    @property
+    def test_results_dir_name(self) -> str:
+        """Test results directory name."""
+        return "__test_results__"
+
+
+directory_names = DirectoryNames()

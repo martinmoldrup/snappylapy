@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 import pathlib
-from .constants import SNAPSHOT_DIR_NAME, TEST_RESULTS_DIR_NAME
 from dataclasses import dataclass
+from snappylapy.constants import directory_names
 
 
 @dataclass
@@ -19,10 +19,19 @@ class Settings:
     custom_name: str | None = None
     """Custom name for the snapshot file."""
 
-    snapshot_dir: pathlib.Path = pathlib.Path(SNAPSHOT_DIR_NAME)
-    test_results_dir: pathlib.Path = pathlib.Path(TEST_RESULTS_DIR_NAME)
+    snapshots_base_dir: str | pathlib.Path = pathlib.Path()
     snapshot_update: bool = False
     filename_extension: str = "txt"
+
+    @property
+    def snapshot_dir(self) -> pathlib.Path:
+        """Get the snapshot directory."""
+        return pathlib.Path(self.snapshots_base_dir) / directory_names.snapshot_dir_name
+
+    @property
+    def test_results_dir(self) -> pathlib.Path:
+        """Get the test results directory."""
+        return pathlib.Path(self.snapshots_base_dir) / directory_names.test_results_dir_name
 
     @property
     def filename(self) -> str:

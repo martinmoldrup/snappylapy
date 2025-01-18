@@ -5,8 +5,8 @@ import pathlib
 from abc import ABC
 from snappylapy.models import Settings
 from snappylapy.serialization import Serializer
-from typing import Generic, TypeVar
 from snappylapy.session import SnapshotSession
+from typing import Generic, TypeVar
 
 T = TypeVar("T")
 

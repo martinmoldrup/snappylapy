@@ -1,12 +1,16 @@
-from dataclasses import dataclass
-from _pytest.terminal import TerminalReporter
+"""Session for snapshot testing."""
 import pathlib
-from snappylapy.constants import SNAPSHOT_DIR_NAME
+from _pytest.terminal import TerminalReporter
+from dataclasses import dataclass
+from snappylapy.constants import directory_names
+
 
 @dataclass
 class SnapshotSession:
+    """Session for snapshot testing."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the snapshot session."""
         self.snapshots_created: list[str] = []
         self.snapshots_updated: list[str] = []
         self.snapshot_tests_succeeded: list[str] = []
@@ -16,27 +20,32 @@ class SnapshotSession:
         """Loop through all SNAPSHOT_DIR_NAME directories and return names of all snapshots."""
         snapshot_file_names: set[str] = set()
         # Find all directories called SNAPSHOT_DIR_NAME
-        snapshot_dirs = list(pathlib.Path().rglob(SNAPSHOT_DIR_NAME))
+        snapshot_dirs = list(pathlib.Path().rglob(
+            directory_names.snapshot_dir_name))
         for snapshot_dir in snapshot_dirs:
-            for snapshot_file in snapshot_dir.iterdir():
-                snapshot_file_names.add(snapshot_file.name)
+            snapshot_file_names.update(
+                snapshot_file.name for snapshot_file in snapshot_dir.iterdir())
         return snapshot_file_names
 
     def _get_unvisited_snapshots(self) -> set[str]:
         """Get all missing snapshots."""
         all_snapshots = self._get_all_snapshots()
-        unvisited_snapshots = all_snapshots - set(self.snapshots_created + self.snapshots_updated + self.snapshot_tests_succeeded + self.snapshot_tests_failed)
+        unvisited_snapshots = all_snapshots - set(
+            self.snapshots_created + self.snapshots_updated +
+            self.snapshot_tests_succeeded + self.snapshot_tests_failed)
         return unvisited_snapshots
 
     def on_finish(self) -> None:
-        """"""
+        """On finish of the snapshot testing."""
 
     def has_ran_snapshot_tests(self) -> bool:
+        """Check if snapshot tests have been run."""
         return bool(
             self.snapshots_created or self.snapshots_updated
-            or self.snapshot_tests_succeeded, )
+            or self.snapshot_tests_succeeded)
 
     def write_summary(self, reporter: TerminalReporter) -> None:
+        """Write the snapshot tests summary."""
         if not self.has_ran_snapshot_tests():
             return
         reporter.write_sep("=", "Snapshot tests summary", blue=True)
@@ -61,18 +70,24 @@ class SnapshotSession:
 
         unvisited_snapshots = self._get_unvisited_snapshots()
         if unvisited_snapshots:
-            reporter.write(f"Found {len(unvisited_snapshots)} unvisited snapshots:\n", red=True)
+            reporter.write(
+                f"Found {len(unvisited_snapshots)} unvisited snapshots:\n",
+                red=True)
             for snapshot in unvisited_snapshots:
                 reporter.write(f"  {snapshot}\n", blue=True)
 
     def add_created_snapshot(self, item: str) -> None:
+        """Add a created snapshot."""
         self.snapshots_created.append(item)
 
     def add_updated_snapshot(self, item: str) -> None:
+        """Add an updated snapshot."""
         self.snapshots_updated.append(item)
 
     def add_snapshot_test_succeeded(self, item: str) -> None:
+        """Add a snapshot test that succeeded."""
         self.snapshot_tests_succeeded.append(item)
 
     def add_snapshot_test_failed(self, item: str) -> None:
+        """Add a snapshot test that failed."""
         self.snapshot_tests_failed.append(item)
