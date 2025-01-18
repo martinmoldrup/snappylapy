@@ -39,7 +39,7 @@ When working on a test suite for a project, it’s important to ensure tests are
    
 ### Example  
    
-```python  
+```python
 from snappylapy import Expect
 from mypackage import my_function
    
@@ -55,11 +55,12 @@ Allows users full control to select output location for snapshots so they can be
 import pytest
 import pathlib
 from snappylapy import Expect
+from mypackage import my_function
 
-@pytest.mark.parametrize('case_dir', list(Path('test_cases').iterdir()))
+@pytest.mark.parametrize('case_dir', list(pathlib.Path('test_cases').iterdir()))
 def test_my_function(case_dir: pathlib.Path, expect: Expect):
-    snapshot.snapshot_dir = case_dir / "__snapshots__"
-    snapshot.test_results_dir = case_dir / "__test_results__"
+    expect.snapshot_dir = case_dir / "__snapshots__"
+    expect.test_results_dir = case_dir / "__test_results__"
     result = my_function(case_dir)
     expect.dict(result).to_match_snapshot()
 ```
@@ -107,13 +108,13 @@ The results is split into two folders, for ease of comparison, and for handling 
 ## Usage
 Update snapshots with:
 
-```python
+```bash
 pytest --snapshot-update
 ```
 
 A diff report in html can be generated with (not implemented yet ❌):
 
-```python
+```bash
 pytest --snappylapy-html=report.html
 ```
 
