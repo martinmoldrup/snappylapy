@@ -2,16 +2,20 @@
 import pytest
 from snappylapy import Expect, LoadSnapshot
 from snappylapy.fixtures import Settings
+from _pytest.terminal import TerminalReporter
+from snappylapy.session import SnapshotSession
 
 
 @pytest.fixture()
 def expect(request: pytest.FixtureRequest) -> Expect:
     """Initialize the snapshot object with update_snapshots flag from pytest option."""
     update_snapshots = request.config.getoption("--snapshot-update")
+    snappylapy_session: SnapshotSession = request.config.snappylapy_session
     return Expect(
         update_snapshots=update_snapshots,
         test_filename=request.module.__name__,
         test_function=request.node.name,
+        snappylapy_session=snappylapy_session,
     )
 
 
@@ -76,3 +80,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=False,
         help="update snapshots.",
     )
+
+def pytest_sessionstart(session: pytest.Session) -> None:
+    session.config.snappylapy_session = SnapshotSession()
+
