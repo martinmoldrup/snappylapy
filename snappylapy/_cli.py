@@ -2,7 +2,7 @@
 import re
 import typer
 import pathlib
-from snappylapy import constants
+from snappylapy.constants import directory_names
 
 app = typer.Typer(
     no_args_is_help=True,
@@ -24,23 +24,23 @@ def init() -> None:
     # Check if already in .gitignore
     with gitignore_path.open("r") as file:
         lines = file.readlines()
-    regex = re.compile(rf"^{re.escape(constants.TEST_RESULTS_DIR_NAME)}(/|$)")
+    regex = re.compile(rf"^{re.escape(directory_names.test_results_dir_name)}(/|$)")
     if any(regex.match(line) for line in lines):
         typer.echo("Already in .gitignore.")
         return
     # Add to .gitignore to top of file
-    line_to_add = f"# Ignore test results from snappylapy\n{constants.TEST_RESULTS_DIR_NAME}/\n\n"
+    line_to_add = f"# Ignore test results from snappylapy\n{directory_names.test_results_dir_name}/\n\n"
     with gitignore_path.open("w") as file:
         file.write(line_to_add)
         file.writelines(lines)
-    typer.echo(f"Added {constants.TEST_RESULTS_DIR_NAME}/ to .gitignore.")
+    typer.echo(f"Added {directory_names.test_results_dir_name}/ to .gitignore.")
 
 
 @app.command()
 def clear() -> None:
     """Clear all test results and snapshots, recursively, using pathlib."""
     list_of_files_to_delete: list[pathlib.Path] = []
-    for dir_name in [constants.TEST_RESULTS_DIR_NAME, constants.SNAPSHOT_DIR_NAME]:
+    for dir_name in [directory_names.test_results_dir_name, directory_names.snapshot_dir_name]:
         for root_dir in pathlib.Path().rglob(dir_name):
             for file in root_dir.iterdir():
                 if file.is_file():
@@ -59,7 +59,7 @@ def clear() -> None:
     for file in list_of_files_to_delete:
         file.unlink()
     # Delete directories
-    for dir_name in [constants.TEST_RESULTS_DIR_NAME, constants.SNAPSHOT_DIR_NAME]:
+    for dir_name in [directory_names.test_results_dir_name, directory_names.snapshot_dir_name]:
         for root_dir in pathlib.Path().rglob(dir_name):
             root_dir.rmdir()
     typer.echo(f"Deleted {len(list_of_files_to_delete)} files.")

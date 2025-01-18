@@ -23,17 +23,19 @@ from .serialization import (
     JsonPickleSerializer,
     StringSerializer,
 )
-from typing import Any
 from snappylapy.session import SnapshotSession
+from typing import Any
+from snappylapy.constants import directory_names
 
 
 class Expect:
     """
     Snapshot testing fixture class.
+
     Do not instantiate this class directly, insatead use the `expect` fixture provided by pytest.
     Use this class as a type hint for the `expect` fixture.
 
-    Example
+    Example:
     -------
     ```python
     from snappylapy.fixtures import Expect
@@ -41,6 +43,7 @@ class Expect:
     def test_example(expect: Expect) -> None:
         expect.dict({"key": "value"}).to_match_snapshot()
     ```
+
     """
 
     def __init__(
@@ -49,6 +52,7 @@ class Expect:
         test_filename: str,
         test_function: str,
         snappylapy_session: SnapshotSession,
+        output_dir: str = "",
     ) -> None:
         """Initialize the snapshot testing."""
         self.settings = Settings(
@@ -56,8 +60,12 @@ class Expect:
             test_function=test_function,
             snapshot_update=update_snapshots,
         )
-        self.dict = DictExpect(update_snapshots, self.settings, snappylapy_session)
-        """DictExpect instance for configuring snapshot testing of dictionaries. 
+        if output_dir:
+            self.settings.snapshots_base_dir = output_dir
+
+        self.dict = DictExpect(update_snapshots, self.settings,
+                               snappylapy_session)
+        """DictExpect instance for configuring snapshot testing of dictionaries.
         The instance is callable with the following parameters:
 
         Parameters
@@ -82,8 +90,9 @@ class Expect:
         ```
         """
 
-        self.list = ListExpect(update_snapshots, self.settings, snappylapy_session)
-        """ListExpect instance for configuring snapshot testing of lists. 
+        self.list = ListExpect(update_snapshots, self.settings,
+                               snappylapy_session)
+        """ListExpect instance for configuring snapshot testing of lists.
         The instance is callable with the following parameters:
 
         Parameters
@@ -107,8 +116,9 @@ class Expect:
         ```
         """
 
-        self.string = StringExpect(update_snapshots, self.settings, snappylapy_session)
-        """StringExpect instance for configuring snapshot testing of strings. 
+        self.string = StringExpect(update_snapshots, self.settings,
+                                   snappylapy_session)
+        """StringExpect instance for configuring snapshot testing of strings.
         The instance is callable with the following parameters:
 
         Parameters
@@ -132,8 +142,9 @@ class Expect:
         ```
         """
 
-        self.bytes = BytesExpect(update_snapshots, self.settings, snappylapy_session)
-        """BytesExpect instance for configuring snapshot testing of bytes. 
+        self.bytes = BytesExpect(update_snapshots, self.settings,
+                                 snappylapy_session)
+        """BytesExpect instance for configuring snapshot testing of bytes.
         The instance is callable with the following parameters:
 
         Parameters
@@ -167,50 +178,18 @@ class Expect:
         return (self.settings.test_results_dir /
                 self.settings.filename).read_bytes()
 
-    @property
-    def snapshot_dir(self) -> pathlib.Path:
-        """Get the snapshot directory."""
-        return self.settings.snapshot_dir
-
-    @snapshot_dir.setter
-    def snapshot_dir(self, value: str | pathlib.Path) -> None:
-        """Set the snapshot directory."""
-        self.settings.snapshot_dir = pathlib.Path(value) if isinstance(
-            value, str) else value
-
-    @property
-    def test_results_dir(self) -> pathlib.Path:
-        """Get the test results directory."""
-        return self.settings.test_results_dir
-
-    @test_results_dir.setter
-    def test_results_dir(self, value: str | pathlib.Path) -> None:
-        """Set the test results directory."""
-        self.settings.test_results_dir = pathlib.Path(value) if isinstance(
-            value, str) else value
-
 
 class LoadSnapshot:
     """Snapshot loading class."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, read_from_dir: pathlib.Path) -> None:
         """Initialize the snapshot loading."""
         self.settings = settings
-
-    @property
-    def snapshot_dir(self) -> pathlib.Path:
-        """Get the snapshot directory."""
-        return self.settings.snapshot_dir
-
-    @snapshot_dir.setter
-    def snapshot_dir(self, value: str | pathlib.Path) -> None:
-        """Set the snapshot directory."""
-        self.settings.snapshot_dir = pathlib.Path(value) if isinstance(
-            value, str) else value
+        self.read_from_dir = read_from_dir
 
     def _read_snapshot(self) -> bytes:
         """Read the snapshot file."""
-        return (self.settings.snapshot_dir /
+        return (self.read_from_dir / directory_names.snapshot_dir_name /
                 self.settings.filename).read_bytes()
 
     def dict(self) -> dict:

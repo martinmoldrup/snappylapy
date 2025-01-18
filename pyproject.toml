@@ -38,7 +38,7 @@ typer = "*"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.9.0"
-ruff = "^0.3.4"
+ruff = "^0.9.2"
 types-pyyaml = "^6.0.12.20240311"
 toml = "^0.10.2"
 pytest-cov = "^6.0.0"
