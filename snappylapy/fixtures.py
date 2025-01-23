@@ -48,20 +48,12 @@ class Expect:
 
     def __init__(
         self,
-        update_snapshots: bool,  # noqa: FBT001
-        test_filename: str,
-        test_function: str,
         snappylapy_session: SnapshotSession,
-        output_dir: str = "",
+        snappylapy_settings: Settings,
     ) -> None:
         """Initialize the snapshot testing."""
-        self.settings = Settings(
-            test_filename=test_filename,
-            test_function=test_function,
-            snapshot_update=update_snapshots,
-        )
-        if output_dir:
-            self.settings.snapshots_base_dir = output_dir
+        self.settings = snappylapy_settings
+        update_snapshots = self.settings.snapshot_update
 
         self.dict = DictExpect(update_snapshots, self.settings,
                                snappylapy_session)
@@ -182,33 +174,34 @@ class Expect:
 class LoadSnapshot:
     """Snapshot loading class."""
 
-    def __init__(self, settings: Settings, read_from_dir: pathlib.Path) -> None:
+    def __init__(self, settings: Settings) -> None:
         """Initialize the snapshot loading."""
         self.settings = settings
-        self.read_from_dir = read_from_dir
 
     def _read_snapshot(self) -> bytes:
         """Read the snapshot file."""
-        return (self.read_from_dir / directory_names.snapshot_dir_name /
-                self.settings.filename).read_bytes()
+        if not self.settings.depending_snapshots_base_dir:
+            raise ValueError("Depending snapshots base directory is not set.")
+        return (self.settings.depending_snapshots_base_dir / directory_names.snapshot_dir_name /
+                self.settings.depending_filename).read_bytes()
 
     def dict(self) -> dict:
         """Load dictionary snapshot."""
-        self.settings.filename_extension = "dict.json"
+        self.settings.depending_filename_extension = "dict.json"
         return JsonPickleSerializer[dict]().deserialize(self._read_snapshot())
 
     def list(self) -> list[Any]:
         """Load list snapshot."""
-        self.settings.filename_extension = "list.json"
+        self.settings.depending_filename_extension = "list.json"
         return JsonPickleSerializer[list[Any]]().deserialize(
             self._read_snapshot())
 
     def string(self) -> str:
         """Load string snapshot."""
-        self.settings.filename_extension = "string.txt"
+        self.settings.depending_filename_extension = "string.txt"
         return StringSerializer().deserialize(self._read_snapshot())
 
     def bytes(self) -> bytes:
         """Load bytes snapshot."""
-        self.settings.filename_extension = "bytes.txt"
+        self.settings.depending_filename_extension = "bytes.txt"
         return BytesSerializer().deserialize(self._read_snapshot())
