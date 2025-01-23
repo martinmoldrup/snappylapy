@@ -37,8 +37,25 @@ def init() -> None:
 
 
 @app.command()
-def clear() -> None:
+def clear(force: bool = typer.Option(False, "--force", "-f", help="Force deletion without confirmation")) -> None:
     """Clear all test results and snapshots, recursively, using pathlib."""
+    list_of_files_to_delete = get_files_to_delete()
+    if not list_of_files_to_delete:
+        typer.echo("No files to delete.")
+        return
+    if not force:
+        # Ask for confirmation
+        typer.secho("\nAre you sure you want to delete all test results and snapshots?", fg=typer.colors.BRIGHT_BLUE)
+        response = typer.prompt("Type 'yes' to confirm, anything else to abort.")
+        if response.lower() != "yes":
+            typer.echo("Aborted.")
+            return
+    # Delete files
+    delete_files(list_of_files_to_delete)
+    typer.echo(f"Deleted {len(list_of_files_to_delete)} files.")
+
+def get_files_to_delete() -> list[pathlib.Path]:
+    """Get list of files to delete."""
     list_of_files_to_delete: list[pathlib.Path] = []
     for dir_name in [directory_names.test_results_dir_name, directory_names.snapshot_dir_name]:
         for root_dir in pathlib.Path().rglob(dir_name):
@@ -46,15 +63,10 @@ def clear() -> None:
                 if file.is_file():
                     list_of_files_to_delete.append(file)
                     typer.echo(f"Found file to delete: {file}")
-    if not list_of_files_to_delete:
-        typer.echo("No files to delete.")
-        return
-    # Ask for confirmation
-    typer.secho("\nAre you sure you want to delete all test results and snapshots?", fg=typer.colors.BRIGHT_BLUE)
-    response = typer.prompt("Type 'yes' to confirm, anything else to abort.")
-    if response.lower() != "yes":
-        typer.echo("Aborted.")
-        return
+    return list_of_files_to_delete
+
+def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
+    """Delete files."""
     # Delete files
     for file in list_of_files_to_delete:
         file.unlink()
@@ -62,8 +74,6 @@ def clear() -> None:
     for dir_name in [directory_names.test_results_dir_name, directory_names.snapshot_dir_name]:
         for root_dir in pathlib.Path().rglob(dir_name):
             root_dir.rmdir()
-    typer.echo(f"Deleted {len(list_of_files_to_delete)} files.")
-
 
 if __name__ == "__main__":
     app()
