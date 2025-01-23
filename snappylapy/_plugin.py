@@ -8,6 +8,7 @@ from snappylapy import Expect, LoadSnapshot
 from snappylapy.fixtures import Settings
 from snappylapy.session import SnapshotSession
 from snappylapy.constants import DEFEAULT_SNAPSHOT_BASE_DIR
+import re
 
 
 def _get_kwargs_from_depend_function(depends_function, marker_name: str, kwags_key: str) -> Any:
@@ -33,47 +34,52 @@ def _get_args_from_depend_function(depends_function, marker_name: str) -> Any:
 @pytest.fixture
 def snappylapy_settings(request: pytest.FixtureRequest) -> Settings:
     """Initialize the Settings object for the test."""
+    update_snapshots = request.config.getoption("--snapshot-update")
     marker = request.node.get_closest_marker("snappylapy")
+    match = re.search(r'\[(.*?)\]', request.node.name)
+    param_name: str | None = match.group(1) if match else None
     settings = Settings(
         test_filename=request.module.__name__,
-        test_function=request.node.name,
+        test_function=request.node.originalname,
+        custom_name=param_name,
+        snapshot_update=update_snapshots,
     )
     if marker:
         output_dir = marker.kwargs.get("output_dir", None)
         if output_dir:
             settings.snapshots_base_dir = output_dir
+    path_output_dir: None | pathlib.Path = None
     if hasattr(request, 'param'):
-        settings.snapshots_base_dir = request.param
+        path_output_dir = request.param
+        settings.depending_snapshots_base_dir = path_output_dir
+        settings.snapshots_base_dir = path_output_dir
+        settings.custom_name = path_output_dir.name
+    # If not parametrized, get the depends from the marker
+    depends = marker.kwargs.get("depends", []) if marker else []
+    if depends:
+        input_dir_from_depends = _get_kwargs_from_depend_function(depends[0], "snappylapy", "output_dir")
+        if input_dir_from_depends:
+            path_output_dir = pathlib.Path(input_dir_from_depends)
+        settings.depending_test_filename = depends[0].__module__
+        settings.depending_test_function = depends[0].__name__
+    settings.depending_snapshots_base_dir = path_output_dir or DEFEAULT_SNAPSHOT_BASE_DIR
     return settings
 
 
 @pytest.fixture
 def expect(request: pytest.FixtureRequest, snappylapy_settings: Settings) -> Expect:
     """Initialize the snapshot object with update_snapshots flag from pytest option."""
-    update_snapshots = request.config.getoption("--snapshot-update")
     snappylapy_session: SnapshotSession = request.config.snappylapy_session  # type: ignore[attr-defined]
     return Expect(
-        update_snapshots=update_snapshots,
-        test_filename=snappylapy_settings.test_filename,
-        test_function=snappylapy_settings.test_function,
         snappylapy_session=snappylapy_session,
-        output_dir=snappylapy_settings.snapshots_base_dir,
+        snappylapy_settings=snappylapy_settings,
     )
 
 
 @pytest.fixture
 def load_snapshot(request: pytest.FixtureRequest, snappylapy_settings: Settings) -> LoadSnapshot:
     """Initialize the LoadSnapshot object."""
-    marker = request.node.get_closest_marker("snappylapy")
-    depends = marker.kwargs.get("depends", []) if marker else []
-    input_dir_from_depends = _get_kwargs_from_depend_function(depends[0], "snappylapy", "output_dir") if depends else None
-    read_from_dir = pathlib.Path(input_dir_from_depends) if input_dir_from_depends else DEFEAULT_SNAPSHOT_BASE_DIR
-    if not depends:
-        return LoadSnapshot(snappylapy_settings, read_from_dir)
-
-    snappylapy_settings.test_function = depends[0].__name__
-    snappylapy_settings.test_filename = depends[0].__module__
-    return LoadSnapshot(snappylapy_settings, read_from_dir)
+    return LoadSnapshot(snappylapy_settings)
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -174,10 +180,10 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
         # It might be parametrized
         # Example: Mark(name='parametrize', args=('test_directory', ['test_data/case1', 'test_data/case2']), kwargs={})
         # Parametize the snappylapy_settings fixture
-        if function_depends_marker.name == "parametrize":
-            ids = function_depends_marker.kwargs.get("ids", None)
-            metafunc.parametrize("snappylapy_settings", function_depends_marker.args[1], indirect=True, ids=ids)
-        elif function_depends_marker.name == "snappylapy":
+        # if function_depends_marker.name == "parametrize":
+        #     ids = function_depends_marker.kwargs.get("ids", None)
+        #     metafunc.parametrize("snappylapy_settings", function_depends_marker.args[1], indirect=True, ids=ids)
+        if function_depends_marker.name == "snappylapy":
             foreach_folder_in = _get_kwargs_from_depend_function(depends[0], "snappylapy", "foreach_folder_in")
             if not foreach_folder_in:
                 return
