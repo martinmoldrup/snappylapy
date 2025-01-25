@@ -36,4 +36,9 @@ def save_codeblocks(code_blocks: list[str], save_dir: pathlib.Path) -> None:
             file.write(block)
 
 code_blocks = extract_codeblocks(PATH)
+
+# Delete everything in the save directory
+for file in PATH_SAVE_DIR.iterdir():
+    file.unlink()
+
 save_codeblocks(code_blocks, PATH_SAVE_DIR)

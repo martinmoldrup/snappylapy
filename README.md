@@ -3,7 +3,7 @@
 Welcome to **Snappylapy**, a powerful and intuitive snapshot testing tool for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity.  
 
 ## Installation
-To install Snappylapy, use the following command:
+To get started with Snappylapy, install the package via pip:  
 
 ```bash
 pip install snappylapy
@@ -49,22 +49,6 @@ def test_snapshot_dict(expect: Expect):
     expect.dict(data).to_match_snapshot()
 ```
 
-Allows users full control to select output location for snapshots so they can be stored together with testcases.
-
-```python
-import pytest
-import pathlib
-from snappylapy import Expect
-from mypackage import my_function
-
-@pytest.mark.parametrize('case_dir', list(pathlib.Path('test_cases').iterdir()))
-def test_my_function(case_dir: pathlib.Path, expect: Expect):
-    expect.snapshot_dir = case_dir / "__snapshots__"
-    expect.test_results_dir = case_dir / "__test_results__"
-    result = my_function(case_dir)
-    expect.dict(result).to_match_snapshot()
-```
-
 In this example, `snappylapy` captures the output of `my_function` and compares it against a stored snapshot. If the output changes unexpectedly, pytest will flag the test, allowing you to review the differences and ensure your code behaves as expected.
 
 Snappylapy can use the snapshots created for inputs in another test. You can think of it as automated/easier mock data generation and management.
@@ -88,16 +72,6 @@ def test_load_snapshot_from_file(load_snapshot: LoadSnapshot):
 
 This can be great for external dependencies, for example an AI service, that might change response over time. With this approach we can isolate the changes to the service and still make succeding tests pass.
 
-## Getting Started  
-   
-To get started with Snappylapy, install the package via pip:  
-   
-```bash  
-pip install snappylapy  
-```  
-   
-Add Snappylapy to your pytest configuration and start writing tests that capture and verify snapshots effortlessly.  
-
 ## The output structure
 
 The results is split into two folders, for ease of comparison, and for handling stochastic/variable outputs (timestamps, generated ids, llm outputs, third party api responses etc).
@@ -110,12 +84,6 @@ Update snapshots with:
 
 ```bash
 pytest --snapshot-update
-```
-
-A diff report in html can be generated with (not implemented yet ❌):
-
-```bash
-pytest --snappylapy-html=report.html
 ```
 
 ## Fixtures and roadmap
