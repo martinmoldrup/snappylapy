@@ -10,7 +10,6 @@ Snappylapy provides the following fixtures.
 """
 from __future__ import annotations
 
-import pathlib
 from .expectation_classes import (
     BytesExpect,
     DictExpect,
@@ -23,9 +22,9 @@ from .serialization import (
     JsonPickleSerializer,
     StringSerializer,
 )
+from snappylapy.constants import directory_names
 from snappylapy.session import SnapshotSession
 from typing import Any
-from snappylapy.constants import directory_names
 
 
 class Expect:

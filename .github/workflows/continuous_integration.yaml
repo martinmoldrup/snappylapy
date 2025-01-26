@@ -38,7 +38,7 @@ jobs:
           run: poetry install --no-interaction
 
         - name: Run ruff
-          run: poetry run ruff check snappylapy
+          run: poetry run ruff check snappylapy  --output-format=github
 
         - name: Run mypy
           run: poetry run mypy snappylapy
