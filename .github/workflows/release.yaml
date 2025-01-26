@@ -65,28 +65,6 @@ jobs:
           else
             echo "The new version $NEW_VERSION is greater than the latest version $LATEST_VERSION on PyPI."
           fi
-
-  read_changelog:
-    needs: details
-    runs-on: ubuntu-latest
-    outputs:
-      changelog: ${{ steps.changelog.outputs.changelog }}
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-
-      - name: Get changelog and add to variable
-        id: changelog
-        run: |
-          python ./scripts/get_changelog.py ${{ needs.details.outputs.new_version }} > specific_changelog.md
-          echo "Changelog for ${{ needs.details.outputs.new_version }}:"
-          cat specific_changelog.md
-          echo "changelog=$(cat specific_changelog.md)" >> $GITHUB_ENV
-                
   setup_and_build:
     needs: [details, check_pypi]
     runs-on: ubuntu-latest
@@ -120,27 +98,9 @@ jobs:
           name: dist
           path: dist/
 
-  pypi_publish:
-    name: Upload release to PyPI
-    needs: [setup_and_build, details, read_changelog]
-    runs-on: ubuntu-latest
-    environment:
-      name: release
-    permissions:
-      id-token: write
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist/
-
-      - name: Publish distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-
   github_release:
     name: Create GitHub Release
-    needs: [setup_and_build, details, read_changelog]
+    needs: [setup_and_build, details]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -161,4 +121,26 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create ${{ needs.details.outputs.tag_name }} dist/* --title ${{ needs.details.outputs.tag_name }} --generate-notes --notes "${{ needs.read_changelog.outputs.changelog }}"
+          python ./scripts/get_changelog.py ${{ needs.details.outputs.new_version }} > specific_changelog.md
+          echo "Changelog for ${{ needs.details.outputs.new_version }}:"
+          cat specific_changelog.md
+          changelog=$(cat specific_changelog.md)
+          gh release create ${{ needs.details.outputs.tag_name }} dist/* --title ${{ needs.details.outputs.tag_name }} --generate-notes --notes "$changelog"
+
+  pypi_publish:
+    name: Upload release to PyPI
+    needs: [setup_and_build, details, github_release]
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+    permissions:
+      id-token: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
