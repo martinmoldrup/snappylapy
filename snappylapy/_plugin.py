@@ -91,8 +91,7 @@ def expect(request: pytest.FixtureRequest,
 
 
 @pytest.fixture
-def load_snapshot(_: pytest.FixtureRequest,
-                  snappylapy_settings: Settings) -> LoadSnapshot:
+def load_snapshot(snappylapy_settings: Settings) -> LoadSnapshot:
     """Initialize the LoadSnapshot object."""
     return LoadSnapshot(snappylapy_settings)
 

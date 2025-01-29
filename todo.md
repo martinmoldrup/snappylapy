@@ -6,12 +6,13 @@ Markdown Checkbox VSCode Extension
 - [ ] Do a significant boost in testing both manually and adding automated tests
 - [ ] Update README.md such that todo items is shown here instead of in the README.md
 - [ ] Add removal command of ophaned snapshots to snappylapy cli
-
+- [ ] Raise an error if it fixture was never used (to avoid certain types of errors (a loop over an iterator with no elements, etc))
 
 # Backlog
 - [ ] A diff report in html can be generated with `pytest --snappylapy-html=report.html`
 
 # Done
+- [X] ~~*BUG: When using falsy values as name the custom name is not used*~~ [2025-01-29]
 - [X] ~~*Add snappylapy parametization functionality to snappylapy and allow it to be loaded in the load_snapshot fixture*~~ [2025-01-19]
 - [X] ~~*Make the folder names of __snapshots__ and __test_results__ enforced to be fixed (needed for cleanup and diffing)*~~ [2025-01-19]
 - [X] ~~*Change setting of path to only have a single path configurable and update such it is configured through the marker*~~ [2025-01-19]
