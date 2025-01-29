@@ -2,6 +2,7 @@
 import json
 import jsonpickle
 from abc import ABC, abstractmethod
+from snappylapy.constants import OUTPUT_JSON_INDENTATION_LEVEL
 from typing import Generic, TypeVar
 
 T = TypeVar("T")
@@ -24,7 +25,7 @@ class JsonSerializer(Serializer, Generic[T]):
 
     def serialize(self, data: T) -> bytes:
         """Serialize a dictionary to bytes."""
-        return json.dumps(data, default=str).encode()
+        return json.dumps(data, default=str, indent=OUTPUT_JSON_INDENTATION_LEVEL).encode()
 
     def deserialize(self, data: bytes) -> T:
         """Deserialize bytes to a dictionary."""
@@ -36,7 +37,7 @@ class JsonPickleSerializer(Serializer, Generic[T]):
 
     def serialize(self, data: T) -> bytes:
         """Serialize a dictionary/list or other to bytes in json format."""
-        json_string: str = jsonpickle.encode(data)
+        json_string: str = jsonpickle.encode(data, indent=OUTPUT_JSON_INDENTATION_LEVEL)
         return json_string.encode()
 
     def deserialize(self, data: bytes) -> T:

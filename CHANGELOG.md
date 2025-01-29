@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 *NOTE:* Version 0.X.X might have breaking changes in bumps of the minor version number. This is because the project is still in early development and the API is not yet stable. It will still be marked clearly in the release notes.
 
+## [0.3.1]
+- 🐞 Fix load_snapshot fixture not loading correctly
+- 🐞 Fix wrong naming for cases where custom name is falsy
+- Change the ident property of json to make it more human readable 
+
+
 ## [0.3.0]
 - Add snappylapy parametization functionality to snappylapy and allow it to be loaded in the load_snapshot fixture
 - Do reporting showing count of updated, created and deleted snapshots
