@@ -12,7 +12,7 @@ class DictExpect(BaseSnapshot[dict]):
 
     def __call__(self,
                  data_to_snapshot: dict,
-                 name: str = "",
+                 name: str | None = None,
                  filetype: str = "dict.json") -> DictExpect:
         """Prepare a dictionary for snapshot testing."""
         self._prepare_test(data_to_snapshot, name, filetype)

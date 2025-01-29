@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import pathlib
-from abc import ABC
+from abc import ABC, abstractmethod
 from snappylapy.models import Settings
 from snappylapy.serialization import Serializer
 from snappylapy.session import SnapshotSession
@@ -27,6 +27,16 @@ class BaseSnapshot(ABC, Generic[T]):
         self.snapshot_update: bool = update_snapshots
         self._data: T | None = None
         self.snappylapy_session = snappylapy_session
+
+    @abstractmethod
+    def __call__(
+        self,
+        data_to_snapshot: T,
+        name: str | None = None,
+        filetype: str = "snapshot.txt",
+    ) -> BaseSnapshot[T]:
+        """Prepare data for snapshot testing."""
+        pass
 
     def to_match_snapshot(self) -> None:
         """Assert test results match the snapshot."""
