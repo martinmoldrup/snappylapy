@@ -14,7 +14,7 @@ class ListExpect(BaseSnapshot[list[Any]]):
     def __call__(
         self,
         data_to_snapshot: list[Any],
-        name: str = "",
+        name: str | None = None,
         filetype: str = "list.json",
     ) -> ListExpect:
         """Prepare a list for snapshot testing."""

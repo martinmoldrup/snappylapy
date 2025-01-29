@@ -12,7 +12,7 @@ class StringExpect(BaseSnapshot[str]):
 
     def __call__(self,
                  data_to_snapshot: str,
-                 name: str = "",
+                 name: str | None = None,
                  filetype: str = "string.txt") -> StringExpect:
         """Prepare a string for snapshot testing."""
         self._prepare_test(data_to_snapshot, name, filetype)

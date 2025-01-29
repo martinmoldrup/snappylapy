@@ -171,8 +171,7 @@ class ReturnError:
 
 
 @pytest.fixture
-def test_directory(_: pytest.FixtureRequest,
-                   snappylapy_settings: Settings) -> pathlib.Path:
+def test_directory(snappylapy_settings: Settings) -> pathlib.Path:
     """Get the test directory for the test. Raise a better error message if the fixture is not parametrized."""
     try:
         return snappylapy_settings.snapshots_base_dir
