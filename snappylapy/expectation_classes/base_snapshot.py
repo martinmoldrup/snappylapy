@@ -62,10 +62,10 @@ class BaseSnapshot(ABC, Generic[T]):
             self.snappylapy_session.add_snapshot_test_succeeded(
                 self.settings.filename)
 
-    def _prepare_test(self, data: T, name: str, extension: str) -> None:
+    def _prepare_test(self, data: T, name: str | None, extension: str) -> None:
         """Prepare and save test results."""
-        if name:
-            self.settings.custom_name = name
+        if name is not None:
+            self.settings.custom_name = str(name)
         self._data = data
         self.settings.filename_extension = extension
         file_path = self.settings.test_results_dir / self.settings.filename

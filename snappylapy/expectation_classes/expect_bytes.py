@@ -12,7 +12,7 @@ class BytesExpect(BaseSnapshot[bytes]):
 
     def __call__(self,
                  data_to_snapshot: bytes,
-                 name: str = "",
+                 name: str | None = None,
                  filetype: str = "bytes.txt") -> BytesExpect:
         """Prepare bytes for snapshot testing."""
         self._prepare_test(data_to_snapshot, name, filetype)
