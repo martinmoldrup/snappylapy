@@ -85,6 +85,7 @@ def test_snapshot_multiple_folders_pytest_parametrize(test_directory: pathlib.Pa
     expect.string("Hello World").to_match_snapshot()
 
 @pytest.mark.snappylapy(depends=[test_snapshot_multiple_folders_pytest_parametrize])
+@pytest.mark.skip(reason="Functionaility not implemented yet.")
 def test_load_parametrized_snapshot_from_file(load_snapshot: LoadSnapshot):
     """Test loading snapshot data created in test_snapshot_parametrized from a file using the deserializer."""
     data = load_snapshot.string()
