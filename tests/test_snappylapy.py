@@ -77,10 +77,10 @@ def test_fails_snapshot_list_mismatch(pytester: Pytester):
     """
     pytester.makepyfile(test_code=test_code)
 
-    result = pytester.runpytest('-v')
+    result = pytester.runpytest("-v")
     assert result.ret == 1, "\n".join(result.outlines)
-    assert 'E             - ["John Doe 2", 31]' in result.stdout.lines
-    assert 'E             + ["John Doe", 31]' in result.stdout.lines
+    assert 'E                 -   "John Doe 2",' in result.stdout.lines
+    assert 'E                 +   "John Doe",' in result.stdout.lines
     # result.stdout.fnmatch_lines([
     #     '*- ["John Doe 2", 31]',
     #     '*+ ["John Doe", 31]',
@@ -160,8 +160,8 @@ def test_fails_snapshot_dict_mismatch(pytester: Pytester) -> None:
 
     result = pytester.runpytest('-v', '-s', '--cache-clear')
     result.stdout.fnmatch_lines([
-        '*- {"name": "John Doe 2", "age": 31}',
-        '*+ {"name": "John Doe", "age": 31}',
+        '*-   "name": "John Doe 2",',
+        '*+   "name": "John Doe",',
     ])
     assert result.ret == 1, "\n".join(result.outlines)
 

@@ -31,14 +31,14 @@ def test_json_serializer_serialize():
     serializer = JsonSerializer[dict]()
     data = {"key": "value"}
     serialized_data = serializer.serialize(data)
-    assert serialized_data == b'{"key": "value"}'
+    assert serialized_data == b'{\n  "key": "value"\n}'
 
 def test_json_serializer_deserialize():
     """Test deserialization of bytes to dictionary."""
     serializer = JsonSerializer[dict]()
     data = b'{"key": "value"}'
     deserialized_data = serializer.deserialize(data)
-    assert deserialized_data == {"key": "value"}
+    assert deserialized_data == {'key': 'value'}
 
 def test_json_serializer_round_trip():
     """Test round-trip serialization and deserialization."""
@@ -53,7 +53,7 @@ def test_json_serializer_nested_dict():
     serializer = JsonSerializer[dict]()
     data = {"key": {"nested_key": "nested_value"}}
     serialized_data = serializer.serialize(data)
-    assert serialized_data == b'{"key": {"nested_key": "nested_value"}}'
+    assert serialized_data == b'{\n  "key": {\n    "nested_key": "nested_value"\n  }\n}'
     deserialized_data = serializer.deserialize(serialized_data)
     assert deserialized_data == data
 
@@ -64,7 +64,7 @@ def test_jsonpickle_serializer_serialize():
     serializer = JsonPickleSerializer[dict]()
     data = {"key": "value"}
     serialized_data = serializer.serialize(data)
-    assert serialized_data == b'{"key": "value"}'
+    assert serialized_data == b'{\n  "key": "value"\n}'
 
 def test_jsonpickle_serializer_deserialize():
     """Test deserialization of bytes to dictionary."""
@@ -98,7 +98,7 @@ def test_jsonpickle_serializer_nested_dict():
     serializer = JsonPickleSerializer[dict]()
     data = {"key": {"nested_key": "nested_value"}}
     serialized_data = serializer.serialize(data)
-    assert serialized_data == b'{"key": {"nested_key": "nested_value"}}'
+    assert serialized_data == b'{\n  "key": {\n    "nested_key": "nested_value"\n  }\n}'
     deserialized_data = serializer.deserialize(serialized_data)
     assert deserialized_data == data
 
