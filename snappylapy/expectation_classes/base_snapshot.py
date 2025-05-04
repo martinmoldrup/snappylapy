@@ -18,13 +18,11 @@ class BaseSnapshot(ABC, Generic[T]):
 
     def __init__(
         self,
-        update_snapshots: bool,  # noqa: FBT001
         settings: Settings,
         snappylapy_session: SnapshotSession,
     ) -> None:
         """Initialize the base snapshot."""
         self.settings = settings
-        self.snapshot_update: bool = update_snapshots
         self._data: T | None = None
         self.snappylapy_session = snappylapy_session
 
@@ -36,12 +34,11 @@ class BaseSnapshot(ABC, Generic[T]):
         filetype: str = "snapshot.txt",
     ) -> BaseSnapshot[T]:
         """Prepare data for snapshot testing."""
-        pass
 
     def to_match_snapshot(self) -> None:
         """Assert test results match the snapshot."""
         if not (self.settings.snapshot_dir / self.settings.filename).exists():
-            if not self.snapshot_update:
+            if not self.settings.snapshot_update:
                 error_msg = f"Snapshot file not found: {self.settings.filename}, run pytest with the --snapshot-update flag to create it."  # noqa: E501
                 raise FileNotFoundError(error_msg)
             self.snappylapy_session.add_created_snapshot(
@@ -58,7 +55,7 @@ class BaseSnapshot(ABC, Generic[T]):
             test_data_str = test_data.decode()
             assert snapshot_data_str == test_data_str
         except AssertionError as error:
-            if self.snapshot_update:
+            if self.settings.snapshot_update:
                 self.snappylapy_session.add_updated_snapshot(
                     self.settings.filename)
                 self._update_snapshot()

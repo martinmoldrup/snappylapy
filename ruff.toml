@@ -9,7 +9,7 @@ output-format = "concise"
 [lint]
 preview = true
 select = ["ALL"]
-ignore = ["CPY001", "PLR6301", "D212", "D203", "TC001", "S101", "DOC201","RET504", "DOC501"]
+ignore = ["CPY001", "PLR6301", "D212", "D203", "TC001", "S101", "DOC201","RET504", "DOC501","FBT001", "FBT003"]
 
 [lint.isort]
 no-sections = true
