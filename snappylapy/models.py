@@ -1,4 +1,5 @@
 """Models for snappylapy."""
+
 from __future__ import annotations
 
 import pathlib
@@ -19,7 +20,7 @@ class Settings:
     custom_name: str | None = None
     """Custom name for the snapshot file."""
 
-    snapshots_base_dir: str | pathlib.Path = pathlib.Path()
+    snapshots_base_dir: pathlib.Path = pathlib.Path()
     """Output base directory for storing snapshots."""
 
     snapshot_update: bool = False
@@ -38,7 +39,7 @@ class Settings:
     depending_filename_extension: str | None = None
     """Extension of the depending snapshot file. Used for loading."""
 
-    depending_snapshots_base_dir: str | pathlib.Path | None = None
+    depending_snapshots_base_dir: pathlib.Path | None = None
     """Input base directory for loading snapshots."""
 
     @property
@@ -61,8 +62,13 @@ class Settings:
     @property
     def depending_filename(self) -> str:
         """Get the depending snapshot filename."""
-        if not self.depending_test_filename or not self.depending_test_function or not self.depending_filename_extension:
-            raise ValueError("Missing depending test filename, function or extension.")
+        if (
+            not self.depending_test_filename
+            or not self.depending_test_function
+            or not self.depending_filename_extension
+        ):
+            msg = "Missing depending test filename, function or extension."
+            raise ValueError(msg)
         if self.custom_name is not None:
-            return f"[{self.depending_test_filename}][{self.depending_test_function}][{self.custom_name}].{self.depending_filename_extension}"
+            return f"[{self.depending_test_filename}][{self.depending_test_function}][{self.custom_name}].{self.depending_filename_extension}"  # noqa: E501
         return f"[{self.depending_test_filename}][{self.depending_test_function}].{self.depending_filename_extension}"

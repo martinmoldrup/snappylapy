@@ -1,4 +1,5 @@
 """Pytest plugin for snapshot testing."""
+
 from __future__ import annotations
 
 import os
@@ -9,6 +10,7 @@ import _pytest.mark
 from collections.abc import Callable
 from snappylapy import Expect, LoadSnapshot
 from snappylapy.constants import DEFEAULT_SNAPSHOT_BASE_DIR
+from snappylapy.exceptions import TestDirectoryNotParametrizedError
 from snappylapy.fixtures import Settings
 from snappylapy.session import SnapshotSession
 from typing import Any
@@ -57,20 +59,23 @@ def snappylapy_settings(request: pytest.FixtureRequest) -> Settings:
         snapshot_update=update_snapshots,
     )
     if marker:
-        output_dir = marker.kwargs.get("output_dir", None)
+        output_dir: str | pathlib.Path = marker.kwargs.get("output_dir", None)
         if output_dir:
-            settings.snapshots_base_dir = output_dir
+            settings.snapshots_base_dir = pathlib.Path(output_dir)
     path_output_dir: pathlib.Path | None = None
     if hasattr(request, "param"):
         path_output_dir = request.param
-        settings.depending_snapshots_base_dir = path_output_dir
-        settings.snapshots_base_dir = path_output_dir
+        if path_output_dir is None:
+            # TODO: Add a better error message
+            msg = "Path output directory cannot be None"
+            raise ValueError(msg)
+        settings.depending_snapshots_base_dir = pathlib.Path(path_output_dir)
+        settings.snapshots_base_dir = pathlib.Path(path_output_dir)
         settings.custom_name = path_output_dir.name
     # If not parametrized, get the depends from the marker
-    depends = marker.kwargs.get("depends", []) if marker else []
+    depends: list = marker.kwargs.get("depends", []) if marker else []
     if depends:
-        input_dir_from_depends = _get_kwargs_from_depend_function(
-            depends[0], "snappylapy", "output_dir")
+        input_dir_from_depends = _get_kwargs_from_depend_function(depends[0], "snappylapy", "output_dir")
         if input_dir_from_depends:
             path_output_dir = pathlib.Path(input_dir_from_depends)
         settings.depending_test_filename = depends[0].__module__
@@ -80,8 +85,7 @@ def snappylapy_settings(request: pytest.FixtureRequest) -> Settings:
 
 
 @pytest.fixture
-def expect(request: pytest.FixtureRequest,
-           snappylapy_settings: Settings) -> Expect:
+def expect(request: pytest.FixtureRequest, snappylapy_settings: Settings) -> Expect:
     """Initialize the snapshot object with update_snapshots flag from pytest option."""
     snappylapy_session: SnapshotSession = request.config.snappylapy_session  # type: ignore[attr-defined]
     return Expect(
@@ -144,8 +148,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 
 def pytest_sessionstart(session: pytest.Session) -> None:
     """Initialize the snapshot session."""
-    session.config.snappylapy_session = SnapshotSession(
-    )  # type: ignore[attr-defined]
+    session.config.snappylapy_session = SnapshotSession()  # type: ignore[attr-defined]
 
 
 class ExceptionDuringTestSetupError(Exception):
@@ -153,14 +156,14 @@ class ExceptionDuringTestSetupError(Exception):
 
 
 class ReturnError:
-    """When an exception is raised during the setup of the tests, raise an exception when trying to access the attribute."""
+    """Return an error when trying to access the attribute during the setup of the tests."""
 
     def __init__(self, exception: Exception, message: str) -> None:
         self._message = message
         self._exception = exception
 
-    def __getattribute__(self, name: str) -> Any:
-        """If an exception was raised during the setup of the tests, raise an exception when trying to access the attribute."""
+    def __getattribute__(self, name: str) -> Any:  # noqa: ANN401
+        """Raise an exception when trying to access the attribute, if exception was raised during the setup of tests."""
         exception = object.__getattribute__(self, "_exception")
         if exception is not None and os.getenv("PYTEST_CURRENT_TEST"):
             exception_message = f"When during setup of the tests an error was raised: {exception}"
@@ -174,10 +177,9 @@ class ReturnError:
 def test_directory(snappylapy_settings: Settings) -> pathlib.Path:
     """Get the test directory for the test. Raise a better error message if the fixture is not parametrized."""
     try:
-        return snappylapy_settings.snapshots_base_dir
+        return pathlib.Path(snappylapy_settings.snapshots_base_dir)
     except Exception as e:
-        error_msg = "The test_directory fixture is not parametrized, please add the snappylapy marker to the test, e.g. @pytest.mark.snappylapy(foreach_folder_in='test_data')"
-        raise Exception(error_msg) from e
+        raise TestDirectoryNotParametrizedError from e
 
 
 def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
@@ -185,24 +187,17 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     marker = metafunc.definition.get_closest_marker("snappylapy")
     if not marker:
         return
-    foreach_folder_in: str | pathlib.Path = marker.kwargs.get(
-        "foreach_folder_in", None)
+    foreach_folder_in: str | pathlib.Path | None = marker.kwargs.get("foreach_folder_in", None)
     if foreach_folder_in:
-        test_cases = [
-            p for p in pathlib.Path(foreach_folder_in).iterdir() if p.is_dir()
-        ]
+        test_cases = [p for p in pathlib.Path(foreach_folder_in).iterdir() if p.is_dir()]
         ids = [p.name for p in test_cases]
-        metafunc.parametrize("snappylapy_settings",
-                             test_cases,
-                             indirect=True,
-                             ids=ids)
+        metafunc.parametrize("snappylapy_settings", test_cases, indirect=True, ids=ids)
     depends = marker.kwargs.get("depends", []) if marker else []
     if depends:
         function_depends = marker.kwargs["depends"][0]
         if not hasattr(function_depends, "pytestmark"):
             return
-        function_depends_marker: _pytest.mark.structures.Mark = function_depends.pytestmark[
-            0]
+        function_depends_marker: _pytest.mark.structures.Mark = function_depends.pytestmark[0]
         # It might be parametrized
         # Example: Mark(name='parametrize', args=('test_directory', ['test_data/case1', 'test_data/case2']), kwargs={})
         # Parametize the snappylapy_settings fixture
@@ -210,16 +205,9 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
         #     ids = function_depends_marker.kwargs.get("ids", None)
         #     metafunc.parametrize("snappylapy_settings", function_depends_marker.args[1], indirect=True, ids=ids)
         if function_depends_marker.name == "snappylapy":
-            foreach_folder_in = _get_kwargs_from_depend_function(
-                depends[0], "snappylapy", "foreach_folder_in")
+            foreach_folder_in = _get_kwargs_from_depend_function(depends[0], "snappylapy", "foreach_folder_in")
             if not foreach_folder_in:
                 return
-            test_cases = [
-                p for p in pathlib.Path(foreach_folder_in).iterdir()
-                if p.is_dir()
-            ]
+            test_cases = [p for p in pathlib.Path(foreach_folder_in).iterdir() if p.is_dir()]
             ids = [p.name for p in test_cases]
-            metafunc.parametrize("snappylapy_settings",
-                                 test_cases,
-                                 indirect=True,
-                                 ids=ids)
+            metafunc.parametrize("snappylapy_settings", test_cases, indirect=True, ids=ids)

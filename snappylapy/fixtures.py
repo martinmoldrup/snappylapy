@@ -8,6 +8,7 @@ Snappylapy provides the following fixtures.
 - load_snapshot: LoadSnapshot
     - Allows loading from a snapshot created by another test.
 """
+
 from __future__ import annotations
 
 from .expectation_classes import (
@@ -39,6 +40,7 @@ class Expect:
     ```python
     from snappylapy.fixtures import Expect
 
+
     def test_example(expect: Expect) -> None:
         expect.dict({"key": "value"}).to_match_snapshot()
     ```
@@ -52,10 +54,8 @@ class Expect:
     ) -> None:
         """Initialize the snapshot testing."""
         self.settings = snappylapy_settings
-        update_snapshots = self.settings.snapshot_update
 
-        self.dict = DictExpect(update_snapshots, self.settings,
-                               snappylapy_session)
+        self.dict = DictExpect(self.settings, snappylapy_session)
         """DictExpect instance for configuring snapshot testing of dictionaries.
         The instance is callable with the following parameters:
 
@@ -81,8 +81,7 @@ class Expect:
         ```
         """
 
-        self.list = ListExpect(update_snapshots, self.settings,
-                               snappylapy_session)
+        self.list = ListExpect(self.settings, snappylapy_session)
         """ListExpect instance for configuring snapshot testing of lists.
         The instance is callable with the following parameters:
 
@@ -107,8 +106,7 @@ class Expect:
         ```
         """
 
-        self.string = StringExpect(update_snapshots, self.settings,
-                                   snappylapy_session)
+        self.string = StringExpect(self.settings, snappylapy_session)
         """StringExpect instance for configuring snapshot testing of strings.
         The instance is callable with the following parameters:
 
@@ -133,8 +131,7 @@ class Expect:
         ```
         """
 
-        self.bytes = BytesExpect(update_snapshots, self.settings,
-                                 snappylapy_session)
+        self.bytes = BytesExpect(self.settings, snappylapy_session)
         """BytesExpect instance for configuring snapshot testing of bytes.
         The instance is callable with the following parameters:
 
@@ -161,13 +158,11 @@ class Expect:
 
     def read_snapshot(self) -> bytes:
         """Read the snapshot file."""
-        return (self.settings.snapshot_dir /
-                self.settings.filename).read_bytes()
+        return (self.settings.snapshot_dir / self.settings.filename).read_bytes()
 
     def read_test_results(self) -> bytes:
         """Read the test results file."""
-        return (self.settings.test_results_dir /
-                self.settings.filename).read_bytes()
+        return (self.settings.test_results_dir / self.settings.filename).read_bytes()
 
 
 class LoadSnapshot:
@@ -180,9 +175,13 @@ class LoadSnapshot:
     def _read_snapshot(self) -> bytes:
         """Read the snapshot file."""
         if not self.settings.depending_snapshots_base_dir:
-            raise ValueError("Depending snapshots base directory is not set.")
-        return (self.settings.depending_snapshots_base_dir / directory_names.snapshot_dir_name /
-                self.settings.depending_filename).read_bytes()
+            msg = "Depending snapshots base directory is not set."
+            raise ValueError(msg)
+        return (
+            self.settings.depending_snapshots_base_dir
+            / directory_names.snapshot_dir_name
+            / self.settings.depending_filename
+        ).read_bytes()
 
     def dict(self) -> dict:
         """Load dictionary snapshot."""
@@ -192,8 +191,7 @@ class LoadSnapshot:
     def list(self) -> list[Any]:
         """Load list snapshot."""
         self.settings.depending_filename_extension = "list.json"
-        return JsonPickleSerializer[list[Any]]().deserialize(
-            self._read_snapshot())
+        return JsonPickleSerializer[list[Any]]().deserialize(self._read_snapshot())
 
     def string(self) -> str:
         """Load string snapshot."""
