@@ -16,6 +16,7 @@ from .expectation_classes import (
     DictExpect,
     ListExpect,
     StringExpect,
+    DataframeExpect,
 )
 from .models import Settings
 from .serialization import (
@@ -153,6 +154,35 @@ class Expect:
         -------
         ```python
         expect.bytes(b"binary data").to_match_snapshot()
+        ```
+        """
+
+        self.dataframe = DataframeExpect(self.settings, snappylapy_session)
+        """DataframeExpect instance for configuring snapshot testing of dataframes.
+        The instance is callable with the following parameters:
+        Parameters
+        ----------
+        data_to_snapshot : pd.DataFrame
+            The dataframe data to be snapshotted.
+        name : str, optional
+            The name of the snapshot, by default "".
+        filetype : str, optional
+            The file type of the snapshot, by default "dataframe.json".
+
+        Returns
+        -------
+        DataframeExpect
+            The instance of the DataframeExpect class.
+            This class can be used for doing actual expectations on the dataframe.
+
+        Example
+        -------
+        ```python
+        import pandas as pd
+        from snappylapy.fixtures import Expect
+        def test_dataframe(expect: Expect) -> None:
+            df = pd.DataFrame({"key": ["value1", "value2"]})
+            expect.dataframe(df).to_match_snapshot()
         ```
         """
 
