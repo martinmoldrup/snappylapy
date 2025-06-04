@@ -33,7 +33,7 @@ class Expect:
     """
     Snapshot testing fixture class.
 
-    Do not instantiate this class directly, insatead use the `expect` fixture provided by pytest.
+    Do not instantiate this class directly, instead use the `expect` fixture provided by pytest.
     Use this class as a type hint for the `expect` fixture.
 
     Example:
