@@ -13,10 +13,10 @@ from __future__ import annotations
 
 from .expectation_classes import (
     BytesExpect,
+    DataframeExpect,
     DictExpect,
     ListExpect,
     StringExpect,
-    DataframeExpect,
 )
 from .models import Settings
 from .serialization import (
