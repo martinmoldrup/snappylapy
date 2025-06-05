@@ -2,6 +2,7 @@ Markdown Checkbox VSCode Extension
 - ctl+shift+enter to toggle checkbox
 
 # Todo
+- [ ] Make the installation of pandas optional (as it is not needed for the basic functionality)
 - [ ] Improve api so that expect can be used directly which seems more natural
 - [ ] Update README.md with example of how to use the parameterization functionality
 - [ ] Do a significant boost in testing both manually and adding automated tests
