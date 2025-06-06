@@ -11,9 +11,13 @@ class DataframeExpect(BaseSnapshot[pd.DataFrame]):
     """Snapshot testing for dataframes."""
 
     serializer_class = JsonPickleSerializer[pd.DataFrame]
+    DataFrame = pd.DataFrame
 
     def __call__(
-        self, data_to_snapshot: pd.DataFrame, name: str | None = None, filetype: str = "dataframe.json",
+        self,
+        data_to_snapshot: pd.DataFrame,
+        name: str | None = None,
+        filetype: str = "dataframe.json",
     ) -> DataframeExpect:
         """Prepare a dataframe for snapshot testing."""
         self._prepare_test(data_to_snapshot, name, filetype)
