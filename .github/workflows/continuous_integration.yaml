@@ -31,7 +31,7 @@ jobs:
             curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
         - name: Install dependencies
-          run: uv sync
+          run: uv sync --all-extras
 
         - name: Run ruff
           run: uv run ruff check snappylapy  --output-format=github
@@ -46,6 +46,10 @@ jobs:
         strategy:
           matrix:
             python-version: [3.9, 3.13]
+            include-extras: [true]
+            include:
+              - python-version: 3.9
+                include-extras: false
 
         steps:
         - name: Checkout repository
@@ -61,7 +65,12 @@ jobs:
             curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
         - name: Install dependencies
-          run: uv sync
+          run: |
+            if [ "${{ matrix.include-extras }}" = "true" ]; then
+              uv sync --all-extras
+            else
+              uv sync
+            fi
 
         - name: Run tests
           run: uv run pytest tests/ --junit-xml=test-results.xml
