@@ -45,7 +45,7 @@ class DataframeExpect(BaseSnapshot[pd.DataFrame]):
 
     def columns_not_to_contain_nulls(
         self,
-        column_names: list[str] = [],
+        column_names: list[str] | None = None,
     ) -> DataframeExpect:
         """Check that multiple columns do not contain null values."""
         if self._data is None:
@@ -54,11 +54,12 @@ class DataframeExpect(BaseSnapshot[pd.DataFrame]):
         if not column_names:
             # Check all columns
             column_names = self._data.columns.tolist()
+        assert column_names is not None, "Column names should have been set to default to all columns."
         error_texts: list[str] = []
         for column_name in column_names:
             try:
                 self.column_not_to_contain_nulls(column_name)
-            except ValueError as e:
+            except ValueError as e:  # noqa: PERF203
                 error_texts.append(str(e))
         if error_texts:
             raise ValueError("\n".join(error_texts))
