@@ -25,7 +25,20 @@ from .serialization import (
 )
 from snappylapy.constants import directory_names
 from snappylapy.session import SnapshotSession
-from typing import Any
+from typing import Any, Protocol, overload
+
+
+class CallableExpectation(Protocol):
+    """Protocol for callable expectations to use intenally in this module."""
+
+    def __call__(
+        self,
+        data_to_snapshot: Any,
+        name: str | None = None,
+        filetype: str = "snapshot.txt",
+    ) -> DictExpect | ListExpect | StringExpect | BytesExpect:
+        """Call the expectation with the given parameters."""
+        ...
 
 
 class Expect:
@@ -163,6 +176,56 @@ class Expect:
     def read_test_results(self) -> bytes:
         """Read the test results file."""
         return (self.settings.test_results_dir / self.settings.filename).read_bytes()
+
+    @overload
+    def __call__(self, data_to_snapshot: dict, name: str | None = None, filetype: str | None = None) -> DictExpect: ...
+    @overload
+    def __call__(
+        self,
+        data_to_snapshot: list[Any],
+        name: str | None = None,
+        filetype: str | None = None,
+    ) -> ListExpect: ...
+
+    @overload
+    def __call__(self, data_to_snapshot: str, name: str | None = None, filetype: str | None = None) -> StringExpect: ...
+
+    @overload
+    def __call__(
+        self,
+        data_to_snapshot: bytes,
+        name: str | None = None,
+        filetype: str | None = None,
+    ) -> BytesExpect: ...
+
+    def __call__(
+        self,
+        data_to_snapshot: dict | list[Any] | str | bytes,
+        name: str | None = None,
+        filetype: str | None = None,
+    ) -> DictExpect | ListExpect | StringExpect | BytesExpect:
+        """Call the fixture with the given parameters."""
+        kwargs: dict[str, str] = {}
+        if name is not None:
+            kwargs["name"] = name
+        if filetype is not None:
+            kwargs["filetype"] = filetype
+
+        type_map: dict[type, CallableExpectation] = {
+            dict: self.dict,
+            list: self.list,
+            str: self.string,
+            bytes: self.bytes,
+        }
+
+        for typ, func in type_map.items():
+            if isinstance(data_to_snapshot, typ):
+                return func(data_to_snapshot, **kwargs)
+
+        error_message = f"Unsupported type {type(data_to_snapshot)}. Expected one of: dict, list, str, bytes."
+        raise TypeError(
+            error_message,
+        )
 
 
 class LoadSnapshot:
