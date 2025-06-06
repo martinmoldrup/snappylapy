@@ -1,9 +1,18 @@
-[tool.poetry]
+[project]
+authors = [
+    {name = "Martin Møldrup"},
+]
+requires-python = "<4.0,>=3.9"
+dependencies = [
+    "pytest>=7.0",
+    "jsonpickle>=1.0",
+    "typer",
+    "pandas",
+]
 name = "snappylapy"
 version = "0.3.2"
 description = "A snapshot library for python optimized for easy of use, human readable snapshots and enabling decoupling of chained integration tests."
-authors = ["Martin Møldrup"]
-readme = ["README.md", "CHANGELOG.md"]
+readme = "README.md"
 classifiers = [
     "Framework :: Pytest",
     "Development Status :: 4 - Beta",
@@ -21,40 +30,49 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
-packages = [{ include = "snappylapy" }, { include = "snappylapy/py.typed" }]
+keywords = [
+    "pytest",
+    "snapshot",
+    "testing",
+    "snapshot-testing",
+    "integration-testing",
+    "unit-testing",
+]
+
+[project.urls]
+"Bug Tracker" = "https://github.com/martinmoldrup/snappylapy/issues"
 repository = "https://github.com/martinmoldrup/snappylapy"
 documentation = "https://martinmoldrup.github.io/snappylapy"
 
-keywords = ["pytest", "snapshot", "testing", "snapshot-testing", "integration-testing", "unit-testing"]
 
-[tool.poetry.urls]
-"Bug Tracker" = "https://github.com/martinmoldrup/snappylapy/issues"
-
-[tool.poetry.dependencies]
-python = "^3.9"
-pytest = ">=7.0"
-jsonpickle = ">=1.0"
-typer = "*"
-
-[tool.poetry.group.dev.dependencies]
-mypy = "^1.9.0"
-ruff = "^0.9.2"
-types-pyyaml = "^6.0.12.20240311"
-toml = "^0.10.2"
-pytest-cov = "^6.0.0"
-mkdocstrings = {extras = ["python"], version = "^0.27.0"}
-mkdoc = "^0.1"
-mkdocs-gen-files = "^0.5.0"
-mkdocs-material = "^9.5.49"
-mkdocs-literate-nav = "^0.6.1"
-mkdocs-section-index = "^0.3.9"
+[tool.setuptools]  
+packages = ["snappylapy"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0"]  
+build-backend = "setuptools.build_meta"  
 
-[tool.poetry.plugins."pytest11"]
-"snappylapy" = "snappylapy._plugin"
+[project.entry-points.pytest11]
+snappylapy = "snappylapy._plugin"
 
-[tool.poetry.scripts]
+[project.scripts]
 snappylapy = "snappylapy._cli:app"
+
+[tool.setuptools.package-data]
+snappylapy = ["py.typed"]
+
+[dependency-groups]
+dev = [
+    "mypy<2.0.0,>=1.9.0",
+    "ruff<1.0.0,>=0.9.2",
+    "types-pyyaml<7.0.0.0,>=6.0.12.20240311",
+    "toml<1.0.0,>=0.10.2",
+    "pytest-cov<7.0.0,>=6.0.0",
+    "mkdocstrings[python]<1.0.0,>=0.27.0",
+    "mkdoc<1.0,>=0.1",
+    "mkdocs-gen-files<1.0.0,>=0.5.0",
+    "mkdocs-material<10.0.0,>=9.5.49",
+    "mkdocs-literate-nav<1.0.0,>=0.6.1",
+    "mkdocs-section-index<1.0.0,>=0.3.9",
+    "pandas-stubs>=2.2.2.240807",
+]

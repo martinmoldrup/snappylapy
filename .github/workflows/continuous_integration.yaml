@@ -1,20 +1,17 @@
 name: Continuous Integration
 
 on:
-  push:
-    tags-ignore: ['*']
-    branches:
-      - '**'
-    paths-ignore:
-      - '**/*.md'
   pull_request:
     branches:
       - main
     paths-ignore:
       - '**/*.md'
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '**/*.toml'
 
 env:
-  POETRY_VERSION: 2.0.0
+  UV_VERSION: 0.7.7
 
 jobs:
     lint_and_type_check:
@@ -29,19 +26,19 @@ jobs:
           with:
             python-version: "3.9"
 
-        - name: Install Poetry
+        - name: Install UV
           run: |
-            curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
-            echo "$HOME/.local/bin" >> $GITHUB_PATH
+            curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
         - name: Install dependencies
-          run: poetry install --no-interaction
+          run: uv sync
 
         - name: Run ruff
-          run: poetry run ruff check snappylapy  --output-format=github
+          run: uv run ruff check snappylapy  --output-format=github
 
         - name: Run mypy
-          run: poetry run mypy snappylapy
+          if: always()
+          run: uv run mypy snappylapy
 
     test:
         runs-on: ubuntu-latest
@@ -59,13 +56,30 @@ jobs:
           with:
             python-version: ${{ matrix.python-version }}
 
-        - name: Install Poetry
+        - name: Install UV
           run: |
-            curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
-            echo "$HOME/.local/bin" >> $GITHUB_PATH
+            curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
         - name: Install dependencies
-          run: poetry install --no-interaction
+          run: uv sync
 
         - name: Run tests
-          run: poetry run pytest tests/
+          run: uv run pytest tests/ --junit-xml=test-results.xml
+
+        - name: Surface failing tests
+          if: always()
+          uses: pmeier/pytest-results-action@main
+          with:
+            # A list of JUnit XML files, directories containing the former, and wildcard
+            # patterns to process.
+            # See @actions/glob for supported patterns.
+            path: test-results.xml
+
+            # (Optional) Add a summary of the results at the top of the report
+            summary: true
+
+            # (Optional) Fail the workflow if no JUnit XML was found.
+            fail-on-empty: true
+
+            # (Optional) Title of the test results section in the workflow summary
+            title: Test results
