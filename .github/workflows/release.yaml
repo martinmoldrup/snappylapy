@@ -10,7 +10,7 @@ on:
 
 env:
   PACKAGE_NAME: "snappylapy"
-  POETRY_VERSION: 2.0.0
+  UV_VERSION: 0.7.7
 
 jobs:
   details:
@@ -76,21 +76,20 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Poetry
+      - name: Install UV
         run: |
-          curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
-      - name: Set project version with Poetry
-        run: |
-          poetry version ${{ needs.details.outputs.new_version }}
+      # - name: Set project version with Poetry
+      #   run: |
+      #     poetry version ${{ needs.details.outputs.new_version }}
 
-      - name: Install dependencies
-        run: poetry install --sync --no-interaction
+      # - name: Install dependencies
+      #   run: poetry install --sync --no-interaction
 
       - name: Build source and wheel distribution
         run: |
-          poetry build
+          uv build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
