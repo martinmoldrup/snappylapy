@@ -37,6 +37,7 @@ jobs:
           run: uv run ruff check snappylapy  --output-format=github
 
         - name: Run mypy
+          if: always()
           run: uv run mypy snappylapy
 
     test:
