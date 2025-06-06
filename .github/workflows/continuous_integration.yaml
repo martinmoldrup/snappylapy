@@ -63,4 +63,22 @@ jobs:
           run: uv sync
 
         - name: Run tests
-          run: uv run pytest tests/
+          run: uv run pytest tests/ --junit-xml=test-results.xml
+
+        - name: Surface failing tests
+          if: always()
+          uses: pmeier/pytest-results-action@main
+          with:
+            # A list of JUnit XML files, directories containing the former, and wildcard
+            # patterns to process.
+            # See @actions/glob for supported patterns.
+            path: test-results.xml
+
+            # (Optional) Add a summary of the results at the top of the report
+            summary: true
+
+            # (Optional) Fail the workflow if no JUnit XML was found.
+            fail-on-empty: true
+
+            # (Optional) Title of the test results section in the workflow summary
+            title: Test results
