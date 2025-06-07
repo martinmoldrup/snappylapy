@@ -5,13 +5,17 @@ from __future__ import annotations
 import pandas as pd
 from .base_snapshot import BaseSnapshot
 from snappylapy.serialization import JsonPickleSerializer
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import TypeAlias
 
 
 class DataframeExpect(BaseSnapshot[pd.DataFrame]):
     """Snapshot testing for dataframes."""
 
     serializer_class = JsonPickleSerializer[pd.DataFrame]
-    DataFrame = pd.DataFrame
+    DataFrame: TypeAlias = pd.DataFrame
 
     def __call__(
         self,
