@@ -37,7 +37,7 @@ class CallableExpectation(Protocol):
         data_to_snapshot: Any,  # noqa: ANN401
         name: str | None = None,
         filetype: str = "snapshot.txt",
-    ) -> DictExpect | ListExpect | StringExpect | BytesExpect:
+    ) -> DictExpect | ListExpect | StringExpect | BytesExpect | DataframeExpect:
         """Call the expectation with the given parameters."""
         ...
 

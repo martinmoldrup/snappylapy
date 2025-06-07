@@ -1,9 +1,10 @@
 """Testing of the string test expectations class."""
-import pathlib
 import pytest
+import pathlib
 import snappylapy.expectation_classes.expect_dataframe as module_on_test
 from snappylapy.models import Settings
 from unittest import mock
+
 try:
     import pandas as pd  # noqa: F401
     pandas_installed = True
