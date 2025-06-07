@@ -10,7 +10,7 @@ on:
 
 env:
   PACKAGE_NAME: "snappylapy"
-  UV_VERSION: 0.7.7
+  UV_VERSION: 0.7.12
 
 jobs:
   details:
