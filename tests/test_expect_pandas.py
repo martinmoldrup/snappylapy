@@ -1,4 +1,4 @@
-"""Testing of the string test excectations class"""
+"""Testing of the string test expectations class."""
 import pathlib
 import pytest
 import snappylapy.expectation_classes.expect_dataframe as module_on_test
@@ -62,6 +62,7 @@ def test_column_not_to_contain_nulls_fails_no_data(expect: module_on_test.Datafr
     with pytest.raises(ValueError, match="No data to check. Call __call__ first."):
         expect.column_not_to_contain_nulls("key")
 
+@pytest.mark.skipif(not pandas_installed, reason="pandas is not installed")
 def test_columns_to_match_regex(
     expect: module_on_test.DataframeExpect,
 ) -> None:
