@@ -24,7 +24,7 @@ jobs:
             curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
         - name: Install dependencies
-          run: uv sync --all-extras --python 3.10
+          run: uv sync --all-extras
 
         - name: Run ruff
           run: uv run ruff check snappylapy  --output-format=github
@@ -53,10 +53,13 @@ jobs:
           run: |
             curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
+        - name: Pin python version
+          run: uv python pin --python ${{ matrix.python-version }}
+
         - name: Install dependencies
           run: |
             if [ "${{ matrix.include-extras }}" = "true" ]; then
-              uv sync --all-extras --python ${{ matrix.python-version }}
+              uv sync --all-extras
             else
               uv sync
             fi

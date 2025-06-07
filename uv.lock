@@ -1439,6 +1439,7 @@ dependencies = [
     { name = "jsonpickle" },
     { name = "pytest" },
     { name = "typer" },
+    { name = "typing-extensions", marker = "python_full_version < '3.10'" },
 ]
 
 [package.optional-dependencies]
@@ -1469,6 +1470,7 @@ requires-dist = [
     { name = "pandas", marker = "extra == 'pandas'" },
     { name = "pytest", specifier = ">=7.0" },
     { name = "typer" },
+    { name = "typing-extensions", marker = "python_full_version == '3.9.*'" },
 ]
 provides-extras = ["pandas"]
 
