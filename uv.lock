@@ -1437,9 +1437,13 @@ version = "0.3.2"
 source = { editable = "." }
 dependencies = [
     { name = "jsonpickle" },
-    { name = "pandas" },
     { name = "pytest" },
     { name = "typer" },
+]
+
+[package.optional-dependencies]
+pandas = [
+    { name = "pandas" },
 ]
 
 [package.dev-dependencies]
@@ -1462,10 +1466,11 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "jsonpickle", specifier = ">=1.0" },
-    { name = "pandas" },
+    { name = "pandas", marker = "extra == 'pandas'" },
     { name = "pytest", specifier = ">=7.0" },
     { name = "typer" },
 ]
+provides-extras = ["pandas"]
 
 [package.metadata.requires-dev]
 dev = [

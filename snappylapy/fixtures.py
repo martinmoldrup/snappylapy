@@ -34,7 +34,7 @@ class CallableExpectation(Protocol):
 
     def __call__(
         self,
-        data_to_snapshot: Any,
+        data_to_snapshot: Any,  # noqa: ANN401
         name: str | None = None,
         filetype: str = "snapshot.txt",
     ) -> DictExpect | ListExpect | StringExpect | BytesExpect:
@@ -228,12 +228,17 @@ class Expect:
         filetype: str | None = None,
     ) -> BytesExpect: ...
 
+    @overload
+    def __call__(
+        self, data_to_snapshot: DataframeExpect.DataFrame, name: str | None = None, filetype: str | None = None,
+    ) -> DataframeExpect: ...
+
     def __call__(
         self,
-        data_to_snapshot: dict | list[Any] | str | bytes,
+        data_to_snapshot: dict | list[Any] | str | bytes | DataframeExpect.DataFrame,
         name: str | None = None,
         filetype: str | None = None,
-    ) -> DictExpect | ListExpect | StringExpect | BytesExpect:
+    ) -> DictExpect | ListExpect | StringExpect | BytesExpect | DataframeExpect:
         """Call the fixture with the given parameters."""
         kwargs: dict[str, str] = {}
         if name is not None:
