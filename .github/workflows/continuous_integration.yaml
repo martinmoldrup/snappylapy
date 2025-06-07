@@ -7,9 +7,6 @@ on:
       - main
     paths-ignore:
       - '**/*.md'
-      - '**/*.yaml'
-      - '**/*.yml'
-      - '**/*.toml'
 
 env:
   UV_VERSION: 0.7.7
