@@ -18,14 +18,6 @@ def expect() -> module_on_test.DataframeExpect:
         settings=Settings(
             test_filename="test_file",
             test_function="test_function",
-            custom_name=None,
-            snapshots_base_dir=pathlib.Path("/snapshots"),
-            snapshot_update=False,
-            filename_extension="txt",
-            depending_test_filename=None,
-            depending_test_function=None,
-            depending_filename_extension=None,
-            depending_snapshots_base_dir=None,
         ),
         snappylapy_session=snappylapy_session,
     )
