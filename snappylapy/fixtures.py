@@ -1,5 +1,5 @@
 """
-The fixtures module provides classes returned by fixtures registred by pytest in snappylapy.
+The fixtures module provides classes returned by fixtures registered by pytest in snappylapy.
 
 Snappylapy provides the following fixtures.
 

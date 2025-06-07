@@ -50,7 +50,7 @@ def test_column_not_to_contain_nulls_fails(expect: module_on_test.DataframeExpec
         expect(dataframe_to_test).column_not_to_contain_nulls("key")
 
 @pytest.mark.skipif(not pandas_installed, reason="pandas is not installed")
-def test_columns_not_to_contain_nulls_fails(expect: module_on_test.DataframeExpect) -> None:
+def test_multiple_columns_not_to_contain_nulls_fails(expect: module_on_test.DataframeExpect) -> None:
     """Test the columns_not_to_contain_nulls method of DataframeExpect with failure."""
     dataframe_to_test = pd.DataFrame({"key1": ["value1", "value2"], "key2": [None, "value4"]})
     with pytest.raises(ValueError, match="Column key2 contains 1 null values"):

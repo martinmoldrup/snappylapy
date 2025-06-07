@@ -1,4 +1,4 @@
-"""Snapshot testing and expectations for dicts."""
+"""Snapshot testing and expectations for dataframes."""
 
 from __future__ import annotations
 
