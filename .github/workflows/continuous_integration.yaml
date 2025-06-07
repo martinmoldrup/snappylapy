@@ -54,7 +54,7 @@ jobs:
             curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
         - name: Pin python version
-          run: uv python pin --python ${{ matrix.python-version }}
+          run: uv python pin ${{ matrix.python-version }}
 
         - name: Install dependencies
           run: |

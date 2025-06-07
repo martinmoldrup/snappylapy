@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
+import sys
 from .base_snapshot import BaseSnapshot
 from functools import wraps
 from snappylapy.serialization import JsonPickleSerializer
 from typing import TYPE_CHECKING, Any, Callable, TypeVar, cast
 
-try:
+if sys.version_info >= (3, 10):
     from typing import TypeAlias
-except ImportError:
+else:
     from typing_extensions import TypeAlias
 
 if TYPE_CHECKING:
