@@ -9,7 +9,7 @@ on:
       - '**/*.md'
 
 env:
-  UV_VERSION: 0.7.7
+  UV_VERSION: 0.7.12
 
 jobs:
     lint_and_type_check:
@@ -19,19 +19,12 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v2
 
-        - name: Set up Python
-          uses: actions/setup-python@v2
-          with:
-            python-version: "3.10"
-            # Note: Uses 3.10 because TypeAlias is used for typing, 
-            # requires Python 3.10 or higher
-
         - name: Install UV
           run: |
             curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
 
         - name: Install dependencies
-          run: uv sync --all-extras
+          run: uv sync --all-extras --python 3.10
 
         - name: Run ruff
           run: uv run ruff check snappylapy  --output-format=github
@@ -56,11 +49,6 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v2
 
-        - name: Set up Python
-          uses: actions/setup-python@v2
-          with:
-            python-version: ${{ matrix.python-version }}
-
         - name: Install UV
           run: |
             curl -LsSf "https://astral.sh/uv/${{ env.UV_VERSION }}/install.sh" | sh
@@ -68,7 +56,7 @@ jobs:
         - name: Install dependencies
           run: |
             if [ "${{ matrix.include-extras }}" = "true" ]; then
-              uv sync --all-extras
+              uv sync --all-extras --python ${{ matrix.python-version }}
             else
               uv sync
             fi
