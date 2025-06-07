@@ -7,9 +7,13 @@ from functools import wraps
 from snappylapy.serialization import JsonPickleSerializer
 from typing import TYPE_CHECKING, Any, Callable, TypeVar, cast
 
+try:
+    from typing import TypeAlias
+except ImportError:
+    from typing_extensions import TypeAlias
+
 if TYPE_CHECKING:
     import pandas as pd
-    from typing import TypeAlias
 
 F = TypeVar("F", bound=Callable[..., Any])
 
