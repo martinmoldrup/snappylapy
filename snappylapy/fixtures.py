@@ -30,7 +30,7 @@ from typing import Any, Protocol, overload
 
 
 class CallableExpectation(Protocol):
-    """Protocol for callable expectations to use intenally in this module."""
+    """Protocol for callable expectations to use internally in this module."""
 
     def __call__(
         self,
@@ -251,6 +251,7 @@ class Expect:
             list: self.list,
             str: self.string,
             bytes: self.bytes,
+            DataframeExpect.DataFrame: self.dataframe,
         }
 
         for typ, func in type_map.items():
