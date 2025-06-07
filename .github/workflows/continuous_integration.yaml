@@ -22,7 +22,9 @@ jobs:
         - name: Set up Python
           uses: actions/setup-python@v2
           with:
-            python-version: "3.9"
+            python-version: "3.10"
+            # Note: Uses 3.10 because TypeAlias is used for typing, 
+            # requires Python 3.10 or higher
 
         - name: Install UV
           run: |
@@ -42,6 +44,7 @@ jobs:
         runs-on: ubuntu-latest
 
         strategy:
+          fail-fast: false
           matrix:
             python-version: [3.9, 3.13]
             include-extras: [true]

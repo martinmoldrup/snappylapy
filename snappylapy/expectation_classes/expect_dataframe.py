@@ -2,24 +2,43 @@
 
 from __future__ import annotations
 
-import pandas as pd
 from .base_snapshot import BaseSnapshot
+from functools import wraps
 from snappylapy.serialization import JsonPickleSerializer
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable, TypeVar, cast
 
 if TYPE_CHECKING:
+    import pandas as pd
     from typing import TypeAlias
 
+F = TypeVar("F", bound=Callable[..., Any])
 
-class DataframeExpect(BaseSnapshot[pd.DataFrame]):
+
+def require_pandas(func: F) -> F:
+    """Decorate to require pandas for the function."""
+
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:  # noqa: ANN401
+        try:
+            import pandas as pd  # noqa: F401, PLC0415
+        except ImportError as exc:
+            error_message = "pandas is required for this function."
+            raise ImportError(error_message) from exc
+        return func(*args, **kwargs)
+
+    return cast("F", wrapper)
+
+
+class DataframeExpect(BaseSnapshot["pd.DataFrame"]):
     """Snapshot testing for dataframes."""
 
-    serializer_class = JsonPickleSerializer[pd.DataFrame]
-    DataFrame: TypeAlias = pd.DataFrame
+    serializer_class = JsonPickleSerializer["pd.DataFrame"]
+    DataFrame: TypeAlias = "pd.DataFrame"
 
+    @require_pandas
     def __call__(
         self,
-        data_to_snapshot: pd.DataFrame,
+        data_to_snapshot: "pd.DataFrame",  # noqa: UP037
         name: str | None = None,
         filetype: str = "dataframe.json",
     ) -> DataframeExpect:
@@ -27,6 +46,7 @@ class DataframeExpect(BaseSnapshot[pd.DataFrame]):
         self._prepare_test(data_to_snapshot, name, filetype)
         return self
 
+    @require_pandas
     def column_not_to_contain_nulls(
         self,
         column_name: str,
@@ -51,6 +71,7 @@ class DataframeExpect(BaseSnapshot[pd.DataFrame]):
             )
         return self
 
+    @require_pandas
     def columns_not_to_contain_nulls(
         self,
         column_names: list[str] | None = None,
@@ -73,6 +94,7 @@ class DataframeExpect(BaseSnapshot[pd.DataFrame]):
             raise ValueError("\n".join(error_texts))
         return self
 
+    @require_pandas
     def columns_to_match_regex(
         self,
         column_to_regex: dict[str, str],
