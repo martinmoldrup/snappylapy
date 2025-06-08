@@ -47,6 +47,7 @@ def test_snapshot_dict(expect: Expect):
     """Test snapshot with dictionary data."""
     data: dict = my_function()
     expect.dict(data).to_match_snapshot()
+    # or expect(data).to_match_snapshot()
 ```
 
 In this example, `snappylapy` captures the output of `my_function` and compares it against a stored snapshot. If the output changes unexpectedly, pytest will flag the test, allowing you to review the differences and ensure your code behaves as expected.
@@ -100,26 +101,26 @@ Supported data types
 
 Planned data types:
 
-| Python Type         | Default Output file type | Implementation Status |
-|---------------------|--------------------------|-----------------------|
-| bytes               | .txt                     | ✅                    |
-| pd.DataFrame        | .csv                     | ❌                    |
-| pd.Series           | .csv                     | ❌                    |
-| np.ndarray          | .csv                     | ❌                    |
-| dict                | .json                    | ✅                    |
-| list                | .json                    | ✅                    |
-| tuple               | .json                    | ❌                    |
-| set                 | .json                    | ❌                    |
-| str                 | .txt                     | ✅                    |
-| int                 | .txt                     | ❌                    |
-| float               | .txt                     | ❌                    |
-| bool                | .txt                     | ❌                    |
-| datetime.datetime   | .txt                     | ❌                    |
-| datetime.date       | .txt                     | ❌                    |
-| datetime.time       | .txt                     | ❌                    |
-| pathlib.Path        | .txt                     | ❌                    |
-| decimal.Decimal     | .txt                     | ❌                    |
-| uuid.UUID           | .txt                     | ❌                    |
+| Python Type         | Default Output file type | Implementation Status     |
+|---------------------|--------------------------|---------------------------|
+| bytes               | .txt                     | ✅                       |
+| pd.DataFrame        | .csv                     | ✅ (missing csv support) |
+| pd.Series           | .csv                     | ❌                       |
+| np.ndarray          | .csv                     | ❌                       |
+| dict                | .json                    | ✅                       |
+| list                | .json                    | ✅                       |
+| tuple               | .json                    | ❌                       |
+| set                 | .json                    | ❌                       |
+| str                 | .txt                     | ✅                       |
+| int                 | .txt                     | ❌                       |
+| float               | .txt                     | ❌                       |
+| bool                | .txt                     | ❌                       |
+| datetime.datetime   | .txt                     | ❌                       |
+| datetime.date       | .txt                     | ❌                       |
+| datetime.time       | .txt                     | ❌                       |
+| pathlib.Path        | .txt                     | ❌                       |
+| decimal.Decimal     | .txt                     | ❌                       |
+| uuid.UUID           | .txt                     | ❌                       |
 
 
 
