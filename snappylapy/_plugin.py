@@ -10,7 +10,7 @@ import _pytest.mark
 from collections.abc import Callable
 from snappylapy import Expect, LoadSnapshot
 from snappylapy._utils_directories import DirectoryNamesUtil
-from snappylapy.constants import DEFAULT_SNAPSHOT_BASE_DIR, DIRECTORY_NAMES
+from snappylapy.constants import DEFAULT_SNAPSHOT_BASE_DIR
 from snappylapy.exceptions import TestDirectoryNotParametrizedError
 from snappylapy.fixtures import Settings
 from snappylapy.session import SnapshotSession
@@ -153,6 +153,7 @@ def pytest_sessionstart(session: pytest.Session) -> None:
     list_of_files_to_delete = DirectoryNamesUtil().get_all_file_paths_test_results()
     for file in list_of_files_to_delete:
         file.unlink()
+
 
 class ExceptionDuringTestSetupError(Exception):
     """Error raised when an exception is raised during the setup of the tests."""
