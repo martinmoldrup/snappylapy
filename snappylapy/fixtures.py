@@ -71,6 +71,7 @@ class Expect:
 
         self.dict = DictExpect(self.settings, snappylapy_session)
         """DictExpect instance for configuring snapshot testing of dictionaries.
+
         The instance is callable with the following parameters:
 
         Parameters
@@ -97,6 +98,7 @@ class Expect:
 
         self.list = ListExpect(self.settings, snappylapy_session)
         """ListExpect instance for configuring snapshot testing of lists.
+
         The instance is callable with the following parameters:
 
         Parameters
@@ -122,6 +124,7 @@ class Expect:
 
         self.string = StringExpect(self.settings, snappylapy_session)
         """StringExpect instance for configuring snapshot testing of strings.
+
         The instance is callable with the following parameters:
 
         Parameters
@@ -147,6 +150,7 @@ class Expect:
 
         self.bytes = BytesExpect(self.settings, snappylapy_session)
         """BytesExpect instance for configuring snapshot testing of bytes.
+
         The instance is callable with the following parameters:
 
         Parameters
@@ -172,7 +176,9 @@ class Expect:
 
         self.dataframe = DataframeExpect(self.settings, snappylapy_session)
         """DataframeExpect instance for configuring snapshot testing of dataframes.
+
         The instance is callable with the following parameters:
+
         Parameters
         ----------
         data_to_snapshot : pd.DataFrame
