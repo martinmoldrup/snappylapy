@@ -128,12 +128,16 @@ def check_file_statuses(
     file_paths: list[pathlib.Path],
 ) -> dict[pathlib.Path, FileStatus]:
     """Check the status of files in the snapshot directory."""
-    file_statuses = {}
+    file_statuses: dict[pathlib.Path, FileStatus] = {}
     for file_path in file_paths:
         snapshot_file = file_path.parent.parent / DIRECTORY_NAMES.snapshot_dir_name / file_path.name
         if not snapshot_file.exists():
             file_statuses[file_path] = FileStatus.NOT_FOUND
         elif snapshot_file.stat().st_size != file_path.stat().st_size:
+            # TODO: This is not foolproof, does not catch content swaps and byte flips.
+            file_statuses[file_path] = FileStatus.CHANGED
+        elif snapshot_file.read_bytes() != file_path.read_bytes():
+            # TODO: Expensive call, store hashes instead in a data file.
             file_statuses[file_path] = FileStatus.CHANGED
         else:
             file_statuses[file_path] = FileStatus.UNCHANGED
