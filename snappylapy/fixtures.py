@@ -24,7 +24,7 @@ from .serialization import (
     JsonPickleSerializer,
     StringSerializer,
 )
-from snappylapy.constants import directory_names
+from snappylapy.constants import DIRECTORY_NAMES
 from snappylapy.session import SnapshotSession
 from typing import Any, Protocol, overload
 
@@ -278,7 +278,7 @@ class LoadSnapshot:
             raise ValueError(msg)
         return (
             self.settings.depending_snapshots_base_dir
-            / directory_names.snapshot_dir_name
+            / DIRECTORY_NAMES.snapshot_dir_name
             / self.settings.depending_filename
         ).read_bytes()
 
