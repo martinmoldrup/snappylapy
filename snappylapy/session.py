@@ -2,7 +2,7 @@
 import pathlib
 from _pytest.terminal import TerminalReporter
 from dataclasses import dataclass
-from snappylapy.constants import directory_names
+from snappylapy.constants import DIRECTORY_NAMES
 
 
 @dataclass
@@ -21,7 +21,7 @@ class SnapshotSession:
         snapshot_file_names: set[str] = set()
         # Find all directories called SNAPSHOT_DIR_NAME
         snapshot_dirs = list(pathlib.Path().rglob(
-            directory_names.snapshot_dir_name))
+            DIRECTORY_NAMES.snapshot_dir_name))
         for snapshot_dir in snapshot_dirs:
             snapshot_file_names.update(
                 snapshot_file.name for snapshot_file in snapshot_dir.iterdir())

@@ -9,7 +9,8 @@ import pathlib
 import _pytest.mark
 from collections.abc import Callable
 from snappylapy import Expect, LoadSnapshot
-from snappylapy.constants import DEFEAULT_SNAPSHOT_BASE_DIR
+from snappylapy._utils_directories import DirectoryNamesUtil
+from snappylapy.constants import DEFAULT_SNAPSHOT_BASE_DIR
 from snappylapy.exceptions import TestDirectoryNotParametrizedError
 from snappylapy.fixtures import Settings
 from snappylapy.session import SnapshotSession
@@ -80,7 +81,7 @@ def snappylapy_settings(request: pytest.FixtureRequest) -> Settings:
             path_output_dir = pathlib.Path(input_dir_from_depends)
         settings.depending_test_filename = depends[0].__module__
         settings.depending_test_function = depends[0].__name__
-    settings.depending_snapshots_base_dir = path_output_dir or DEFEAULT_SNAPSHOT_BASE_DIR
+    settings.depending_snapshots_base_dir = path_output_dir or DEFAULT_SNAPSHOT_BASE_DIR
     return settings
 
 
@@ -149,6 +150,9 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 def pytest_sessionstart(session: pytest.Session) -> None:
     """Initialize the snapshot session."""
     session.config.snappylapy_session = SnapshotSession()  # type: ignore[attr-defined]
+    list_of_files_to_delete = DirectoryNamesUtil().get_all_file_paths_test_results()
+    for file in list_of_files_to_delete:
+        file.unlink()
 
 
 class ExceptionDuringTestSetupError(Exception):
