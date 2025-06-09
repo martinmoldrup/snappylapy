@@ -1,23 +1,19 @@
 """Read-only constants."""
 
 import pathlib
+from typing import NamedTuple
 
-DEFEAULT_SNAPSHOT_BASE_DIR = pathlib.Path()
+DEFAULT_SNAPSHOT_BASE_DIR = pathlib.Path()
 OUTPUT_JSON_INDENTATION_LEVEL = 2
 
 
-class DirectoryNames:
-    """Class to enforce immutable directory names, since there is side effect if they are changed."""
+class DirectoryNames(NamedTuple):
+    """Immutable directory names for snappylapy."""
 
-    @property
-    def snapshot_dir_name(self) -> str:
-        """Snapshot directory name."""
-        return "__snapshots__"
-
-    @property
-    def test_results_dir_name(self) -> str:
-        """Test results directory name."""
-        return "__test_results__"
+    snapshot_dir_name: str
+    test_results_dir_name: str
 
 
-directory_names = DirectoryNames()
+DIRECTORY_NAMES: DirectoryNames = DirectoryNames(
+    snapshot_dir_name="__snapshots__", test_results_dir_name="__test_results__",
+)
