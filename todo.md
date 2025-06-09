@@ -7,10 +7,13 @@ Markdown Checkbox VSCode Extension
 - [ ] Update README.md with example of how to use the parameterization functionality
 - [ ] Do a significant boost in testing both manually and adding automated tests
 - [ ] Update README.md such that todo items is shown here instead of in the README.md
-- [ ] Add removal command of ophaned snapshots to snappylapy cli
-- [ ] Raise a useful error if a fixture was never used (to avoid certain types of errors (a loop over an iterator with no elements, etc))
+- [ ] Add removal command of orphaned snapshots to snappylapy cli
+- [ ] Raise a helpful error if a fixture was never used (to avoid certain types of errors (a loop over an iterator with no elements, etc))
 - [ ] Raise an useful error if we write to the same snapshot file multiple times in the same testing
 - [ ] Add information to the print log about what custom name the snapshot failed on (when loading a list of generated snapshots)
+- [ ] Currently the expect() function saves files in the __test_results__ folder. Reconsider this design, for instance when pipeline failed due to permission error. It might create a bad user experience, since the save of files is not core to the functionality.
+- [ ] Reconsider deleting the __test_results__ folder when starting a test session.
+- [ ] CLI command to update snapshots will also update snapshots not needed, but used for other assertions.
 
 # Backlog
 - [ ] A diff report in html can be generated with `pytest --snappylapy-html=report.html`

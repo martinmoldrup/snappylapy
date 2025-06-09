@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pathlib
 from dataclasses import dataclass
-from snappylapy.constants import directory_names
+from snappylapy.constants import DIRECTORY_NAMES
 
 
 @dataclass
@@ -45,12 +45,12 @@ class Settings:
     @property
     def snapshot_dir(self) -> pathlib.Path:
         """Get the snapshot directory."""
-        return pathlib.Path(self.snapshots_base_dir) / directory_names.snapshot_dir_name
+        return pathlib.Path(self.snapshots_base_dir) / DIRECTORY_NAMES.snapshot_dir_name
 
     @property
     def test_results_dir(self) -> pathlib.Path:
         """Get the test results directory."""
-        return pathlib.Path(self.snapshots_base_dir) / directory_names.test_results_dir_name
+        return pathlib.Path(self.snapshots_base_dir) / DIRECTORY_NAMES.test_results_dir_name
 
     @property
     def filename(self) -> str:

@@ -14,7 +14,7 @@ def read_version():
     """Read the version from the pyproject.toml file."""
     with open(PYPROJECT_TOML, "r", encoding="utf-8") as file:
         data = toml.load(file)
-    return data["tool"]["poetry"]["version"]
+    return data["project"]["version"]
 
 def check_version(version: str):
     """Check if the version is newer than the one in pypi."""

@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 *NOTE:* Version 0.X.X might have breaking changes in bumps of the minor version number. This is because the project is still in early development and the API is not yet stable. It will still be marked clearly in the release notes.
 
+## [unreleased]
+- 🆕 Add new cli command for easy update of snapshots without the need to rerun tests
+
 ## [0.4.0]
 - 🆕 Add support for pandas DataFrame assertions (pandas is an optional dependency, and snappylapy can be used without it)
 - 🆕 Add new simpler and more intuitive Expect API. We can use expect() calls and an overload will select the appropriate Expect class based on the type of the input. This is in contrast with expect.dict(), expect.list(), etc. This is not a breaking change, since the old API is still supported.
