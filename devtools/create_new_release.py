@@ -5,6 +5,7 @@ import toml
 import pathlib
 import requests
 from packaging.version import Version
+from toolit import tool
 
 PYPROJECT_TOML = pathlib.Path(__file__).parent.parent / "pyproject.toml"
 CHANGELOG_MD = pathlib.Path(__file__).parent.parent / "CHANGELOG.md"
@@ -34,8 +35,9 @@ def check_change_log(version: str):
     print(f"Version {version} has a corresponding entry in the change log.")
 
 
-
-if __name__ == "__main__":
+@tool
+def create_new_release():
+    """Create a new release for the project by reading the version from the pyproject.toml file, checking the change log, and pushing a new tag to the repository."""
     version = read_version()
     print(f"Creating a new release for version {version}.")
     check_version(version)
