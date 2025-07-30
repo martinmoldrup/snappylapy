@@ -29,7 +29,7 @@ from snappylapy.session import SnapshotSession
 from typing import Any, Protocol, overload
 
 
-class CallableExpectation(Protocol):
+class _CallableExpectation(Protocol):
     """Protocol for callable expectations to use internally in this module."""
 
     def __call__(
@@ -215,6 +215,7 @@ class Expect:
 
     @overload
     def __call__(self, data_to_snapshot: dict, name: str | None = None, filetype: str | None = None) -> DictExpect: ...
+
     @overload
     def __call__(
         self,
@@ -236,7 +237,10 @@ class Expect:
 
     @overload
     def __call__(
-        self, data_to_snapshot: DataframeExpect.DataFrame, name: str | None = None, filetype: str | None = None,
+        self,
+        data_to_snapshot: DataframeExpect.DataFrame,
+        name: str | None = None,
+        filetype: str | None = None,
     ) -> DataframeExpect: ...
 
     def __call__(
@@ -252,7 +256,7 @@ class Expect:
         if filetype is not None:
             kwargs["filetype"] = filetype
 
-        type_map: dict[type, CallableExpectation] = {
+        type_map: dict[type, _CallableExpectation] = {
             dict: self.dict,
             list: self.list,
             str: self.string,
@@ -261,13 +265,14 @@ class Expect:
         }
 
         for typ, func in type_map.items():
-            if isinstance(data_to_snapshot, typ):
+            if isinstance(typ, type) and isinstance(data_to_snapshot, typ):
                 return func(data_to_snapshot, **kwargs)
 
-        error_message = f"Unsupported type {type(data_to_snapshot)}. Expected one of: dict, list, str, bytes."
-        raise TypeError(
-            error_message,
-        )
+        supported_types: list[str] = [
+            getattr(typ, "__name__", str(typ)) if isinstance(typ, type) else typ for typ in type_map.keys()  # noqa: SIM118
+        ]
+        error_message = f"Unsupported type: {type(data_to_snapshot)}. Supported types: {', '.join(supported_types)}."
+        raise TypeError(error_message)
 
 
 class LoadSnapshot:
@@ -307,3 +312,10 @@ class LoadSnapshot:
         """Load bytes snapshot."""
         self.settings.depending_filename_extension = "bytes.txt"
         return BytesSerializer().deserialize(self._read_snapshot())
+
+    def dataframe(self) -> DataframeExpect.DataFrame:
+        """Load dataframe snapshot."""
+        self.settings.depending_filename_extension = "dataframe.json"
+        return DataframeExpect.DataFrame(
+            JsonPickleSerializer[DataframeExpect.DataFrame]().deserialize(self._read_snapshot()),
+        )
