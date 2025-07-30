@@ -1,5 +1,5 @@
 """Create a new release for the project, by reading the version from the pyproject.toml file, and adding and pushing a new tag to the repository."""
-import os
+import sys
 import toml
 import typer
 import pathlib
@@ -49,7 +49,8 @@ def create_new_release() -> None:
     )
     if response.lower() not in ("yes", "y"):
         typer.secho("Release creation aborted.", fg=typer.colors.RED, bold=True)
-        os._exit(1)
+
+        sys.exit(1)
 
     # Create a new tag
     res: subprocess.CompletedProcess = subprocess.run(["git", "tag", str(version_pyproject)])

@@ -264,7 +264,7 @@ class Expect:
             if isinstance(data_to_snapshot, typ):
                 return func(data_to_snapshot, **kwargs)
 
-        error_message = f"Unsupported type {type(data_to_snapshot)}. Expected one of: dict, list, str, bytes."
+        error_message = f"Unsupported type {type(data_to_snapshot)}. Expected one of: dict, list, str, bytes, DataFrame."
         raise TypeError(
             error_message,
         )
