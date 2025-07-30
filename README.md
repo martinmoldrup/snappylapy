@@ -46,8 +46,8 @@ from mypackage import my_function
 def test_snapshot_dict(expect: Expect):
     """Test snapshot with dictionary data."""
     data: dict = my_function()
-    expect.dict(data).to_match_snapshot()
-    # or expect(data).to_match_snapshot()
+    expect(data).to_match_snapshot()
+    # or expect.dict(data).to_match_snapshot()
 ```
 
 In this example, `snappylapy` captures the output of `my_function` and compares it against a stored snapshot. If the output changes unexpectedly, pytest will flag the test, allowing you to review the differences and ensure your code behaves as expected.
@@ -59,7 +59,7 @@ from snappylapy import Expect, LoadSnapshot
 
 def test_snapshot_dict(expect: Expect):
     """Test snapshot with dictionary data."""
-    expect.dict({
+    expect({
         "name": "John Doe",
         "age": 31
     }).to_match_snapshot()
@@ -68,6 +68,8 @@ def test_snapshot_dict(expect: Expect):
 def test_load_snapshot_from_file(load_snapshot: LoadSnapshot):
     """Test loading snapshot data created in test_snapshot_dict from a file using the deserializer."""
     data = load_snapshot.dict()
+    # Normally you would use the data as an input for some other function
+    # For demonstration, we will just assert the data matches the expected snapshot
     assert data == {"name": "John Doe", "age": 31}
 ```
 
@@ -81,10 +83,16 @@ The results is split into two folders, for ease of comparison, and for handling 
 - __snapshots__: Updated only when --snapshot-update flag is used when running the test suite. Commit this to your version control system.
 
 ## Usage
-Update snapshots with:
+Snapshots can be updated when running pytest:
 
 ```bash
 pytest --snapshot-update
+```
+
+Alternatively, you can use the CLI command to update snapshots:
+
+```bash
+snappylapy update
 ```
 
 ## Fixtures and roadmap

@@ -29,7 +29,7 @@ from snappylapy.session import SnapshotSession
 from typing import Any, Protocol, overload
 
 
-class CallableExpectation(Protocol):
+class _CallableExpectation(Protocol):
     """Protocol for callable expectations to use internally in this module."""
 
     def __call__(
@@ -252,7 +252,7 @@ class Expect:
         if filetype is not None:
             kwargs["filetype"] = filetype
 
-        type_map: dict[type, CallableExpectation] = {
+        type_map: dict[type, _CallableExpectation] = {
             dict: self.dict,
             list: self.list,
             str: self.string,
@@ -307,3 +307,10 @@ class LoadSnapshot:
         """Load bytes snapshot."""
         self.settings.depending_filename_extension = "bytes.txt"
         return BytesSerializer().deserialize(self._read_snapshot())
+
+    def dataframe(self) -> DataframeExpect.DataFrame:
+        """Load dataframe snapshot."""
+        self.settings.depending_filename_extension = "dataframe.json"
+        return DataframeExpect.DataFrame(
+            JsonPickleSerializer[DataframeExpect.DataFrame]().deserialize(self._read_snapshot())
+        )

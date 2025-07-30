@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 
 *NOTE:* Version 0.X.X might have breaking changes in bumps of the minor version number. This is because the project is still in early development and the API is not yet stable. It will still be marked clearly in the release notes.
 
-## [unreleased]
-- 🆕 Add new cli command for easy update of snapshots without the need to rerun tests
+## [0.5.0]
+- 🆕 Add new cli command for easy update of snapshots without the need to rerun tests. Added: `snappylapy update` CLI command that will update the snapshots that have changed or create new snapshots.
 
 ## [0.4.0]
 - 🆕 Add support for pandas DataFrame assertions (pandas is an optional dependency, and snappylapy can be used without it)
