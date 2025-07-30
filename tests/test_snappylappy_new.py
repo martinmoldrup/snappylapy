@@ -7,6 +7,15 @@ def test_snapshot_string(expect: Expect):
     """Test snapshot with string data."""
     expect.string("Hello World").to_match_snapshot()
 
+def test_unsupported_type(expect: Expect):
+    """Test snapshot with unsupported type."""
+    class Unsupported:
+        """An unsupported type for snapshot."""
+        pass
+
+    with pytest.raises(TypeError):
+        expect(Unsupported())
+
 def test_snapshot_bytes(expect: Expect):
     """Test snapshot with bytes data."""
     expect.bytes(b"Hello World", name="bytes_snapshot").to_match_snapshot()
