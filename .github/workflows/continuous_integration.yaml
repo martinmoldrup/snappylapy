@@ -60,6 +60,7 @@ jobs:
           run: |
             uv build
             uv venv
+            source .venv/bin/activate
             uv pip install snappylapy@dist/snappylapy-0.5.0.tar.gz
 
         # Remove the snappylapy folder to ensure the installed package is used for the test
@@ -67,7 +68,9 @@ jobs:
           run: rm -rf snappylapy
 
         - name: Run tests
-          run: uv run pytest tests/ --junit-xml=test-results.xml
+          run: |
+            source .venv/bin/activate
+            pytest tests/ --junit-xml=test-results.xml
 
         - name: Surface failing tests
           if: always()
