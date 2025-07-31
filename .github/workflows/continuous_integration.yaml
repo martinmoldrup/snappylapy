@@ -9,7 +9,7 @@ on:
       - '**/*.md'
 
 env:
-  UV_VERSION: 0.7.12
+  UV_VERSION: 0.8.4
 
 jobs:
     lint_and_type_check:
@@ -56,16 +56,22 @@ jobs:
         - name: Pin python version
           run: uv python pin ${{ matrix.python-version }}
 
-        - name: Install dependencies
+        - name: Build and install package
           run: |
-            if [ "${{ matrix.include-extras }}" = "true" ]; then
-              uv sync --all-extras
-            else
-              uv sync
-            fi
+            uv build
+            uv venv
+            source .venv/bin/activate
+            DIST_FILE=$(ls dist/snappylapy-*.tar.gz | head -n 1)
+            uv pip install "snappylapy@$DIST_FILE"
+
+        # Remove the snappylapy folder to ensure the installed package is used for the test
+        - name: Remove snappylapy folder in the cloned repository
+          run: rm -rf snappylapy
 
         - name: Run tests
-          run: uv run pytest tests/ --junit-xml=test-results.xml
+          run: |
+            source .venv/bin/activate
+            pytest tests/ --junit-xml=test-results.xml
 
         - name: Surface failing tests
           if: always()
