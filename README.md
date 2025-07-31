@@ -129,6 +129,8 @@ Planned data types:
 | pathlib.Path        | .txt                     | ❌                       |
 | decimal.Decimal     | .txt                     | ❌                       |
 | uuid.UUID           | .txt                     | ❌                       |
+| pydantic.BaseModel  | .json                    | ❌                       |
+| python dataclasses  | .json                    | ❌                       |
 
 
 

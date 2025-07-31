@@ -10,7 +10,7 @@ dependencies = [
     "typing-extensions ; python_full_version == '3.9.*'",
 ]
 name = "snappylapy"
-version = "0.5.0"
+version = "0.5.1"
 description = "A snapshot library for python optimized for easy of use, human readable snapshots and enabling decoupling of chained integration tests."
 readme = "README.md"
 classifiers = [
