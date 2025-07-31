@@ -67,7 +67,7 @@ pandas = [
 ]
 
 [tool.setuptools.package-data]
-snappylapy = ["*.py", "**/*.py", "py.typed"]
+snappylapy = ["**/*.py", "py.typed"]
 
 [dependency-groups]
 dev = [
