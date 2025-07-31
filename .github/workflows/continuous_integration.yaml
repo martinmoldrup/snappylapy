@@ -59,6 +59,7 @@ jobs:
         - name: Build and install package
           run: |
             uv build
+            uv venv
             uv pip install snappylapy@dist/snappylapy-0.5.0.tar.gz
 
         # Remove the snappylapy folder to ensure the installed package is used for the test
