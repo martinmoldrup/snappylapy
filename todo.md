@@ -2,8 +2,6 @@ Markdown Checkbox VSCode Extension
 - ctl+shift+enter to toggle checkbox
 
 # Todo
-- [ ] Make the installation of pandas optional (as it is not needed for the basic functionality)
-- [ ] Improve api so that expect can be used directly which seems more natural
 - [ ] Update README.md with example of how to use the parameterization functionality
 - [ ] Do a significant boost in testing both manually and adding automated tests
 - [ ] Update README.md such that todo items is shown here instead of in the README.md
@@ -19,6 +17,9 @@ Markdown Checkbox VSCode Extension
 - [ ] A diff report in html can be generated with `pytest --snappylapy-html=report.html`
 
 # Done
+- [X] ~~*Make the installation of pandas optional (as it is not needed for the basic functionality)*~~ [2025-07-31]
+- [X] ~~*Improve api so that expect can be used directly which seems more natural*~~ [2025-07-31]
+- [X] ~~*Add a generic fallback handler for all other datatypes that is not supported today*~~ [2025-08-23]
 - [X] ~~*BUG: When using falsy values as name the custom name is not used*~~ [2025-01-29]
 - [X] ~~*Add snappylapy parametization functionality to snappylapy and allow it to be loaded in the load_snapshot fixture*~~ [2025-01-19]
 - [X] ~~*Make the folder names of __snapshots__ and __test_results__ enforced to be fixed (needed for cleanup and diffing)*~~ [2025-01-19]

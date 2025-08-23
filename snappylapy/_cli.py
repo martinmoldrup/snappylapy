@@ -1,6 +1,7 @@
 """Create cli using the typer library."""
 
 import re
+import subprocess
 import typer
 import pathlib
 from enum import Enum
@@ -101,6 +102,35 @@ def update() -> None:
         snapshot_file.write_bytes(file.read_bytes())
         typer.echo(f"Updated snapshot: {snapshot_file}")
 
+@app.command()
+def diff() -> None:
+    """Show the differences between the test results and the snapshots."""
+    files_test_results = DirectoryNamesUtil().get_all_file_paths_test_results()
+    file_statuses = check_file_statuses(files_test_results)
+    files_to_diff = [file for file, status in file_statuses.items() if status == FileStatus.CHANGED]
+    if not files_to_diff:
+        status_counts: dict[FileStatus, int] = {status: 0 for status in FileStatus}
+        for status in file_statuses.values():
+            status_counts[status] += 1
+
+        typer.secho("File status counts:", underline=True, bold=True)
+        for status, count in status_counts.items():
+            typer.echo(f"- {status.value}: {count} file(s)")
+        typer.echo("No files have changed, not opening any diffs.")
+        return
+    typer.echo(f"Opening diffs for {len(files_to_diff)} changed files.")
+    for file in files_to_diff:
+        snapshot_file = file.parent.parent / DIRECTORY_NAMES.snapshot_dir_name / file.name
+        command = [
+            "code",
+            "--diff",
+            file.resolve().as_posix(),
+            snapshot_file.resolve().as_posix(),
+        ]
+        typer.echo("Running command:")
+        typer.echo(" ".join(command))
+        # Run the command
+        subprocess.run(" ".join(command), shell=True)
 
 def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
     """Delete files."""
