@@ -11,12 +11,14 @@ Snappylapy provides the following fixtures.
 
 from __future__ import annotations
 
+
 from .expectation_classes import (
     BytesExpect,
     DataframeExpect,
     DictExpect,
     ListExpect,
     StringExpect,
+    ObjectExpect,
 )
 from .models import Settings
 from .serialization import (
@@ -205,6 +207,32 @@ class Expect:
         ```
         """
 
+        self.object = ObjectExpect(self.settings, snappylapy_session)
+        """ObjectExpect instance for configuring snapshot testing of generic objects.
+
+        The instance is callable with the following parameters:
+
+        Parameters
+        ----------
+        data_to_snapshot : object
+            The object data to be snapshotted.
+        name : str, optional
+            The name of the snapshot, by default "".
+        filetype : str, optional
+            The file type of the snapshot, by default "object.json".
+
+        Returns
+        -------
+        ObjectExpect
+            The instance of the ObjectExpect class.
+
+        Example
+        -------
+        ```python
+        expect.object({"key": "value"}).to_match_snapshot()
+        ```
+        """
+
     def read_snapshot(self) -> bytes:
         """Read the snapshot file."""
         return (self.settings.snapshot_dir / self.settings.filename).read_bytes()
@@ -243,13 +271,22 @@ class Expect:
         filetype: str | None = None,
     ) -> DataframeExpect: ...
 
+
+    @overload
+    def __call__(
+        self,
+        data_to_snapshot: Any,
+        name: str | None = None,
+        filetype: str | None = None,
+    ) -> ObjectExpect: ...
+
     def __call__(
         self,
         data_to_snapshot: dict | list[Any] | str | bytes | DataframeExpect.DataFrame,
         name: str | None = None,
         filetype: str | None = None,
-    ) -> DictExpect | ListExpect | StringExpect | BytesExpect | DataframeExpect:
-        """Call the fixture with the given parameters."""
+    ) -> DictExpect | ListExpect | StringExpect | BytesExpect | DataframeExpect | ObjectExpect:
+        """Call the fixture with the given parameters. Falls back to dict handler for custom objects."""
         kwargs: dict[str, str] = {}
         if name is not None:
             kwargs["name"] = name
@@ -268,11 +305,13 @@ class Expect:
             if isinstance(typ, type) and isinstance(data_to_snapshot, typ):
                 return func(data_to_snapshot, **kwargs)
 
-        supported_types: list[str] = [
-            getattr(typ, "__name__", str(typ)) if isinstance(typ, type) else typ for typ in type_map.keys()  # noqa: SIM118
-        ]
-        error_message = f"Unsupported type: {type(data_to_snapshot)}. Supported types: {', '.join(supported_types)}."
-        raise TypeError(error_message)
+        # Check if the object is a pandas DataFrame without importing pandas directly
+        if type(data_to_snapshot).__module__ == "pandas.core.frame" and type(data_to_snapshot).__name__ == "DataFrame":
+            return self.dataframe(data_to_snapshot, **kwargs)  # type: ignore[arg-type]
+
+        # Fallback: treat custom objects as dicts for snapshotting
+        return self.object(data_to_snapshot, **kwargs)
+
 
 
 class LoadSnapshot:

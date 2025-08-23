@@ -39,7 +39,7 @@ class BaseSnapshot(ABC, Generic[T]):
         """Assert test results match the snapshot."""
         if not (self.settings.snapshot_dir / self.settings.filename).exists():
             if not self.settings.snapshot_update:
-                error_msg = f"Snapshot file not found: {self.settings.filename}, run pytest with the --snapshot-update flag to create it."  # noqa: E501
+                error_msg = f"Snapshot file not found: {self.settings.filename}, run 'snappylapy update' command in the terminal, or run pytest with the --snapshot-update flag to create it."  # noqa: E501
                 raise FileNotFoundError(error_msg)
             self.snappylapy_session.add_created_snapshot(
                 self.settings.filename)
