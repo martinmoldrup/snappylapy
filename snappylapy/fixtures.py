@@ -306,7 +306,11 @@ class Expect:
                 return func(data_to_snapshot, **kwargs)
 
         # Check if the object is a pandas DataFrame without importing pandas directly
-        if type(data_to_snapshot).__module__ == "pandas.core.frame" and type(data_to_snapshot).__name__ == "DataFrame":
+        if (
+            type(data_to_snapshot).__module__.startswith("pandas")
+            and type(data_to_snapshot).__name__ == "DataFrame"
+            # TODO: Create a protocol class instead that contains all the dependencies we are depending on
+        ):
             return self.dataframe(data_to_snapshot, **kwargs)  # type: ignore[arg-type]
 
         # Fallback: treat custom objects as dicts for snapshotting

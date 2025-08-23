@@ -152,7 +152,7 @@ def _try_open_diff(file1: pathlib.Path, file2: pathlib.Path) -> bool:
 
     for command in diff_commands:
         try:
-            subprocess.run(command, check=True)  # noqa: S603
+            subprocess.run(command, check=True)  # noqa: S603 - shell=False and args as list, safe usage
         except (subprocess.CalledProcessError, FileNotFoundError):  # noqa: PERF203
             continue
         else:

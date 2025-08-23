@@ -12,6 +12,7 @@ Markdown Checkbox VSCode Extension
 - [ ] Currently the expect() function saves files in the __test_results__ folder. Reconsider this design, for instance when pipeline failed due to permission error. It might create a bad user experience, since the save of files is not core to the functionality.
 - [ ] Reconsider deleting the __test_results__ folder when starting a test session.
 - [ ] CLI command to update snapshots will also update snapshots not needed, but used for other assertions.
+- [ ] Support more editors and diff viewers than just VSCode, make it configurable, and try until an installed editor is found. (cli: snappylapy diff)
 
 # Backlog
 - [ ] - **Provides a wide set of assertions**: The package provides a wide set of assertions to make it easy to compare different types of data, for do fuzzy matching or ignore certain parts of the data that are variable.
