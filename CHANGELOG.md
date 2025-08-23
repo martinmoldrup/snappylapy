@@ -3,7 +3,10 @@ All notable changes to this project will be documented in this file.
 
 *NOTE:* Version 0.X.X might have breaking changes in bumps of the minor version number. This is because the project is still in early development and the API is not yet stable. It will still be marked clearly in the release notes.
 
-## [0.5.1] - 2025-08-31
+## [0.6.0] - 2025-08-23
+- 🆕 Support generic types. Now custom objects can be used. It can serialize and deserialize any that jsonpickle supports.
+
+## [0.5.1] - 2025-07-31
 - 🐞 Fix missing submodule `expectation_classes`, missing in build version of the package.
 
 ## [0.5.0] - 2025-07-30
