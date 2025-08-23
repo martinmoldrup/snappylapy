@@ -1,9 +1,9 @@
 """Create cli using the typer library."""
 
 import re
-import subprocess
 import typer
 import pathlib
+import subprocess  # noqa: S404
 from enum import Enum
 from snappylapy._utils_directories import DirectoryNamesUtil
 from snappylapy.constants import DIRECTORY_NAMES
@@ -102,6 +102,7 @@ def update() -> None:
         snapshot_file.write_bytes(file.read_bytes())
         typer.echo(f"Updated snapshot: {snapshot_file}")
 
+
 @app.command()
 def diff() -> None:
     """Show the differences between the test results and the snapshots."""
@@ -109,7 +110,7 @@ def diff() -> None:
     file_statuses = check_file_statuses(files_test_results)
     files_to_diff = [file for file, status in file_statuses.items() if status == FileStatus.CHANGED]
     if not files_to_diff:
-        status_counts: dict[FileStatus, int] = {status: 0 for status in FileStatus}
+        status_counts: dict[FileStatus, int] = dict.fromkeys(FileStatus, 0)
         for status in file_statuses.values():
             status_counts[status] += 1
 
@@ -130,6 +131,7 @@ def diff() -> None:
                 fg=typer.colors.YELLOW,
             )
 
+
 def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
     """Delete files."""
     # Delete files
@@ -143,6 +145,7 @@ def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
         for root_dir in pathlib.Path().rglob(dir_name):
             root_dir.rmdir()
 
+
 def _try_open_diff(file1: pathlib.Path, file2: pathlib.Path) -> bool:
     """Try to open diff using available tools, return True if successful."""
     diff_commands: list[list[str]] = [
@@ -152,12 +155,19 @@ def _try_open_diff(file1: pathlib.Path, file2: pathlib.Path) -> bool:
 
     for command in diff_commands:
         try:
-            subprocess.run(command, check=True)  # noqa: S603 - shell=False and args as list, safe usage
-        except (subprocess.CalledProcessError, FileNotFoundError):  # noqa: PERF203
+            subprocess.run(command, check=True, timeout=10)  # noqa: S603 - shell=False and args as list, safe usage
+        except subprocess.TimeoutExpired:  # noqa: PERF203
+            typer.secho(
+                f"Diff tool timed out for command: {' '.join(command)}",
+                fg=typer.colors.RED,
+            )
+            continue
+        except (subprocess.CalledProcessError, FileNotFoundError):
             continue
         else:
             return True
     return False
+
 
 class FileStatus(Enum):
     """Enum to represent the status of a file."""

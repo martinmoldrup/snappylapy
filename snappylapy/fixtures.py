@@ -11,14 +11,13 @@ Snappylapy provides the following fixtures.
 
 from __future__ import annotations
 
-
 from .expectation_classes import (
     BytesExpect,
     DataframeExpect,
     DictExpect,
     ListExpect,
-    StringExpect,
     ObjectExpect,
+    StringExpect,
 )
 from .models import Settings
 from .serialization import (
@@ -271,11 +270,10 @@ class Expect:
         filetype: str | None = None,
     ) -> DataframeExpect: ...
 
-
     @overload
     def __call__(
         self,
-        data_to_snapshot: Any,
+        data_to_snapshot: Any,  # noqa: ANN401
         name: str | None = None,
         filetype: str | None = None,
     ) -> ObjectExpect: ...
@@ -315,7 +313,6 @@ class Expect:
 
         # Fallback: treat custom objects as dicts for snapshotting
         return self.object(data_to_snapshot, **kwargs)
-
 
 
 class LoadSnapshot:

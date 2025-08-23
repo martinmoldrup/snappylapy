@@ -10,10 +10,12 @@ class ObjectExpect(BaseSnapshot[object]):
 
     serializer_class = JsonPickleSerializer[object]
 
-    def __call__(self,
-                 data_to_snapshot: object,
-                 name: str | None = None,
-                 filetype: str = "object.json") -> ObjectExpect:
-        """Prepare a dictionary for snapshot testing."""
+    def __call__(
+        self,
+        data_to_snapshot: object,
+        name: str | None = None,
+        filetype: str = "object.json",
+    ) -> ObjectExpect:
+        """Prepare an object for snapshot testing."""
         self._prepare_test(data_to_snapshot, name, filetype)
         return self

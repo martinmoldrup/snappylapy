@@ -1,5 +1,5 @@
 """
-Serialization classes for serializing and deserializing data. 
+Serialization classes for serializing and deserializing data.
 
 Be sure that data is serialized the same way no matter what os and OS configuration is used.
 """
@@ -11,7 +11,7 @@ from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
-ENCODING_TO_USE = 'utf-8'
+ENCODING_TO_USE = "utf-8"
 
 
 class Serializer(ABC, Generic[T]):
