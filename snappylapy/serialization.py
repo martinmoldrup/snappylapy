@@ -30,9 +30,14 @@ class JsonSerializer(Serializer, Generic[T]):
     """Serialize and deserialize a dictionary."""
 
     def serialize(self, data: T) -> bytes:
-        """Serialize a dictionary to bytes."""
-        json_string = json.dumps(data, default=str, indent=OUTPUT_JSON_INDENTATION_LEVEL)
-        json_string = json_string.replace('\r\n', '\n')  # Normalize line endings to LF
+        """Serialize a dictionary to bytes with cross-platform consistency."""
+        json_string = json.dumps(
+            data,
+            default=str,
+            indent=OUTPUT_JSON_INDENTATION_LEVEL,
+            ensure_ascii=False,
+        )
+        json_string = json_string.replace("\r\n", "\n").replace("\r", "\n")  # Normalize all line endings to LF
         return json_string.encode(encoding=ENCODING_TO_USE)
 
     def deserialize(self, data: bytes) -> T:
@@ -44,9 +49,12 @@ class JsonPickleSerializer(Serializer, Generic[T]):
     """Serialize and deserialize a dictionary using pickle."""
 
     def serialize(self, data: T) -> bytes:
-        """Serialize a dictionary/list or other to bytes in json format."""
-        json_string: str = jsonpickle.encode(data, indent=OUTPUT_JSON_INDENTATION_LEVEL)
-        json_string = json_string.replace('\r\n', '\n')  # Normalize line endings to LF
+        """Serialize a dictionary/list or other to bytes in json format with cross-platform consistency."""
+        json_string: str = jsonpickle.encode(
+            data,
+            indent=OUTPUT_JSON_INDENTATION_LEVEL,
+        )
+        json_string = json_string.replace("\r\n", "\n").replace("\r", "\n")  # Normalize all line endings to LF
         return json_string.encode(encoding=ENCODING_TO_USE)
 
     def deserialize(self, data: bytes) -> T:
