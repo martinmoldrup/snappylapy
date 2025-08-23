@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 *NOTE:* Version 0.X.X might have breaking changes in bumps of the minor version number. This is because the project is still in early development and the API is not yet stable. It will still be marked clearly in the release notes.
 
 ## [0.6.0] - 2025-08-23
+- 🆕 Added: `snappylapy diff` CLI command for comparing changed test results with the snapshot. Currently it only supports VScode for showing diffs.
 - 🆕 Support generic types. Now custom objects can be used. It can serialize and deserialize any that jsonpickle supports.
 - 🐞 Fix issue where files in __test_results__ is being deleted when test discovery is ran
 - 🐞 Ensure cross-platform consistancy on how snapshot files are serialized and deserialized
