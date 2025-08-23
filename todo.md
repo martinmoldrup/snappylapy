@@ -14,7 +14,9 @@ Markdown Checkbox VSCode Extension
 - [ ] CLI command to update snapshots will also update snapshots not needed, but used for other assertions.
 
 # Backlog
-- [ ] A diff report in html can be generated with `pytest --snappylapy-html=report.html`
+- [ ] - **Provides a wide set of assertions**: The package provides a wide set of assertions to make it easy to compare different types of data, for do fuzzy matching or ignore certain parts of the data that are variable.
+- [ ] - **Diff Report Generation**: Generate a diff and results report in html format for easy comparison between test results and snapshots.
+   - [ ] A diff report in html can be generated with `pytest --snappylapy-html=report.html`
 
 # Done
 - [X] ~~*Make the installation of pandas optional (as it is not needed for the basic functionality)*~~ [2025-07-31]
@@ -26,3 +28,43 @@ Markdown Checkbox VSCode Extension
 - [X] ~~*Change setting of path to only have a single path configurable and update such it is configured through the marker*~~ [2025-01-19]
 - [X] ~~*Do reporting showing count of updated, created and deleted snapshots*~~ [2025-01-18]
 - [X] ~~*Rename output file names of snapshots to match [filename][testname][name].extention conversion*~~ [2025-01-15]
+
+# Roadmap
+
+Registers fixtures:
+- expect ✅
+- load_snapshot ✅
+
+Supported data types
+- .txt ✅
+- .json ✅
+- .csv ❌
+- .yaml ❌
+- .jsonl ❌
+
+Planned data types:
+
+| Python Type         | Default Output file type | Implementation Status     |
+|---------------------|--------------------------|---------------------------|
+| bytes               | .txt                     | ✅                       |
+| pd.DataFrame        | .csv                     | ✅ (missing csv support) |
+| pd.Series           | .csv                     | ❌                       |
+| np.ndarray          | .csv                     | ❌                       |
+| dict                | .json                    | ✅                       |
+| list                | .json                    | ✅                       |
+| tuple               | .json                    | ❌                       |
+| set                 | .json                    | ❌                       |
+| str                 | .txt                     | ✅                       |
+| int                 | .txt                     | ❌                       |
+| float               | .txt                     | ❌                       |
+| bool                | .txt                     | ❌                       |
+| datetime.datetime   | .txt                     | ❌                       |
+| datetime.date       | .txt                     | ❌                       |
+| datetime.time       | .txt                     | ❌                       |
+| pathlib.Path        | .txt                     | ❌                       |
+| decimal.Decimal     | .txt                     | ❌                       |
+| uuid.UUID           | .txt                     | ❌                       |
+| pydantic.BaseModel  | .json                    | ❌                       |
+| python dataclasses  | .json                    | ❌                       |
+
+todo: Update and check how many of these are actually supported with the generic jsonpickle updates.

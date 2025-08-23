@@ -5,8 +5,9 @@ All notable changes to this project will be documented in this file.
 
 ## [0.6.0] - 2025-08-23
 - 🆕 Support generic types. Now custom objects can be used. It can serialize and deserialize any that jsonpickle supports.
-- 🐞 Add a fix for an issue where test_results is being deleted when vscode runs test discovery
+- 🐞 Fix issue where files in __test_results__ is being deleted when test discovery is ran
 - 🐞 Ensure cross-platform consistancy on how snapshot files are serialized and deserialized
+- 🐞 Fixed issue where pandas dataframe types did not resolve correctly at runtime to the dataframe expect class in older python versions
 
 ## [0.5.1] - 2025-07-31
 - 🐞 Fix missing submodule `expectation_classes`, missing in build version of the package.
