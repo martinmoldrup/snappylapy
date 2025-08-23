@@ -1,28 +1,28 @@
 # Snappylapy
    
-Welcome to **Snappylapy**, a powerful and intuitive snapshot testing tool for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity.  
+Welcome to **Snappylapy**, a powerful and intuitive snapshot testing plugin for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity.  
 
 ## Installation
-To get started with Snappylapy, install the package via pip:  
+To get started with Snappylapy, install the package via pip, uv or poetry:  
 
 ```bash
 pip install snappylapy
 ```
 
-## Key Features
-Legend:
-- ✅ Implemented
-- ❌ Not implemented yet
+```bash
+uv add snappylapy
+```
 
-The features are in development:
-   
-- **Human-Readable Snapshots**✅: Save snapshots in a format that's easy to read and understand, making it simpler to review changes and debug issues.  
-- **Serialization and Deserialization**✅: Snapshots can be serialized and deserialized, allowing for flexible and reusable test cases.  
-- **Integration Testing**✅: Use snapshots for integration testing with a clear separation layer, preventing interdependencies between code components and making it easier to isolate and identify errors.  
-- **Easy to Use**✅: Seamlessly integrates with pytest, allowing you to start capturing and verifying snapshots with minimal setup. For a good developer experience the package is fully typed, with docstrings to provide good editor code completion.
-- **Customizable Output**✅: Store snapshots in a location of your choice, enabling you to organize and manage your test data effectively.
-- **Diff Report Generation**❌: Generate a diff report in html format for easy comparison between test results and snapshots.
-- **Provides a wide set of assertions**❌: The package provides a wide set of assertions to make it easy to compare different types of data, for do fuzzy matching or ignore certain parts of the data that are variable.
+```bash
+poetry add snappylapy
+```
+
+## Key Features
+- **Human-Readable Snapshots**: Save snapshots in a format that's easy to read and understand, making it simpler to review changes and debug issues.  
+- **Serialization and Deserialization**: Snapshots can be serialized and deserialized, allowing for flexible and reusable test cases.  
+- **Easy to Use**: Seamlessly integrates with pytest, enabling you to capture and verify snapshots with minimal setup. The fully typed fixtures and rich editor support provide intuitive code completion and guidance, making your workflow faster and more productive.
+- **Customizable Output**: Store snapshots in a location (static or dynamic) of your choice, enabling you to organize and manage your test data effectively.
+- **Editor Integration**: Can show a diff comparison in VS code when a snapshot test fails, for easy comparison between test results and snapshots.
 
 ## Benefits of Snapshot Testing
 Snapshot testing is a powerful technique for verifying the output of your code by comparing it to a stored snapshot. This approach offers several benefits, including:
@@ -96,46 +96,25 @@ snappylapy update
 ```
 
 ## Fixtures and roadmap
-Registers fixtures:
-- expect ✅
-- load_snapshot ✅
+Registers pytest fixtures:
+- expect
+- load_snapshot
 
 Supported data types
-- .txt ✅
-- .json ✅
-- .csv ❌
-- .yaml ❌
-- .jsonl ❌
+- ✅ .txt - if you provide a string
+- ✅ .json - for all other objects
+- ✅ custom (decode the data yourself and provide a file extension)
 
-Planned data types:
+### Supported data types to snapshot test
+Snappylapy uses jsonpickle to serialize into json, this means that it can handle almost any Python object out of the box, including:
 
-| Python Type         | Default Output file type | Implementation Status     |
-|---------------------|--------------------------|---------------------------|
-| bytes               | .txt                     | ✅                       |
-| pd.DataFrame        | .csv                     | ✅ (missing csv support) |
-| pd.Series           | .csv                     | ❌                       |
-| np.ndarray          | .csv                     | ❌                       |
-| dict                | .json                    | ✅                       |
-| list                | .json                    | ✅                       |
-| tuple               | .json                    | ❌                       |
-| set                 | .json                    | ❌                       |
-| str                 | .txt                     | ✅                       |
-| int                 | .txt                     | ❌                       |
-| float               | .txt                     | ❌                       |
-| bool                | .txt                     | ❌                       |
-| datetime.datetime   | .txt                     | ❌                       |
-| datetime.date       | .txt                     | ❌                       |
-| datetime.time       | .txt                     | ❌                       |
-| pathlib.Path        | .txt                     | ❌                       |
-| decimal.Decimal     | .txt                     | ❌                       |
-| uuid.UUID           | .txt                     | ❌                       |
-| pydantic.BaseModel  | .json                    | ❌                       |
-| python dataclasses  | .json                    | ❌                       |
+- Built-in types: str, int, float, bool, None
+- Collections: list, tuple, set, dict
+- NumPy arrays and pandas DataFrames (with optional dependencies)
+- Custom classes (with jsonpickle support)
 
+It is also possible to serialize objects yourself and provide them as a string or bytes data. Then it will be stored and loaded as-is. This means that with snappylapy it is possible to serialize and deserialize any Python object, even those not natively supported.
 
-
----  
-   
 Snappylapy is your go-to tool for efficient and reliable snapshot testing in Python. By maintaining clear boundaries between different parts of your code, Snappylapy helps you isolate errors, streamline debugging, and ensure your code remains robust and maintainable.
 
 ## Contributing

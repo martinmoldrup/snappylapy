@@ -3,6 +3,7 @@
 import re
 import typer
 import pathlib
+import subprocess  # noqa: S404
 from enum import Enum
 from snappylapy._utils_directories import DirectoryNamesUtil
 from snappylapy.constants import DIRECTORY_NAMES
@@ -102,6 +103,35 @@ def update() -> None:
         typer.echo(f"Updated snapshot: {snapshot_file}")
 
 
+@app.command()
+def diff() -> None:
+    """Show the differences between the test results and the snapshots."""
+    files_test_results = DirectoryNamesUtil().get_all_file_paths_test_results()
+    file_statuses = check_file_statuses(files_test_results)
+    files_to_diff = [file for file, status in file_statuses.items() if status == FileStatus.CHANGED]
+    if not files_to_diff:
+        status_counts: dict[FileStatus, int] = dict.fromkeys(FileStatus, 0)
+        for status in file_statuses.values():
+            status_counts[status] += 1
+
+        typer.secho("File status counts:", underline=True, bold=True)
+        for status, count in status_counts.items():
+            typer.echo(f"- {status.value}: {count} file(s)")
+        typer.echo("No files have changed, not opening any diffs.")
+        return
+    typer.echo(f"Opening diffs for {len(files_to_diff)} changed files.")
+    for file in files_to_diff:
+        snapshot_file = file.parent.parent / DIRECTORY_NAMES.snapshot_dir_name / file.name
+        success: bool = _try_open_diff(file, snapshot_file)
+        if not success:
+            typer.secho(
+                f"Could not open diff tool. Files to compare:\n"
+                f"  Test result: {file.resolve()}\n"
+                f"  Snapshot:    {snapshot_file.resolve()}",
+                fg=typer.colors.YELLOW,
+            )
+
+
 def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
     """Delete files."""
     # Delete files
@@ -114,6 +144,29 @@ def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
     ]:
         for root_dir in pathlib.Path().rglob(dir_name):
             root_dir.rmdir()
+
+
+def _try_open_diff(file1: pathlib.Path, file2: pathlib.Path) -> bool:
+    """Try to open diff using available tools, return True if successful."""
+    diff_commands: list[list[str]] = [
+        ["code", "--diff", str(file1.resolve()), str(file2.resolve())],
+        ["code.cmd", "--diff", str(file1.resolve()), str(file2.resolve())],  # Windows alternative
+    ]
+
+    for command in diff_commands:
+        try:
+            subprocess.run(command, check=True, timeout=10)  # noqa: S603 - shell=False and args as list, safe usage
+        except subprocess.TimeoutExpired:  # noqa: PERF203
+            typer.secho(
+                f"Diff tool timed out for command: {' '.join(command)}",
+                fg=typer.colors.RED,
+            )
+            continue
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            continue
+        else:
+            return True
+    return False
 
 
 class FileStatus(Enum):

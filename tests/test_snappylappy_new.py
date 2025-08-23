@@ -7,14 +7,13 @@ def test_snapshot_string(expect: Expect):
     """Test snapshot with string data."""
     expect.string("Hello World").to_match_snapshot()
 
-def test_unsupported_type(expect: Expect):
-    """Test snapshot with unsupported type."""
-    class Unsupported:
-        """An unsupported type for snapshot."""
+def test_custom_type(expect: Expect):
+    """Test snapshot with a custom type."""
+    class CustomObject:
+        """A custom type for snapshot."""
         pass
 
-    with pytest.raises(TypeError):
-        expect(Unsupported())
+    expect(CustomObject()).to_match_snapshot()
 
 def test_snapshot_bytes(expect: Expect):
     """Test snapshot with bytes data."""
