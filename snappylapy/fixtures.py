@@ -286,7 +286,7 @@ class Expect:
         name: str | None = None,
         filetype: str | None = None,
     ) -> DictExpect | ListExpect | StringExpect | BytesExpect | DataframeExpect | ObjectExpect:
-        """Call the fixture with the given parameters. Falls back to dict handler for custom objects."""
+        """Call the fixture with the given parameters. Falls back to object handler for custom objects."""
         kwargs: dict[str, str] = {}
         if name is not None:
             kwargs["name"] = name

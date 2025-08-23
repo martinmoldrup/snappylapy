@@ -52,7 +52,9 @@ class BaseSnapshot(ABC, Generic[T]):
                                     self.settings.filename)
         try:
             snapshot_data_str = snapshot_data.decode()
+            snapshot_data_str = snapshot_data_str.replace("\r\n", "\n").replace("\r", "\n")  # Normalize all line endings to LF
             test_data_str = test_data.decode()
+            test_data_str = test_data_str.replace("\r\n", "\n").replace("\r", "\n")  # Normalize all line endings to LF
             assert snapshot_data_str == test_data_str
         except AssertionError as error:
             if self.settings.snapshot_update:

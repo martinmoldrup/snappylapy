@@ -121,16 +121,14 @@ def diff() -> None:
     typer.echo(f"Opening diffs for {len(files_to_diff)} changed files.")
     for file in files_to_diff:
         snapshot_file = file.parent.parent / DIRECTORY_NAMES.snapshot_dir_name / file.name
-        command = [
-            "code",
-            "--diff",
-            file.resolve().as_posix(),
-            snapshot_file.resolve().as_posix(),
-        ]
-        typer.echo("Running command:")
-        typer.echo(" ".join(command))
-        # Run the command
-        subprocess.run(" ".join(command), shell=True)
+        success: bool = _try_open_diff(file, snapshot_file)
+        if not success:
+            typer.secho(
+                f"Could not open diff tool. Files to compare:\n"
+                f"  Test result: {file.resolve()}\n"
+                f"  Snapshot:    {snapshot_file.resolve()}",
+                fg=typer.colors.YELLOW,
+            )
 
 def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
     """Delete files."""
@@ -145,6 +143,21 @@ def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
         for root_dir in pathlib.Path().rglob(dir_name):
             root_dir.rmdir()
 
+def _try_open_diff(file1: pathlib.Path, file2: pathlib.Path) -> bool:
+    """Try to open diff using available tools, return True if successful."""
+    diff_commands: list[list[str]] = [
+        ["code", "--diff", str(file1.resolve()), str(file2.resolve())],
+        ["code.cmd", "--diff", str(file1.resolve()), str(file2.resolve())],  # Windows alternative
+    ]
+
+    for command in diff_commands:
+        try:
+            subprocess.run(command, check=True)  # noqa: S603
+        except (subprocess.CalledProcessError, FileNotFoundError):  # noqa: PERF203
+            continue
+        else:
+            return True
+    return False
 
 class FileStatus(Enum):
     """Enum to represent the status of a file."""
