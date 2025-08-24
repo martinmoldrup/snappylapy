@@ -1,7 +1,9 @@
 """Base class for snapshot testing."""
+
 from __future__ import annotations
 
 import pathlib
+import Levenshtein
 from abc import ABC, abstractmethod
 from snappylapy.models import Settings
 from snappylapy.serialization import Serializer
@@ -10,6 +12,17 @@ from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
+LARGE_DIFF_DISABLE_ASSERTION_REWRITES_ON_DISTANCE = 100
+LARGE_DIFF_CHARACTER_THRESHOLD = 10_000
+
+
+def calculate_difference_two_strings(a: str, b: str) -> int:
+    """
+    Approximate string difference.
+
+    This is an gross approximation and may not reflect true semantic differences.
+    """
+    return Levenshtein.distance(a, b, score_cutoff=LARGE_DIFF_DISABLE_ASSERTION_REWRITES_ON_DISTANCE)
 
 class BaseSnapshot(ABC, Generic[T]):
     """Base class for snapshot testing."""
@@ -41,35 +54,56 @@ class BaseSnapshot(ABC, Generic[T]):
             if not self.settings.snapshot_update:
                 error_msg = f"Snapshot file not found: {self.settings.filename}, run 'snappylapy update' command in the terminal, or run pytest with the --snapshot-update flag to create it."  # noqa: E501
                 raise FileNotFoundError(error_msg)
-            self.snappylapy_session.add_created_snapshot(
-                self.settings.filename)
+            self.snappylapy_session.add_created_snapshot(self.settings.filename)
             self._update_snapshot()
             return
 
-        snapshot_data = self._read_file(self.settings.snapshot_dir /
-                                        self.settings.filename)
-        test_data = self._read_file(self.settings.test_results_dir /
-                                    self.settings.filename)
+        snapshot_data = self._read_file(self.settings.snapshot_dir / self.settings.filename)
+        test_data = self._read_file(self.settings.test_results_dir / self.settings.filename)
         try:
-            snapshot_data_str = snapshot_data.decode()
-            snapshot_data_str = snapshot_data_str.replace("\r\n", "\n").replace("\r", "\n")
-            test_data_str = test_data.decode()
-            test_data_str = test_data_str.replace("\r\n", "\n").replace("\r", "\n")
-            assert snapshot_data_str == test_data_str
+            self.compare_snapshot_data(snapshot_data, test_data)
         except AssertionError as error:
             if self.settings.snapshot_update:
-                self.snappylapy_session.add_updated_snapshot(
-                    self.settings.filename)
+                self.snappylapy_session.add_updated_snapshot(self.settings.filename)
                 self._update_snapshot()
             else:
-                self.snappylapy_session.add_snapshot_test_failed(
-                    self.settings.filename)
+                self.snappylapy_session.add_snapshot_test_failed(self.settings.filename)
                 diff_msg = str(error)
                 error_msg = f"Snapshot does not match test results. Run pytest with the --snapshot-update flag to update the snapshot.\n{diff_msg}"  # noqa: E501
                 raise AssertionError(error_msg)  # noqa: B904
         else:
-            self.snappylapy_session.add_snapshot_test_succeeded(
-                self.settings.filename)
+            self.snappylapy_session.add_snapshot_test_succeeded(self.settings.filename)
+
+    def compare_snapshot_data(self, snapshot_data: bytes, test_data: bytes) -> None:
+        """
+        Compare snapshot data with test data.
+
+        Optimizations is needed for large data since difflib used in the pytest_assertion plugin rewrites are very slow
+        when there are many diffs in large strings.
+        """
+        snapshot_data_str = snapshot_data.decode()
+        snapshot_data_str = snapshot_data_str.replace("\r\n", "\n").replace("\r", "\n")
+        test_data_str = test_data.decode()
+        test_data_str = test_data_str.replace("\r\n", "\n").replace("\r", "\n")
+        if (
+            len(snapshot_data_str) > LARGE_DIFF_CHARACTER_THRESHOLD
+            or len(test_data_str) > LARGE_DIFF_CHARACTER_THRESHOLD
+        ):
+            distance = Levenshtein.distance(
+                snapshot_data_str,
+                test_data_str,
+                score_cutoff=LARGE_DIFF_DISABLE_ASSERTION_REWRITES_ON_DISTANCE,
+            )
+            if distance < LARGE_DIFF_DISABLE_ASSERTION_REWRITES_ON_DISTANCE:
+                assert snapshot_data_str == test_data_str
+            if snapshot_data_str != test_data_str:
+                msg = (
+                    "Snapshots are not matching. Data is too large to show differences. "
+                    "Instead use the 'snappylapy diff' command to see the differences."
+                )
+                raise AssertionError(msg)
+        else:
+            assert snapshot_data_str == test_data_str
 
     def _prepare_test(self, data: T, name: str | None, extension: str) -> None:
         """Prepare and save test results."""
@@ -80,7 +114,7 @@ class BaseSnapshot(ABC, Generic[T]):
         file_path = self.settings.test_results_dir / self.settings.filename
         file_path.parent.mkdir(parents=True, exist_ok=True)
         self._save_test_results(file_path, data)
-
+ 
     def _update_snapshot(self) -> None:
         """Write test results to the snapshot file."""
         snap_path = self.settings.snapshot_dir / self.settings.filename
