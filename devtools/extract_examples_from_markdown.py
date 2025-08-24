@@ -1,6 +1,7 @@
 """Read the markdown file and extract all the code blocks and put them into tests."""
-import pathlib
 import re
+import pathlib
+from toolit import tool
 
 codeblock_opening = r'^```python'
 codeblock_closing = r'^```'
@@ -35,10 +36,13 @@ def save_codeblocks(code_blocks: list[str], save_dir: pathlib.Path) -> None:
         with (save_dir / f"example_{i}.py").open("w", encoding="utf-8") as file:
             file.write(block)
 
-code_blocks = extract_codeblocks(PATH)
+@tool
+def extract_examples_from_markdown() -> None:
+    """Extract examples from code blocks."""
+    code_blocks = extract_codeblocks(PATH)
 
-# Delete everything in the save directory
-for file in PATH_SAVE_DIR.iterdir():
-    file.unlink()
+    # Delete everything in the save directory
+    for file in PATH_SAVE_DIR.iterdir():
+        file.unlink()
 
-save_codeblocks(code_blocks, PATH_SAVE_DIR)
+    save_codeblocks(code_blocks, PATH_SAVE_DIR)
