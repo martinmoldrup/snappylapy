@@ -67,7 +67,7 @@ class Expect:
         snappylapy_session: SnapshotSession,
         snappylapy_settings: Settings,
     ) -> None:
-        """Initialize the snapshot testing."""
+        """"""  # noqa: D419, blank, since used in doc generation
         self.settings = snappylapy_settings
 
         self.dict = DictExpect(self.settings, snappylapy_session)
@@ -77,17 +77,14 @@ class Expect:
 
         Parameters
         ----------
-        data_to_snapshot : dict
-            The dictionary data to be snapshotted.
-        name : str, optional
-            The name of the snapshot, by default "".
-        filetype : str, optional
-            The file type of the snapshot, by default "dict.json".
+        - `data_to_snapshot` (`dict`): The dictionary data to be snapshotted.
+        - `name` (`str`, optional): The name of the snapshot".
+        - `filetype` (`str`, optional): The file type of the snapshot, by default "dict.json".
 
         Returns
         -------
         DictExpect
-            The instance of the DictExpect class.
+        - `DictExpect`: The instance of the DictExpect class.
 
         Example
         -------
@@ -104,17 +101,14 @@ class Expect:
 
         Parameters
         ----------
-        data_to_snapshot : list
-            The list data to be snapshotted.
-        name : str, optional
-            The name of the snapshot, by default "".
-        filetype : str, optional
-            The file type of the snapshot, by default "list.json".
+        - `data_to_snapshot` (`list`): The list data to be snapshotted.
+        - `name` (`str`, optional): The name of the snapshot.
+        - `filetype` (`str`, optional): The file type of the snapshot, by default "list.json".
 
         Returns
         -------
         ListExpect
-            The instance of the ListExpect class.
+        - `ListExpect`: The instance of the ListExpect class.
 
         Example
         -------
@@ -130,17 +124,14 @@ class Expect:
 
         Parameters
         ----------
-        data_to_snapshot : str
-            The string data to be snapshotted.
-        name : str, optional
-            The name of the snapshot, by default "".
-        filetype : str, optional
-            The file type of the snapshot, by default "string.txt".
+        - `data_to_snapshot` (`str`): The string data to be snapshotted.
+        - `name` (`str`, optional): The name of the snapshot.
+        - `filetype` (`str`, optional): The file type of the snapshot, by default "string.txt".
 
         Returns
         -------
         StringExpect
-            The instance of the StringExpect class.
+        - `StringExpect`: The instance of the StringExpect class.
 
         Example
         -------
@@ -156,17 +147,14 @@ class Expect:
 
         Parameters
         ----------
-        data_to_snapshot : bytes
-            The bytes data to be snapshotted.
-        name : str, optional
-            The name of the snapshot, by default "".
-        filetype : str, optional
-            The file type of the snapshot, by default "bytes.txt".
+        - `data_to_snapshot` (`bytes`): The bytes data to be snapshotted.
+        - `name` (`str`, optional): The name of the snapshot.
+        - `filetype` (`str`, optional): The file type of the snapshot, by default "bytes.txt".
 
         Returns
         -------
         BytesExpect
-            The instance of the BytesExpect class.
+        - `BytesExpect`: The instance of the BytesExpect class.
 
         Example
         -------
@@ -182,18 +170,14 @@ class Expect:
 
         Parameters
         ----------
-        data_to_snapshot : pd.DataFrame
-            The dataframe data to be snapshotted.
-        name : str, optional
-            The name of the snapshot, by default "".
-        filetype : str, optional
-            The file type of the snapshot, by default "dataframe.json".
+        - `data_to_snapshot` (`pd.DataFrame`): The dataframe data to be snapshotted.
+        - `name` (`str`, optional): The name of the snapshot.
+        - `filetype` (`str`, optional): The file type of the snapshot, by default "dataframe.json".
 
         Returns
         -------
         DataframeExpect
-            The instance of the DataframeExpect class.
-            This class can be used for doing actual expectations on the dataframe.
+        - `DataframeExpect`: The instance of the DataframeExpect class.
 
         Example
         -------
@@ -213,17 +197,14 @@ class Expect:
 
         Parameters
         ----------
-        data_to_snapshot : object
-            The object data to be snapshotted.
-        name : str, optional
-            The name of the snapshot, by default "".
-        filetype : str, optional
-            The file type of the snapshot, by default "object.json".
+        - `data_to_snapshot` (`object`): The object data to be snapshotted.
+        - `name` (`str`, optional): The name of the snapshot.
+        - `filetype` (`str`, optional): The file type of the snapshot, by default "object.json".
 
         Returns
         -------
         ObjectExpect
-            The instance of the ObjectExpect class.
+        - `ObjectExpect`: The instance of the ObjectExpect class.
 
         Example
         -------
@@ -231,14 +212,6 @@ class Expect:
         expect.object({"key": "value"}).to_match_snapshot()
         ```
         """
-
-    def read_snapshot(self) -> bytes:
-        """Read the snapshot file."""
-        return (self.settings.snapshot_dir / self.settings.filename).read_bytes()
-
-    def read_test_results(self) -> bytes:
-        """Read the test results file."""
-        return (self.settings.test_results_dir / self.settings.filename).read_bytes()
 
     @overload
     def __call__(self, data_to_snapshot: dict, name: str | None = None, filetype: str | None = None) -> DictExpect: ...
@@ -314,12 +287,25 @@ class Expect:
         # Fallback: treat custom objects as dicts for snapshotting
         return self.object(data_to_snapshot, **kwargs)
 
+    def _read_snapshot(self) -> bytes:
+        """Read the snapshot file."""
+        return (self.settings.snapshot_dir / self.settings.filename).read_bytes()
+
+    def _read_test_results(self) -> bytes:
+        """Read the test results file."""
+        return (self.settings.test_results_dir / self.settings.filename).read_bytes()
+
 
 class LoadSnapshot:
-    """Snapshot loading class."""
+    """
+    Snapshot loading class.
+
+    This class provides methods to load snapshots created by other tests.
+    Each method loads and deserializes a specific type of snapshot.
+    """
 
     def __init__(self, settings: Settings) -> None:
-        """Initialize the snapshot loading."""
+        """Do not initialize the LoadSnapshot class directly, should be used through the `load_snapshot` fixture in pytest."""  # noqa: E501
         self.settings = settings
 
     def _read_snapshot(self) -> bytes:
@@ -334,27 +320,94 @@ class LoadSnapshot:
         ).read_bytes()
 
     def dict(self) -> dict:
-        """Load dictionary snapshot."""
+        """
+        Load dictionary snapshot.
+
+        Use this method to load a dictionary snapshot that was created in a previous test.
+        This is useful for reusing test data, isolating dependencies, and verifying integration between components.
+
+        Example usage:
+        --------------
+        ```python
+        from snappylapy import LoadSnapshot
+
+        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+            data: dict = load_snapshot.dict()
+            # data is read and deserialized from the __snapshots__ directory
+        ```
+        """
         self.settings.depending_filename_extension = "dict.json"
         return JsonPickleSerializer[dict]().deserialize(self._read_snapshot())
 
     def list(self) -> list[Any]:
-        """Load list snapshot."""
+        """
+        Load list snapshot.
+
+        Use this method to load a list snapshot that was created in a previous test.
+        This is useful for reusing test data, isolating dependencies, and verifying integration between components.
+
+        Example usage:
+        --------------
+        ```python
+        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+            data: list[Any] = load_snapshot.list()
+            # data is read and deserialized from the __snapshots__ directory
+        ```
+        """
         self.settings.depending_filename_extension = "list.json"
         return JsonPickleSerializer[list[Any]]().deserialize(self._read_snapshot())
 
     def string(self) -> str:
-        """Load string snapshot."""
+        """
+        Load string snapshot.
+
+        Use this method to load a string snapshot that was created in a previous test.
+        This is useful for reusing test data, isolating dependencies, and verifying integration between components.
+
+        Example usage:
+        --------------
+        ```python
+        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+            data: str = load_snapshot.string()
+            # data is read and deserialized from the __snapshots__ directory
+        ```
+        """
         self.settings.depending_filename_extension = "string.txt"
         return StringSerializer().deserialize(self._read_snapshot())
 
     def bytes(self) -> bytes:
-        """Load bytes snapshot."""
+        """
+        Load bytes snapshot.
+
+        Use this method to load a bytes snapshot that was created in a previous test.
+        This is useful for reusing test data, isolating dependencies, and verifying integration between components.
+
+        Example usage:
+        --------------
+        ```python
+        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+            data: bytes = load_snapshot.bytes()
+            # data is read and deserialized from the __snapshots__ directory
+        ```
+        """
         self.settings.depending_filename_extension = "bytes.txt"
         return BytesSerializer().deserialize(self._read_snapshot())
 
     def dataframe(self) -> DataframeExpect.DataFrame:
-        """Load dataframe snapshot."""
+        """
+        Load dataframe snapshot.
+
+        Use this method to load a dataframe snapshot that was created in a previous test.
+        This is useful for reusing test data, isolating dependencies, and verifying integration between components.
+
+        Example usage:
+        --------------
+        ```python
+        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+            df: pd.DataFrame = load_snapshot.dataframe()
+            # df is read and deserialized from the __snapshots__ directory
+        ```
+        """
         self.settings.depending_filename_extension = "dataframe.json"
         return DataframeExpect.DataFrame(
             JsonPickleSerializer[DataframeExpect.DataFrame]().deserialize(self._read_snapshot()),

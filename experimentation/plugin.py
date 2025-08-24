@@ -59,8 +59,8 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config) -> None:
         html_string = jinja2.Template(HTML_REPORT_TEMPLATE.read_text()).render(results=results)
         pathlib.Path(htmlpath).write_text(html_string)
         for result in results:
-            snapshot = result.expect.read_snapshot()
-            result_data = result.expect.read_test_results()
+            snapshot = result.expect._read_snapshot()
+            result_data = result.expect._read_test_results()
             # diff = dmp.diff_main(snapshot.decode(), result_data.decode())
             # dmp.diff_cleanupSemantic(diff)
             # result_html = dmp.diff_prettyHtml(diff)

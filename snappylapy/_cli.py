@@ -11,15 +11,28 @@ from snappylapy.constants import DIRECTORY_NAMES
 app = typer.Typer(
     no_args_is_help=True,
     help="""
-    The CLI provides commands to initialize the repo and to update or clear test results and snapshots.
-    In the future the future the CLI will be expanded with review.
-    """,
+    Welcome to the snappylapy CLI!
+
+    Use these commands to initialize your repository, update or clear test results and snapshots, 
+    and review differences between your test results and snapshots using the 'diff' command.
+
+    - Run 'init' to set up your repo for snappylapy.
+    - Use 'update' to refresh snapshots with the latest test results.
+    - Use 'clear' to remove all test results and snapshots (add --force to skip confirmation).
+    - Use 'diff' to view changes between test results and snapshots in your editor.
+
+    For more details on each command, use --help after the command name.
+    """
 )
 
 
 @app.command()
 def init() -> None:
-    """Initialize repo by adding line to .gitignore."""
+    """
+    Run this command to initialize your repository for snappylapy.
+
+    This will add a line to your .gitignore file to ensure test results are not tracked by git.
+    """
     # Check if .gitignore exists
     gitignore_path = pathlib.Path(".gitignore")
     if not gitignore_path.exists():
@@ -49,7 +62,14 @@ def clear(
         help="Force deletion without confirmation",
     ),
 ) -> None:
-    """Clear all test results and snapshots, recursively, using pathlib."""
+    """
+    Use this command to clear all test results and snapshots created by snappylapy.
+
+    This will recursively delete all files and directories related to test results and snapshots.
+    Use --force to skip confirmation.
+
+    This finds and deletes all __test_results__ and __snapshots__ directories recursively across the working directory.
+    """
     directories_to_delete = DirectoryNamesUtil().get_all_directories_created_by_snappylapy()
     list_of_files_to_delete = DirectoryNamesUtil().get_all_file_paths_created_by_snappylapy()
     if not list_of_files_to_delete:
@@ -80,7 +100,13 @@ def clear(
 
 @app.command()
 def update() -> None:
-    """Update the snapshot files by copying the test results, to the snapshot directory."""
+    """
+    Use this command to update all snapshot files with the latest test results.
+
+    This will overwrite existing snapshots with current test outputs, ensuring your snapshots reflect the latest changes.
+
+    The file contents of any files in any of the __test_results__ folders will be copied to the corresponding __snapshots__ folder.
+    """  # noqa: E501
     files_test_results = DirectoryNamesUtil().get_all_file_paths_test_results()
     if not files_test_results:
         typer.echo("No files to update.")
@@ -105,7 +131,14 @@ def update() -> None:
 
 @app.command()
 def diff() -> None:
-    """Show the differences between the test results and the snapshots."""
+    """
+    Show the differences between the test results and the snapshots.
+
+    Opens all of the changed diffs in the Visual Studio Code (VSCode) editor.
+    This requires that you have VSCode installed and the `code` command available in your PATH.
+
+    More diff viewers will be supported in the future, please raise a request on github with your needs.
+    """
     files_test_results = DirectoryNamesUtil().get_all_file_paths_test_results()
     file_statuses = check_file_statuses(files_test_results)
     files_to_diff = [file for file, status in file_statuses.items() if status == FileStatus.CHANGED]
