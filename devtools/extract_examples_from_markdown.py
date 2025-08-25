@@ -9,7 +9,7 @@ codeblock_closing = r'^\s*```'
 
 PATH = pathlib.Path("snappylapy")
 ADDITIONAL_PATHS = [
-    pathlib.Path(__file__).parent.parent / "README.md",
+    pathlib.Path(".") / "README.md",
 ]
 PATH_SAVE_DIR = pathlib.Path(__file__).parent.parent / "tests" / "doc_examples"
 
@@ -27,7 +27,7 @@ class CodeBlockBuilder:
         self.name = name
 
     def add_line(self, line_cleaned: str) -> None:
-        line_cleaned = line_cleaned[len(self.indent_chars):]
+        line_cleaned = line_cleaned[len(self.indent_chars):].strip("\n\r")
         self.lines.append(line_cleaned)
 
     def _extract_indent(self, line: str) -> str:

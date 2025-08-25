@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 *NOTE:* Version 0.X.X might have breaking changes in bumps of the minor version number. This is because the project is still in early development and the API is not yet stable. It will still be marked clearly in the release notes.
 
-## [0.6.1] - 2025-08-24
+## [0.6.1] - 2025-08-25
 - 🐞 Improve the handling of comparing large snapshots with test results. Snappylapy should be working well on large data structures. Disable the pytest assertion rewrite for large comparisons.
 
 ## [0.6.0] - 2025-08-23

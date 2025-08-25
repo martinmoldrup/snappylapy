@@ -68,8 +68,10 @@ def generate_summary(nav: mkdocs_gen_files.Nav) -> None:
     with mkdocs_gen_files.open("reference/SUMMARY.md", "w") as nav_file:
         nav_file.writelines(nav.build_literate_nav())
 
-
+print("Generating reference documentation...")
 generate_cli_docs()
 nav = mkdocs_gen_files.Nav()
+print("Generating documentation for Python files...")
 generate_documentation_for_py_files(nav)
+print("Generating summary...")
 generate_summary(nav)

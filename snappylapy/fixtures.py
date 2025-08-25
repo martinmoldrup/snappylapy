@@ -79,8 +79,13 @@ class Expect:
         -------
         `test_fixture_expect_dict.py`
         ```python
-        expect.dict({"key": "value"}).to_match_snapshot()
-        expect.dict({"key": "value"}, name="snapshot_name", filetype="json").to_match_snapshot()
+        import pytest
+        from snappylapy.fixtures import Expect
+
+        def test_expect_dict(expect: Expect) -> None:
+            data: dict[str, str] = {"key": "value"}
+            expect.dict(data).to_match_snapshot()
+            expect.dict(data, name="snapshot_name", filetype="dict.json").to_match_snapshot()
         ```
         """
 
@@ -104,7 +109,12 @@ class Expect:
         -------
         `test_fixture_expect_list.py`
         ```python
-        expect.list([1, 2, 3]).to_match_snapshot()
+        import pytest
+        from snappylapy.fixtures import Expect
+
+        def test_expect_list(expect: Expect) -> None:
+            data: list[int] = [1, 2, 3]
+            expect.list(data).to_match_snapshot()
         ```
         """
 
@@ -128,7 +138,12 @@ class Expect:
         -------
         `test_fixture_expect_string.py`
         ```python
-        expect.string("Hello, World!").to_match_snapshot()
+        import pytest
+        from snappylapy.fixtures import Expect
+
+        def test_expect_string(expect: Expect) -> None:
+            data: str = "Hello, World!"
+            expect.string(data).to_match_snapshot()
         ```
         """
 
@@ -152,7 +167,12 @@ class Expect:
         -------
         `test_fixture_expect_bytes.py`
         ```python
-        expect.bytes(b"binary data").to_match_snapshot()
+        import pytest
+        from snappylapy.fixtures import Expect
+
+        def test_expect_bytes(expect: Expect) -> None:
+            data: bytes = b"binary data"
+            expect.bytes(data).to_match_snapshot()
         ```
         """
 
@@ -176,10 +196,12 @@ class Expect:
         -------
         `test_fixture_expect_dataframe.py`
         ```python
+        import pytest
         import pandas as pd
         from snappylapy.fixtures import Expect
-        def test_dataframe(expect: Expect) -> None:
-            df = pd.DataFrame({"key": ["value1", "value2"]})
+
+        def test_expect_dataframe(expect: Expect) -> None:
+            df: pd.DataFrame = pd.DataFrame({"key": ["value1", "value2"]})
             expect.dataframe(df).to_match_snapshot()
         ```
         """
@@ -204,7 +226,12 @@ class Expect:
         -------
         `test_fixture_expect_object.py`
         ```python
-        expect.object({"key": "value"}).to_match_snapshot()
+        import pytest
+        from snappylapy.fixtures import Expect
+
+        def test_expect_object(expect: Expect) -> None:
+            obj: dict[str, str] = {"key": "value"}
+            expect.object(obj).to_match_snapshot()
         ```
         """
 
@@ -314,7 +341,7 @@ class LoadSnapshot:
             / self.settings.depending_filename
         ).read_bytes()
 
-    def dict(self) -> dict:
+    def dict(self) -> dict[str, int]:
         """
         Load dictionary snapshot.
 
@@ -325,11 +352,21 @@ class LoadSnapshot:
         --------------
         `test_load_snapshot_from_file_dict.py`
         ```python
-        from snappylapy import LoadSnapshot
+        import pytest
+        from snappylapy.fixtures import LoadSnapshot, Expect
 
-        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
-            data: dict = load_snapshot.dict()
-            # data is read and deserialized from the __snapshots__ directory
+        def create_dict() -> dict[str, int]:
+            return {"apples": 3, "bananas": 5}
+
+        def test_save_dict_snapshot(expect: Expect) -> None:
+            data: dict[str, int] = create_dict()
+            expect(data).to_match_snapshot()
+
+        @pytest.mark.snappylapy(depends=[test_save_dict_snapshot])
+        def test_load_snapshot_dict(load_snapshot: LoadSnapshot) -> None:
+            data: dict[str, int] = load_snapshot.dict()
+            assert data["apples"] == 3
+            assert data["bananas"] == 5
         ```
         """
         self.settings.depending_filename_extension = "dict.json"
@@ -346,9 +383,26 @@ class LoadSnapshot:
         --------------
         `test_load_snapshot_from_file_list.py`
         ```python
-        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+        import pytest
+        from typing import Any
+        from snappylapy import LoadSnapshot, Expect
+
+        def transform_data(data: list) -> list:
+            return [x * 2 for x in data]
+
+        def next_transformation(data: list) -> list:
+            return [x + 1 for x in data]
+
+        def test_transform_data(expect: Expect) -> None:
+            data = [1, 2, 3]
+            result = transform_data(data)
+            expect(result).to_match_snapshot()
+
+        @pytest.mark.snappylapy(depends=[test_transform_data])
+        def test_next_transformation(load_snapshot: LoadSnapshot, expect: Expect) -> None:
             data: list[Any] = load_snapshot.list()
-            # data is read and deserialized from the __snapshots__ directory
+            result = next_transformation(data)
+            expect(result).to_match_snapshot()
         ```
         """
         self.settings.depending_filename_extension = "list.json"
@@ -365,9 +419,17 @@ class LoadSnapshot:
         --------------
         `test_load_snapshot_from_file_string.py`
         ```python
-        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+        import pytest
+        from snappylapy.fixtures import LoadSnapshot, Expect
+
+        def test_save_string_snapshot(expect: Expect) -> None:
+            message: str = "Hello, pytest!"
+            expect(message).to_match_snapshot()
+
+        @pytest.mark.snappylapy(depends=[test_save_string_snapshot])
+        def test_load_snapshot_string(load_snapshot: LoadSnapshot) -> None:
             data: str = load_snapshot.string()
-            # data is read and deserialized from the __snapshots__ directory
+            assert data == "Hello, pytest!"
         ```
         """
         self.settings.depending_filename_extension = "string.txt"
@@ -384,9 +446,17 @@ class LoadSnapshot:
         --------------
         `test_load_snapshot_from_file_bytes.py`
         ```python
-        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+        import pytest
+        from snappylapy.fixtures import LoadSnapshot, Expect
+
+        def test_save_bytes_snapshot(expect: Expect) -> None:
+            data: bytes = b"\x01\x02\x03"
+            expect(data).to_match_snapshot()
+
+        @pytest.mark.snappylapy(depends=[test_save_bytes_snapshot])
+        def test_load_snapshot_bytes(load_snapshot: LoadSnapshot) -> None:
             data: bytes = load_snapshot.bytes()
-            # data is read and deserialized from the __snapshots__ directory
+            assert data == b"\x01\x02\x03"
         ```
         """
         self.settings.depending_filename_extension = "bytes.txt"
@@ -403,9 +473,18 @@ class LoadSnapshot:
         --------------
         `test_load_snapshot_from_file_dataframe.py`
         ```python
-        def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
+        import pytest
+        import pandas as pd
+        from snappylapy.fixtures import LoadSnapshot, Expect
+
+        def test_save_dataframe_snapshot(expect: Expect) -> None:
+            df: pd.DataFrame = pd.DataFrame({"numbers": [1, 2, 3]})
+            expect(df).to_match_snapshot()
+
+        @pytest.mark.snappylapy(depends=[test_save_dataframe_snapshot])
+        def test_load_snapshot_dataframe(load_snapshot: LoadSnapshot) -> None:
             df: pd.DataFrame = load_snapshot.dataframe()
-            # df is read and deserialized from the __snapshots__ directory
+            assert df["numbers"].sum() == 6
         ```
         """
         self.settings.depending_filename_extension = "dataframe.json"
