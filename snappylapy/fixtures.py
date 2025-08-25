@@ -436,7 +436,7 @@ class LoadSnapshot:
         return StringSerializer().deserialize(self._read_snapshot())
 
     def bytes(self) -> bytes:
-        """
+        r"""
         Load bytes snapshot.
 
         Use this method to load a bytes snapshot that was created in a previous test.

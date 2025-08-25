@@ -13,7 +13,7 @@ app = typer.Typer(
     help="""
     Welcome to the snappylapy CLI!
 
-    Use these commands to initialize your repository, update or clear test results and snapshots, 
+    Use these commands to initialize your repository, update or clear test results and snapshots,
     and review differences between your test results and snapshots using the 'diff' command.
 
     - Run 'init' to set up your repo for snappylapy.
