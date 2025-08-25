@@ -20,9 +20,10 @@ def calculate_difference_two_strings(a: str, b: str) -> int:
     """
     Approximate string difference.
 
-    This is an gross approximation and may not reflect true semantic differences.
+    This is a gross approximation and may not reflect true semantic differences.
     """
     return Levenshtein.distance(a, b, score_cutoff=LARGE_DIFF_DISABLE_ASSERTION_REWRITES_ON_DISTANCE)
+
 
 class BaseSnapshot(ABC, Generic[T]):
     """Base class for snapshot testing."""
@@ -114,7 +115,7 @@ class BaseSnapshot(ABC, Generic[T]):
         file_path = self.settings.test_results_dir / self.settings.filename
         file_path.parent.mkdir(parents=True, exist_ok=True)
         self._save_test_results(file_path, data)
- 
+
     def _update_snapshot(self) -> None:
         """Write test results to the snapshot file."""
         snap_path = self.settings.snapshot_dir / self.settings.filename

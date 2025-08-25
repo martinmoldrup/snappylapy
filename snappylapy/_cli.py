@@ -22,7 +22,7 @@ app = typer.Typer(
     - Use 'diff' to view changes between test results and snapshots in your editor.
 
     For more details on each command, use --help after the command name.
-    """
+    """,
 )
 
 
