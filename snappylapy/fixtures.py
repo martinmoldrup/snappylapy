@@ -23,6 +23,7 @@ from .models import Settings
 from .serialization import (
     BytesSerializer,
     JsonPickleSerializer,
+    PandasCsvSerializer,
     StringSerializer,
 )
 from snappylapy.constants import DIRECTORY_NAMES
@@ -341,7 +342,7 @@ class LoadSnapshot:
             / self.settings.depending_filename
         ).read_bytes()
 
-    def dict(self) -> dict[str, int]:
+    def dict(self) -> dict[Any, Any]:
         """
         Load dictionary snapshot.
 
@@ -487,7 +488,5 @@ class LoadSnapshot:
             assert df["numbers"].sum() == 6
         ```
         """
-        self.settings.depending_filename_extension = "dataframe.json"
-        return DataframeExpect.DataFrame(
-            JsonPickleSerializer[DataframeExpect.DataFrame]().deserialize(self._read_snapshot()),
-        )
+        self.settings.depending_filename_extension = "dataframe.csv"
+        return PandasCsvSerializer().deserialize(self._read_snapshot())
