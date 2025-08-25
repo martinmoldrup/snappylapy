@@ -39,22 +39,23 @@ Registers fixtures:
 Supported data types
 - .txt ✅
 - .json ✅
-- .csv ❌
+- .csv ✅
 - .yaml ❌
 - .jsonl ❌
+TODO: Make it configurable.
 
 Planned data types:
 
 | Python Type         | Default Output file type | Implementation Status     |
 |---------------------|--------------------------|---------------------------|
 | bytes               | .txt                     | ✅                       |
-| pd.DataFrame        | .csv                     | ✅ (missing csv support) |
+| pd.DataFrame        | .csv                     | ✅                       |
 | pd.Series           | .csv                     | ❌                       |
 | np.ndarray          | .csv                     | ❌                       |
 | dict                | .json                    | ✅                       |
 | list                | .json                    | ✅                       |
-| tuple               | .json                    | ❌                       |
-| set                 | .json                    | ❌                       |
+| tuple               | .json                    | ✅ Needs testing         |
+| set                 | .json                    | ✅ Needs testing         |
 | str                 | .txt                     | ✅                       |
 | int                 | .txt                     | ❌                       |
 | float               | .txt                     | ❌                       |
@@ -65,7 +66,7 @@ Planned data types:
 | pathlib.Path        | .txt                     | ❌                       |
 | decimal.Decimal     | .txt                     | ❌                       |
 | uuid.UUID           | .txt                     | ❌                       |
-| pydantic.BaseModel  | .json                    | ❌                       |
-| python dataclasses  | .json                    | ❌                       |
+| pydantic.BaseModel  | .json                    | ✅ Needs testing         |
+| python dataclasses  | .json                    | ✅ Needs testing         |
 
 todo: Update and check how many of these are actually supported with the generic jsonpickle updates.

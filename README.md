@@ -109,6 +109,7 @@ Registers pytest fixtures:
 Supported data types
 - ✅ .txt - if you provide a string
 - ✅ .json - for all other objects
+- ✅ .csv - for pandas DataFrames
 - ✅ custom (decode the data yourself and provide a file extension)
 
 ### Supported data types to snapshot test
