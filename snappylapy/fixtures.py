@@ -49,17 +49,6 @@ class Expect:
 
     Do not instantiate this class directly, instead use the `expect` fixture provided by pytest.
     Use this class as a type hint for the `expect` fixture.
-
-    Example:
-    -------
-    ```python
-    from snappylapy.fixtures import Expect
-
-
-    def test_example(expect: Expect) -> None:
-        expect.dict({"key": "value"}).to_match_snapshot()
-    ```
-
     """
 
     def __init__(
@@ -88,6 +77,7 @@ class Expect:
 
         Example
         -------
+        `test_fixture_expect_dict.py`
         ```python
         expect.dict({"key": "value"}).to_match_snapshot()
         expect.dict({"key": "value"}, name="snapshot_name", filetype="json").to_match_snapshot()
@@ -112,6 +102,7 @@ class Expect:
 
         Example
         -------
+        `test_fixture_expect_list.py`
         ```python
         expect.list([1, 2, 3]).to_match_snapshot()
         ```
@@ -135,6 +126,7 @@ class Expect:
 
         Example
         -------
+        `test_fixture_expect_string.py`
         ```python
         expect.string("Hello, World!").to_match_snapshot()
         ```
@@ -158,6 +150,7 @@ class Expect:
 
         Example
         -------
+        `test_fixture_expect_bytes.py`
         ```python
         expect.bytes(b"binary data").to_match_snapshot()
         ```
@@ -181,6 +174,7 @@ class Expect:
 
         Example
         -------
+        `test_fixture_expect_dataframe.py`
         ```python
         import pandas as pd
         from snappylapy.fixtures import Expect
@@ -208,6 +202,7 @@ class Expect:
 
         Example
         -------
+        `test_fixture_expect_object.py`
         ```python
         expect.object({"key": "value"}).to_match_snapshot()
         ```
@@ -328,6 +323,7 @@ class LoadSnapshot:
 
         Example usage:
         --------------
+        `test_load_snapshot_from_file_dict.py`
         ```python
         from snappylapy import LoadSnapshot
 
@@ -348,6 +344,7 @@ class LoadSnapshot:
 
         Example usage:
         --------------
+        `test_load_snapshot_from_file_list.py`
         ```python
         def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
             data: list[Any] = load_snapshot.list()
@@ -366,6 +363,7 @@ class LoadSnapshot:
 
         Example usage:
         --------------
+        `test_load_snapshot_from_file_string.py`
         ```python
         def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
             data: str = load_snapshot.string()
@@ -384,6 +382,7 @@ class LoadSnapshot:
 
         Example usage:
         --------------
+        `test_load_snapshot_from_file_bytes.py`
         ```python
         def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
             data: bytes = load_snapshot.bytes()
@@ -402,6 +401,7 @@ class LoadSnapshot:
 
         Example usage:
         --------------
+        `test_load_snapshot_from_file_dataframe.py`
         ```python
         def test_load_snapshot_from_file(load_snapshot: LoadSnapshot) -> None:
             df: pd.DataFrame = load_snapshot.dataframe()
