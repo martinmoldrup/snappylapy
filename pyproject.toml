@@ -38,6 +38,7 @@ dependencies = [
     "jsonpickle>=1.0",
     "typer",
     "typing-extensions ; python_full_version == '3.9.*'",
+    "levenshtein>=0.27.1",
 ]
 
 [project.urls]

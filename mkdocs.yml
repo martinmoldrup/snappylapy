@@ -1,3 +1,5 @@
+# Create the docs using the command `uv run mkdocs build`
+
 site_name: Snappylapy
 repo_name: martinmoldrup/snappylapy
 repo_url: https://github.com/martinmoldrup/snappylapy
@@ -69,3 +71,4 @@ nav:
   - Code Reference: reference/
   - Change Log: changelog.md
   - CLI: cli.md
+  - Design Philosophy: design.md

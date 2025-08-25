@@ -38,14 +38,18 @@ Snapshot testing is a powerful technique for verifying the output of your code b
 When working on a test suite for a project, it’s important to ensure tests are independent. This is to avoid situations where changes in one part of the code cause failures in tests for other unrelated areas, making it challenging to isolate and fix errors. Snappylapy addresses this by providing a mechanism to capture snapshots of your data and use them in your later tests, ensuring that each component can be tested independently. While also making sure that they are dependent enought to test the integration between them. It provides serialization and deserialization of the snapshots, making it easy to reuse them in different test cases. This is aimed at function working with large and complex data structures (dataframes or large nested dictionaries.)
    
 ### Example  
-   
+
+`test_expect_snapshot_dict.py`
 ```python
 from snappylapy import Expect
-from mypackage import my_function
-   
+
+def generate_dict(size: int) -> dict[str, int]:
+    """Function to test."""
+    return {f"key_{i}": i for i in range(size)}
+
 def test_snapshot_dict(expect: Expect):
     """Test snapshot with dictionary data."""
-    data: dict = my_function()
+    data: dict = generate_dict(100)
     expect(data).to_match_snapshot()
     # or expect.dict(data).to_match_snapshot()
 ```
@@ -53,12 +57,14 @@ def test_snapshot_dict(expect: Expect):
 In this example, `snappylapy` captures the output of `my_function` and compares it against a stored snapshot. If the output changes unexpectedly, pytest will flag the test, allowing you to review the differences and ensure your code behaves as expected.
 
 Snappylapy can use the snapshots created for inputs in another test. You can think of it as automated/easier mock data generation and management.
+
+`test_expect_and_loadsnapshot.py`
 ```python
 import pytest
 from snappylapy import Expect, LoadSnapshot
 
 def test_snapshot_dict(expect: Expect):
-    """Test snapshot with dictionary data."""
+    """Test snapshot with dictionary data.****"""
     expect({
         "name": "John Doe",
         "age": 31
