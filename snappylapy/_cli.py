@@ -69,7 +69,7 @@ def clear(
     Use --force to skip confirmation.
 
     This finds and deletes all `__test_results__` and `__snapshots__` directories recursively across the working directory.
-    """
+    """  # noqa: E501
     directories_to_delete = DirectoryNamesUtil().get_all_directories_created_by_snappylapy()
     list_of_files_to_delete = DirectoryNamesUtil().get_all_file_paths_created_by_snappylapy()
     if not list_of_files_to_delete:

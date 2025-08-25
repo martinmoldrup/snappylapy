@@ -2,7 +2,7 @@ import pytest
 from snappylapy import Expect, LoadSnapshot
 
 def test_snapshot_dict(expect: Expect):
-    """Test snapshot with dictionary data.****"""
+    """Test snapshot with dictionary data."""
     expect({
         "name": "John Doe",
         "age": 31
