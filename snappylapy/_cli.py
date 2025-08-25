@@ -16,10 +16,10 @@ app = typer.Typer(
     Use these commands to initialize your repository, update or clear test results and snapshots,
     and review differences between your test results and snapshots using the 'diff' command.
 
-    - Run 'init' to set up your repo for snappylapy.
-    - Use 'update' to refresh snapshots with the latest test results.
-    - Use 'clear' to remove all test results and snapshots (add --force to skip confirmation).
-    - Use 'diff' to view changes between test results and snapshots in your editor.
+    - Run *'init'* to set up your repo for snappylapy.
+    - Use *'update'* to refresh snapshots with the latest test results.
+    - Use *'clear'* to remove all test results and snapshots (add --force to skip confirmation).
+    - Use *'diff'* to view changes between test results and snapshots in your editor.
 
     For more details on each command, use --help after the command name.
     """,
@@ -68,8 +68,8 @@ def clear(
     This will recursively delete all files and directories related to test results and snapshots.
     Use --force to skip confirmation.
 
-    This finds and deletes all __test_results__ and __snapshots__ directories recursively across the working directory.
-    """
+    This finds and deletes all `__test_results__` and `__snapshots__` directories recursively across the working directory.
+    """  # noqa: E501
     directories_to_delete = DirectoryNamesUtil().get_all_directories_created_by_snappylapy()
     list_of_files_to_delete = DirectoryNamesUtil().get_all_file_paths_created_by_snappylapy()
     if not list_of_files_to_delete:
@@ -105,7 +105,7 @@ def update() -> None:
 
     This will overwrite existing snapshots with current test outputs, ensuring your snapshots reflect the latest changes.
 
-    The file contents of any files in any of the __test_results__ folders will be copied to the corresponding __snapshots__ folder.
+    The file contents of any files in any of the `__test_results__` folders will be copied to the corresponding `__snapshots__` folder.
     """  # noqa: E501
     files_test_results = DirectoryNamesUtil().get_all_file_paths_test_results()
     if not files_test_results:
