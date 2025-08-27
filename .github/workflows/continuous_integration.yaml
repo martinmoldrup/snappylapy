@@ -62,7 +62,11 @@ jobs:
             uv venv
             source .venv/bin/activate
             DIST_FILE=$(ls dist/snappylapy-*.tar.gz | head -n 1)
-            uv pip install "snappylapy@$DIST_FILE"
+            if [ "${{ matrix.include-extras }}" = "true" ]; then
+              uv pip install "snappylapy[all]@$DIST_FILE"
+            else
+              uv pip install "snappylapy@$DIST_FILE"
+            fi
 
         # Remove the snappylapy folder to ensure the installed package is used for the test
         - name: Remove snappylapy folder in the cloned repository

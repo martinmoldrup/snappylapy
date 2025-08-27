@@ -67,6 +67,10 @@ pandas = [
     "pandas",
 ]
 
+all = [
+    "pandas",
+]
+
 [tool.setuptools.package-data]
 snappylapy = ["**/*.py", "py.typed"]
 
