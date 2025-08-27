@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 from .base_snapshot import BaseSnapshot
 from functools import wraps
-from snappylapy.serialization import JsonPickleSerializer
+from snappylapy.serialization import PandasCsvSerializer
 from typing import TYPE_CHECKING, Any, Callable, TypeVar, cast
 
 if sys.version_info >= (3, 10):
@@ -37,7 +37,7 @@ def require_pandas(func: F) -> F:
 class DataframeExpect(BaseSnapshot["pd.DataFrame"]):
     """Snapshot testing for dataframes."""
 
-    serializer_class = JsonPickleSerializer["pd.DataFrame"]
+    serializer_class = PandasCsvSerializer
     DataFrame: TypeAlias = "pd.DataFrame"
 
     @require_pandas
@@ -45,7 +45,7 @@ class DataframeExpect(BaseSnapshot["pd.DataFrame"]):
         self,
         data_to_snapshot: "pd.DataFrame",  # noqa: UP037
         name: str | None = None,
-        filetype: str = "dataframe.json",
+        filetype: str = "dataframe.csv",
     ) -> DataframeExpect:
         """Prepare a dataframe for snapshot testing."""
         self._prepare_test(data_to_snapshot, name, filetype)

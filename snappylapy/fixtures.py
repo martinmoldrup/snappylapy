@@ -1,7 +1,7 @@
 """
 The fixtures module provides classes returned by fixtures registered by pytest in snappylapy.
 
-Snappylapy provides the following fixtures.
+Snappylapy provides the following pytest fixtures.
 
 - expect: Expect
     - Allows for validating various expectations on the test results and do snapshot testing.
@@ -23,6 +23,7 @@ from .models import Settings
 from .serialization import (
     BytesSerializer,
     JsonPickleSerializer,
+    PandasCsvSerializer,
     StringSerializer,
 )
 from snappylapy.constants import DIRECTORY_NAMES
@@ -49,6 +50,52 @@ class Expect:
 
     Do not instantiate this class directly, instead use the `expect` fixture provided by pytest.
     Use this class as a type hint for the `expect` fixture.
+
+    *Calling expect directly*
+
+    The `expect` fixture can be called directly with a value, and it will automatically select
+    the appropriate handler (DictExpect, ListExpect, StringExpect, BytesExpect, DataframeExpect, or ObjectExpect)
+    depending on the type of the input. The input type must be resolvable to one of the supported types.
+
+    Example usage
+    ---------------
+    `test_expect_direct_call.py`
+    ```python
+    import pytest
+    from snappylapy.fixtures import Expect
+
+    def test_expect_direct_call(expect: Expect) -> None:
+        # Dict input
+        data_dict: dict[str, int] = {"a": 1, "b": 2}
+        expect(data_dict).to_match_snapshot()
+
+        # List input
+        data_list: list[int] = [1, 2, 3]
+        expect(data_list).to_match_snapshot()
+
+        # String input
+        data_str: str = "pytest example"
+        expect(data_str).to_match_snapshot()
+
+        # Bytes input
+        data_bytes: bytes = b"binary"
+        expect(data_bytes).to_match_snapshot()
+
+        # DataFrame input (requires pandas)
+        import pandas as pd
+        df: pd.DataFrame = pd.DataFrame({"x": [1, 2]})
+        expect(df).to_match_snapshot()
+
+        # Custom object input (falls back to ObjectExpect)
+        class Custom:
+            def __init__(self) -> None:
+                self.value = 42
+        custom_obj = Custom()
+        expect(custom_obj).to_match_snapshot()
+    ```
+
+    The handler is chosen based on the type of `data_to_snapshot`. If the type is not directly supported,
+    it falls back to the generic object handler.
     """
 
     def __init__(
@@ -341,7 +388,7 @@ class LoadSnapshot:
             / self.settings.depending_filename
         ).read_bytes()
 
-    def dict(self) -> dict[str, int]:
+    def dict(self) -> dict[Any, Any]:
         """
         Load dictionary snapshot.
 
@@ -487,7 +534,5 @@ class LoadSnapshot:
             assert df["numbers"].sum() == 6
         ```
         """
-        self.settings.depending_filename_extension = "dataframe.json"
-        return DataframeExpect.DataFrame(
-            JsonPickleSerializer[DataframeExpect.DataFrame]().deserialize(self._read_snapshot()),
-        )
+        self.settings.depending_filename_extension = "dataframe.csv"
+        return PandasCsvSerializer().deserialize(self._read_snapshot())

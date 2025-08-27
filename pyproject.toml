@@ -4,7 +4,7 @@ authors = [
     {name = "Martin Møldrup"},
 ]
 requires-python = "<4.0,>=3.9"
-version = "0.6.1"
+version = "0.7.0"
 description = "A snapshot library for python optimized for easy of use, human readable snapshots and enabling decoupling of chained integration tests."
 readme = "README.md"
 classifiers = [
@@ -64,6 +64,10 @@ snappylapy = "snappylapy._cli:app"
 
 [project.optional-dependencies]
 pandas = [
+    "pandas",
+]
+
+all = [
     "pandas",
 ]
 

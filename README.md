@@ -1,6 +1,8 @@
 # Snappylapy
    
-Welcome to **Snappylapy**, a powerful and intuitive snapshot testing plugin for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity.  
+Welcome to **Snappylapy**, a powerful and intuitive snapshot testing plugin for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity. 
+
+Snappylapy is following the api-style of the very popular Jest testing framework, making it familiar and easy to use for JavaScript developers.
 
 ## Installation
 To get started with Snappylapy, install the package via pip, uv or poetry:  
@@ -64,7 +66,7 @@ import pytest
 from snappylapy import Expect, LoadSnapshot
 
 def test_snapshot_dict(expect: Expect):
-    """Test snapshot with dictionary data.****"""
+    """Test snapshot with dictionary data."""
     expect({
         "name": "John Doe",
         "age": 31
@@ -109,6 +111,7 @@ Registers pytest fixtures:
 Supported data types
 - ✅ .txt - if you provide a string
 - ✅ .json - for all other objects
+- ✅ .csv - for pandas DataFrames
 - ✅ custom (decode the data yourself and provide a file extension)
 
 ### Supported data types to snapshot test

@@ -6,8 +6,12 @@ Be sure that data is serialized the same way no matter what os and OS configurat
 import json
 import jsonpickle
 from abc import ABC, abstractmethod
+from io import StringIO
 from snappylapy.constants import OUTPUT_JSON_INDENTATION_LEVEL
-from typing import Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 T = TypeVar("T")
 
@@ -84,3 +88,45 @@ class BytesSerializer(Serializer[bytes]):
     def deserialize(self, data: bytes) -> bytes:
         """Already in bytes, return as is."""
         return data
+
+
+class PandasCsvSerializer(Serializer["pd.DataFrame"]):
+    """Serialize and deserialize pandas DataFrames using CSV format."""
+
+    def serialize(self, data: "pd.DataFrame") -> bytes:
+        """Serialize a pandas DataFrame to bytes using CSV format."""
+        try:
+            # Lazy import to avoid dependency issues if pandas is not installed
+            import pandas as pd  # noqa: F401, PLC0415
+        except ImportError as e:
+            msg = "pandas is required for DataFrame serialization"
+            raise ImportError(msg) from e
+
+        if not hasattr(data, "to_csv"):
+            msg = f"Expected pandas DataFrame, got {type(data)}"
+            raise TypeError(msg)
+
+        # Use StringIO to capture CSV output
+        csv_buffer = StringIO()
+        data.to_csv(csv_buffer, index=True, lineterminator="\n")
+        csv_string = csv_buffer.getvalue()
+
+        # Ensure consistent line endings
+        csv_string = csv_string.replace("\r\n", "\n").replace("\r", "\n")
+        return csv_string.encode(encoding=ENCODING_TO_USE)
+
+    def deserialize(self, data: bytes) -> "pd.DataFrame":
+        """Deserialize bytes to a pandas DataFrame."""
+        try:
+            # Lazy import to avoid dependency issues if pandas is not installed
+            import pandas as pd  # noqa: PLC0415
+        except ImportError as e:
+            msg = "pandas is required for DataFrame deserialization"
+            raise ImportError(msg) from e
+
+        csv_string = data.decode(encoding=ENCODING_TO_USE)
+
+        # Use StringIO to read CSV data
+        csv_buffer = StringIO(csv_string)
+        dataframe = pd.read_csv(csv_buffer, index_col=0)
+        return dataframe

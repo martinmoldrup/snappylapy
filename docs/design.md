@@ -7,14 +7,16 @@ The target audience for Snappylapy includes software developers working with mut
 
 The developer experience should be good both running tests from a test runner in an IDE and from the command line.
 
+Since Snappylapy is following the design principles of the Jest testing framework, it aims to provide a familiar and intuitive experience for developers coming from a JavaScript background.
+
 # Guiding Principles of Design
 When making design decisions, the following principles should be considered and guide api design, implementation and tone of the outputs and documentation.
 
-1. Snappylapy always allow linters, type checkers and IDEs to provide useful feedback and show documentation. Meaning all public functions should allow ctrl+space completion, type hints and well written docstrings.
-2. Snappylapy make all parts of the poject easily extensible and provide examples of how to extend them. When users are extending the project, the principles in point 1 should still apply.
-3. Always write tests for all public functions, such that no breaking changes can be made without the tests failing. If a breaking change is made, always update the major version number. (applicable after version 1.0.0)
-4. In the snappylapy we always provide examples of how to use the library, and make the examples as simple as possible. The examples should be runnable (included in test suite) and should cover all the main use cases of the library.
-5. The Snappylapy public APIs should be expressive and explicit over concise and implicit. This means that the API should be easy to understand and use, even if it is a bit more verbose.
+1. The Snappylapy public APIs should be expressive and explicit over concise and implicit. This means that the API should be easy to understand and use, even if it is a bit more verbose.
+2. Snappylapy always allow linters, type checkers and IDEs to provide useful feedback and show documentation. Meaning all public functions should allow ctrl+space completion, type hints and well written docstrings.
+3. Snappylapy make all parts of the project easily extensible and provide examples of how to extend them. When users are extending the project, the principles in point 1 should still apply.
+4. Always write tests for all public functions, such that no breaking changes can be made without the tests failing. If a breaking change is made, always update the major version number. (applicable after version 1.0.0)
+5. In the snappylapy we always provide examples of how to use the library, and make the examples as simple as possible. The examples should be runnable (included in test suite) and should cover all the main use cases of the library.
 6. Always provide a way to get the raw data, even if it is not the default. This is to allow for more advanced users to use the library in ways that are not directly supported by the library.
 7. Snappylapy should be performing well on large data structures. We always tests if code performs well with large inputs (it is okay disabling some features for large inputs, but it should be quick).
 
