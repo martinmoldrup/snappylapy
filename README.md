@@ -25,6 +25,7 @@ poetry add snappylapy
 - **Easy to Use**: Seamlessly integrates with pytest, enabling you to capture and verify snapshots with minimal setup. The fully typed fixtures and rich editor support provide intuitive code completion and guidance, making your workflow faster and more productive.
 - **Customizable Output**: Store snapshots in a location (static or dynamic) of your choice, enabling you to organize and manage your test data effectively.
 - **Editor Integration**: Can show a diff comparison in VS code when a snapshot test fails, for easy comparison between test results and snapshots.
+- **AI Coding Agent Integration**: Snappylapy integrates its commands with AI coding agents like GitHub Copilot, Cursor and Claude Code.
 
 ## Benefits of Snapshot Testing
 Snapshot testing is a powerful technique for verifying the output of your code by comparing it to a stored snapshot. This approach offers several benefits, including:

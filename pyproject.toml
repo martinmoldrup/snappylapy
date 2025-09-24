@@ -39,6 +39,7 @@ dependencies = [
     "typer",
     "typing-extensions ; python_full_version == '3.9.*'",
     "levenshtein>=0.27.1",
+    "toolit>=0.2.0",
 ]
 
 [project.urls]
@@ -88,5 +89,10 @@ dev = [
     "mkdocs-literate-nav<1.0.0,>=0.6.1",
     "mkdocs-section-index<1.0.0,>=0.3.9",
     "pandas-stubs>=2.2.2.240807",
-    "toolit>=0.2.0",
 ]
+
+[project.entry-points.toolit_plugins]
+snappylapy_init = "snappylapy._cli:init"
+snappylapy_clear = "snappylapy._cli:clear"
+snappylapy_update = "snappylapy._cli:update"
+snappylapy_diff = "snappylapy._cli:diff"
