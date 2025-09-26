@@ -1638,7 +1638,7 @@ wheels = [
 
 [[package]]
 name = "snappylapy"
-version = "0.7.0"
+version = "0.8.0"
 source = { editable = "." }
 dependencies = [
     { name = "jsonpickle" },
@@ -1681,7 +1681,7 @@ requires-dist = [
     { name = "pandas", marker = "extra == 'all'" },
     { name = "pandas", marker = "extra == 'pandas'" },
     { name = "pytest", specifier = ">=7.0" },
-    { name = "toolit", specifier = ">=0.2.0" },
+    { name = "toolit", specifier = ">=0.5.0" },
     { name = "typer" },
     { name = "typing-extensions", marker = "python_full_version == '3.9.*'" },
 ]
@@ -1762,15 +1762,15 @@ wheels = [
 
 [[package]]
 name = "toolit"
-version = "0.4.0"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "toml" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/07/d465b72baea1458d9419c5592d9b3082e826c2fd3838e8ae4563bc931a6c/toolit-0.4.0.tar.gz", hash = "sha256:d4fa7452e16bd1b880b48b901de6853012a005476986e2e72a613ada6a41b2d4", size = 11563, upload-time = "2025-09-14T10:04:51.888Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/df/83/6ee1a7bc6681efc2991a332e6024f2df330ad512da5b8bfed4eff6bc414e/toolit-0.5.0.tar.gz", hash = "sha256:ca3221283fab0bc74a9f43006a14ea78270270fe7fd539985ba6dd5143f5f1a2", size = 11747, upload-time = "2025-09-24T19:39:28.013Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a9/84/a645ae0eb245522cebdea0bf9534639a7491689479aa62b383ae4e0cafa3/toolit-0.4.0-py3-none-any.whl", hash = "sha256:0450154c8ccee6a3b1849167a75b46906b9736a911708a4e7187e36ac1ad47df", size = 11978, upload-time = "2025-09-14T10:04:50.47Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/9a/4ad5b9a8932f42e9820f3321376bb2f2750fe9bb7d6fd6ef3e33b132fe26/toolit-0.5.0-py3-none-any.whl", hash = "sha256:c6cdbc15ce21e6044fb193fa8cc0556d6e302ab54cf9c083680361a651e8cf2e", size = 12219, upload-time = "2025-09-24T19:39:26.605Z" },
 ]
 
 [[package]]

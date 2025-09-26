@@ -104,16 +104,11 @@ Alternatively, you can use the CLI command to update snapshots:
 snappylapy update
 ```
 
-## Fixtures and roadmap
+### Pytest Fixtures
 Registers pytest fixtures:
-- expect
-- load_snapshot
+- `expect`: A fixture that provides methods to create snapshot expectations for various data types (e.g., dict, list, string, bytes, DataFrame).
+- `load_snapshot`: A fixture that loads snapshot data from a file.
 
-Supported data types
-- ✅ .txt - if you provide a string
-- ✅ .json - for all other objects
-- ✅ .csv - for pandas DataFrames
-- ✅ custom (decode the data yourself and provide a file extension)
 
 ### Supported data types to snapshot test
 Snappylapy uses jsonpickle to serialize into json, this means that it can handle almost any Python object out of the box, including:
@@ -125,7 +120,25 @@ Snappylapy uses jsonpickle to serialize into json, this means that it can handle
 
 It is also possible to serialize objects yourself and provide them as a string or bytes data. Then it will be stored and loaded as-is. This means that with snappylapy it is possible to serialize and deserialize any Python object, even those not natively supported.
 
-Snappylapy is your go-to tool for efficient and reliable snapshot testing in Python. By maintaining clear boundaries between different parts of your code, Snappylapy helps you isolate errors, streamline debugging, and ensure your code remains robust and maintainable.
+Supported output file formats:
+- ✅ .txt - if you provide a string
+- ✅ .json - for all other objects
+- ✅ .csv - for pandas DataFrames
+- ✅ custom (decode the data yourself and provide a file extension)
+
+### Tasks for VSCode integration (available for github copilot agents)
+Snappylapy can make its cli commands available for AI coding agents like GitHub Copilot, Cursor and Claude Code. 
+
+One example of how to do this is by registering tasks in VSCode. We use toolit, to make the integration seamless. To register the tasks, run the following command:
+
+```bash
+toolit create-vscode-tasks-json
+```
+
+> WARNING: This will overwrite any existing tasks.json file in the .vscode folder.
+
 
 ## Contributing
 We welcome contributions to Snappylapy! If you have ideas for new features, improvements, or bug fixes, please open an issue or submit a pull request on our GitHub repository. We appreciate your feedback and support in making Snappylapy even better for the community.
+
+Snappylapy is your go-to tool for efficient and reliable snapshot testing in Python. By maintaining clear boundaries between different parts of your code, Snappylapy helps you isolate errors, streamline debugging, and ensure your code remains robust and maintainable.

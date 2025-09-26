@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 *NOTE:* Version 0.X.X might have breaking changes in bumps of the minor version number. This is because the project is still in early development and the API is not yet stable. It will still be marked clearly in the release notes.
 
+## [0.8.0]
+- 🆕 Used integration with toolit to make snappylapy commands available for AI coding assistants
+
 ## [0.7.0] - 2025-08-27
 - 🆕 Added csv serializer for pandas dataframes for making the deserialization work on windows and make a more suitable and human readable format.
 
