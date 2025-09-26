@@ -25,7 +25,7 @@ poetry add snappylapy
 - **Easy to Use**: Seamlessly integrates with pytest, enabling you to capture and verify snapshots with minimal setup. The fully typed fixtures and rich editor support provide intuitive code completion and guidance, making your workflow faster and more productive.
 - **Customizable Output**: Store snapshots in a location (static or dynamic) of your choice, enabling you to organize and manage your test data effectively.
 - **Editor Integration**: Can show a diff comparison in VS code when a snapshot test fails, for easy comparison between test results and snapshots.
-- **AI Coding Agent Integration**: Snappylapy integrates its commands with AI coding agents like GitHub Copilot, Cursor and Claude Code.
+- **AI Coding Agent Integration**: Snappylapy integrates its commands with AI coding agents such as GitHub Copilot, Cursor, and Claude Code.
 
 ## Benefits of Snapshot Testing
 Snapshot testing is a powerful technique for verifying the output of your code by comparing it to a stored snapshot. This approach offers several benefits, including:
@@ -38,7 +38,7 @@ Snapshot testing is a powerful technique for verifying the output of your code b
    
 ## Why Snappylapy?  
    
-When working on a test suite for a project, it’s important to ensure tests are independent. This is to avoid situations where changes in one part of the code cause failures in tests for other unrelated areas, making it challenging to isolate and fix errors. Snappylapy addresses this by providing a mechanism to capture snapshots of your data and use them in your later tests, ensuring that each component can be tested independently. While also making sure that they are dependent enought to test the integration between them. It provides serialization and deserialization of the snapshots, making it easy to reuse them in different test cases. This is aimed at function working with large and complex data structures (dataframes or large nested dictionaries.)
+When working on a test suite for a project, it’s important to ensure tests are independent. This is to avoid situations where changes in one part of the code cause failures in tests for other unrelated areas, making it challenging to isolate and fix errors. Snappylapy addresses this by providing a mechanism to capture snapshots of your data and use them in your later tests, ensuring that each component can be tested independently. While also making sure that they are dependent enough to test the integration between them. It provides serialization and deserialization of the snapshots, making it easy to reuse them in different test cases. This is aimed at function working with large and complex data structures (dataframes or large nested dictionaries.)
    
 ### Example  
 
@@ -82,7 +82,7 @@ def test_load_snapshot_from_file(load_snapshot: LoadSnapshot):
     assert data == {"name": "John Doe", "age": 31}
 ```
 
-This can be great for external dependencies, for example an AI service, that might change response over time. With this approach we can isolate the changes to the service and still make succeding tests pass.
+This can be great for external dependencies, for example an AI service, that might change response over time. With this approach we can isolate the changes to the service and still make succeeding tests pass.
 
 ## The output structure
 
@@ -127,7 +127,7 @@ Supported output file formats:
 - ✅ custom (decode the data yourself and provide a file extension)
 
 ### Tasks for VSCode integration (available for github copilot agents)
-Snappylapy can make its cli commands available for AI coding agents like GitHub Copilot, Cursor and Claude Code. 
+Snappylapy can make its CLI commands available for AI coding agents like GitHub Copilot, Cursor and Claude Code. 
 
 One example of how to do this is by registering tasks in VSCode. We use toolit, to make the integration seamless. To register the tasks, run the following command:
 
