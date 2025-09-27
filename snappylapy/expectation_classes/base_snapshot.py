@@ -59,8 +59,8 @@ class BaseSnapshot(ABC, Generic[T]):
             self._update_snapshot()
             return
 
-        snapshot_data = self._read_file(self.settings.snapshot_dir / self.settings.filename)
-        test_data = self._read_file(self.settings.test_results_dir / self.settings.filename)
+        snapshot_data = self._read_snapshot_data()
+        test_data = self._read_test_data()
         try:
             self.compare_snapshot_data(snapshot_data, test_data)
         except AssertionError as error:
@@ -105,6 +105,24 @@ class BaseSnapshot(ABC, Generic[T]):
                 raise AssertionError(msg)
         else:
             assert snapshot_data_str == test_data_str
+
+    def _read_snapshot_data(self) -> bytes:
+        """Read snapshot data."""
+        snap_path = self.settings.snapshot_dir / self.settings.filename
+        if not snap_path.exists():
+            msg = f"Snapshot file not found: {snap_path}"
+            raise FileNotFoundError(msg)
+        data_bin = snap_path.read_bytes()
+        return data_bin
+
+    def _read_test_data(self) -> bytes:
+        """Read test data."""
+        test_path = self.settings.test_results_dir / self.settings.filename
+        if not test_path.exists():
+            msg = f"Test results file not found: {test_path}"
+            raise FileNotFoundError(msg)
+        data_bin = test_path.read_bytes()
+        return data_bin
 
     def _prepare_test(self, data: T, name: str | None, extension: str) -> None:
         """Prepare and save test results."""
