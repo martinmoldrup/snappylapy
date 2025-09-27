@@ -1,21 +1,20 @@
 """Snapshot testing and expectations for lists."""
 from __future__ import annotations
 
-from collections.abc import Iterable
-from typing import Any
-
 from .base_snapshot import BaseSnapshot
+from collections.abc import Iterable
 from snappylapy.serialization import JsonPickleSerializer
+from typing_extensions import Self
 
 
-class ListExpect(BaseSnapshot[list[Any]]):
+class ListExpect(BaseSnapshot[list[object]]):
     """Snapshot testing for lists."""
 
-    serializer_class = JsonPickleSerializer[list[Any]]
+    serializer_class = JsonPickleSerializer[list[object]]
 
     def __call__(
         self,
-        data_to_snapshot: list[Any],
+        data_to_snapshot: list[object],
         name: str | None = None,
         filetype: str = "list.json",
     ) -> ListExpect:
@@ -23,53 +22,60 @@ class ListExpect(BaseSnapshot[list[Any]]):
         self._prepare_test(data_to_snapshot, name, filetype)
         return self
 
-    def to_be(self, expected: list[Any]) -> None:
+    def to_be(self, expected: list[object]) -> Self:
         """Assert that the list equals the expected list."""
         actual = self._ensure_data_available()
         assert actual == expected
+        return self
 
-    def to_equal(self, expected: list[Any]) -> None:
-        """Deeply compare the list to the expected list."""
+    def to_equal(self, expected: list[object]) -> Self:
+        """Deeply compare the list to the expected list (alias of to_be)."""
         actual = self._ensure_data_available()
         assert actual == expected
+        return self
 
-    def to_contain(self, item: Any) -> None:
+    def to_contain(self, item: object) -> Self:
         """Assert that the list contains the given item."""
         actual = self._ensure_data_available()
         if item not in actual:
             msg = f"Expected list to contain {item!r}"
             raise AssertionError(msg)
+        return self
 
-    def to_not_contain(self, item: Any) -> None:
+    def to_not_contain(self, item: object) -> Self:
         """Assert that the list does not contain the given item."""
         actual = self._ensure_data_available()
         if item in actual:
             msg = f"Expected list to not contain {item!r}"
             raise AssertionError(msg)
+        return self
 
-    def to_have_length(self, expected_length: int) -> None:
+    def to_have_length(self, expected_length: int) -> Self:
         """Assert that the list has the expected length."""
         actual = self._ensure_data_available()
         actual_length = len(actual)
         if actual_length != expected_length:
             msg = f"Expected list length {expected_length} but got {actual_length}"
             raise AssertionError(msg)
+        return self
 
-    def to_be_empty(self) -> None:
+    def to_be_empty(self) -> Self:
         """Assert that the list is empty."""
         actual = self._ensure_data_available()
         if actual:
             msg = "Expected list to be empty"
             raise AssertionError(msg)
+        return self
 
-    def to_not_be_empty(self) -> None:
+    def to_not_be_empty(self) -> Self:
         """Assert that the list is not empty."""
         actual = self._ensure_data_available()
         if not actual:
             msg = "Expected list to not be empty"
             raise AssertionError(msg)
+        return self
 
-    def to_contain_all_of(self, items: Iterable[Any]) -> None:
+    def to_contain_all_of(self, items: Iterable[object]) -> Self:
         """Assert that the list contains all of the given items."""
         actual = self._ensure_data_available()
         items_list = list(items)
@@ -77,16 +83,18 @@ class ListExpect(BaseSnapshot[list[Any]]):
         if missing:
             msg = f"Expected list to contain all items, missing: {missing!r}"
             raise AssertionError(msg)
+        return self
 
-    def to_contain_any_of(self, items: Iterable[Any]) -> None:
+    def to_contain_any_of(self, items: Iterable[object]) -> Self:
         """Assert that the list contains at least one of the given items."""
         actual = self._ensure_data_available()
         items_list = list(items)
         if not any(item in actual for item in items_list):
             msg = f"Expected list to contain at least one of {items_list!r}"
             raise AssertionError(msg)
+        return self
 
-    def to_start_with(self, prefix: list[Any]) -> None:
+    def to_start_with(self, prefix: list[object]) -> Self:
         """Assert that the list starts with the given prefix."""
         actual = self._ensure_data_available()
         if len(prefix) > len(actual):
@@ -95,8 +103,9 @@ class ListExpect(BaseSnapshot[list[Any]]):
         if actual[:len(prefix)] != prefix:
             msg = f"Expected list to start with {prefix!r}"
             raise AssertionError(msg)
+        return self
 
-    def to_end_with(self, suffix: list[Any]) -> None:
+    def to_end_with(self, suffix: list[object]) -> Self:
         """Assert that the list ends with the given suffix."""
         actual = self._ensure_data_available()
         suffix_len = len(suffix)
@@ -106,38 +115,50 @@ class ListExpect(BaseSnapshot[list[Any]]):
         if actual[-suffix_len:] != suffix:
             msg = f"Expected list to end with {suffix!r}"
             raise AssertionError(msg)
+        return self
 
-    def to_be_sorted(self, reverse: bool = False) -> None:
-        """Assert that the list is sorted."""
-        actual = self._ensure_data_available()
-        sorted_list = sorted(actual, reverse=reverse)
+    def to_be_sorted(self, *, reverse: bool = False) -> Self:
+        """Assert that the list is sorted (ascending by default)."""
+        actual: list[object] = self._ensure_data_available()
+        try:
+            sorted_list: list[object] = sorted(actual, reverse=reverse)  # type: ignore[type-var]
+        except TypeError as exc:
+            msg: str = (
+                "List contains elements that cannot be compared for sorting: "
+                f"{exc}"
+            )
+            raise AssertionError(msg) from exc
         if actual != sorted_list:
-            direction = "descending" if reverse else "ascending"
+            direction: str = "descending" if reverse else "ascending"
             msg = f"Expected list to be sorted in {direction} order"
             raise AssertionError(msg)
+        return self
 
-    def to_have_unique_elements(self) -> None:
+    def to_have_unique_elements(self) -> Self:
         """Assert that all elements in the list are unique."""
         actual = self._ensure_data_available()
         if len(actual) != len(set(actual)):
             msg = "Expected all list elements to be unique"
             raise AssertionError(msg)
+        return self
 
-    def to_be_truthy(self) -> None:
+    def to_be_truthy(self) -> Self:
         """Assert that the list evaluates to True."""
         actual = self._ensure_data_available()
         if not actual:
             msg = "Expected list to be truthy but it was falsy."
             raise AssertionError(msg)
+        return self
 
-    def to_be_falsy(self) -> None:
+    def to_be_falsy(self) -> Self:
         """Assert that the list evaluates to False."""
         actual = self._ensure_data_available()
         if actual:
             msg = "Expected list to be falsy but it was truthy."
             raise AssertionError(msg)
+        return self
 
-    def _ensure_data_available(self) -> list[Any]:
+    def _ensure_data_available(self) -> list[object]:
         """Return the stored data ensuring it exists and is a list."""
         if self._data is None:
             msg = "No list data prepared yet. Call the expectation with data first."

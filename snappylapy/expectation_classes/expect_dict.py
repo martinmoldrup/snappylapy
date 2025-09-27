@@ -5,9 +5,10 @@ from __future__ import annotations
 from .base_snapshot import BaseSnapshot
 from collections.abc import Iterable, Mapping, Sequence
 from copy import deepcopy
-from numbers import Number
+from numbers import Real
 from snappylapy.serialization import JsonPickleSerializer
 from typing import Any
+from typing_extensions import Self
 
 
 class DictExpect(BaseSnapshot[dict]):
@@ -25,10 +26,10 @@ class DictExpect(BaseSnapshot[dict]):
         self._ignored_keys: set[str] = set()
         self._original_data: dict = deepcopy(data_to_snapshot)
         self._prepare_test(data_to_snapshot, name, filetype)
-        self._filtered_data: dict = self._current_data()
+        self._filtered_data = self._current_data()
         return self
 
-    def ignore_keys(self, keys: Iterable[str]) -> DictExpect:
+    def ignore_keys(self, keys: Iterable[str]) -> Self:
         """Exclude the given keys from subsequent comparisons and snapshots."""
         if not hasattr(self, "_original_data"):
             msg = "No dictionary data prepared yet. Call the expectation with data first."
@@ -37,23 +38,25 @@ class DictExpect(BaseSnapshot[dict]):
             msg = "Cannot ignore keys when the dictionary value is None."
             raise TypeError(msg)
         self._ignored_keys = set(keys)
-        self._filtered_data: dict = self._current_data()
+        self._filtered_data = self._current_data()  # type: ignore[assignment]
         return self
 
-    def to_be(self, expected: Mapping[str, Any]) -> None:
+    def to_be(self, expected: Mapping[str, Any]) -> Self:
         """Assert that the dictionary equals the expected mapping."""
         actual = self._filtered_data
         expected_filtered = self._apply_ignored_keys(dict(expected))
         assert actual == expected_filtered
+        return self
 
-    def to_equal(self, expected: Mapping[str, Any]) -> None:
-        """Deeply compare the dictionary to the expected mapping."""
+    def to_equal(self, expected: Mapping[str, Any]) -> Self:
+        """Deeply compare the dictionary to the expected mapping (alias)."""
         actual = self._filtered_data
         expected_filtered = self._apply_ignored_keys(dict(expected))
         assert actual == expected_filtered
+        return self
 
-    def to_be_close_to(self, expected: Mapping[str, Any], delta: float) -> None:
-        """Assert that numeric values are within the provided delta and other values match exactly."""
+    def to_be_close_to(self, expected: Mapping[str, Any], delta: float) -> Self:
+        """Assert numeric values within delta and other values match exactly; return self."""
         # TODO: Remove this method, as it does not seem useful for dicts.
         if delta < 0:
             msg = "Delta must be non-negative."
@@ -61,14 +64,16 @@ class DictExpect(BaseSnapshot[dict]):
         actual = self._filtered_data
         expected_filtered = self._apply_ignored_keys(dict(expected))
         self._assert_close_value(actual, expected_filtered, delta, path=())
+        return self
 
-    def to_be_strictly_equal_to(self, expected: Mapping[str, Any]) -> None:
-        """Assert that the dictionary matches by value and by exact value types."""
+    def to_be_strictly_equal_to(self, expected: Mapping[str, Any]) -> Self:
+        """Assert that the dictionary matches by value and exact types; return self."""
         actual = self._filtered_data
         expected_filtered = self._apply_ignored_keys(dict(expected))
         self._assert_strict_equality(actual, expected_filtered, path=())
+        return self
 
-    def to_have_the_same_properties_as_snapshot(self) -> None:
+    def to_have_the_same_properties_as_snapshot(self) -> Self:
         """Assert that the dictionary has the same keys as the stored snapshot."""
         actual = self._filtered_data
         snapshot = self._get_deserialized_snapshot_data()
@@ -78,8 +83,9 @@ class DictExpect(BaseSnapshot[dict]):
         if actual_keys != expected_keys:
             msg = f"Key mismatch: {sorted(actual_keys)!r} != {sorted(expected_keys)!r}"
             raise AssertionError(msg)
+        return self
 
-    def to_have_property(self, property_path: str) -> None:
+    def to_have_property(self, property_path: str) -> Self:
         """Assert that the dictionary contains a property path (dot separated)."""
         data = self._filtered_data
         segments = [segment for segment in property_path.split(".") if segment]
@@ -93,20 +99,23 @@ class DictExpect(BaseSnapshot[dict]):
                 continue
             msg = f"Property '{property_path}' not found."
             raise AssertionError(msg)
+        return self
 
-    def to_be_truthy(self) -> None:
+    def to_be_truthy(self) -> Self:
         """Assert that the stored dictionary evaluates to True."""
         data = self._ensure_data_available()
         if not data:
             msg = "Expected value to be truthy but it was falsy."
             raise AssertionError(msg)
+        return self
 
-    def to_be_falsy(self) -> None:
+    def to_be_falsy(self) -> Self:
         """Assert that the stored dictionary evaluates to False."""
         data = self._ensure_data_available()
         if data:
             msg = "Expected value to be falsy but it was truthy."
             raise AssertionError(msg)
+        return self
 
     def _get_deserialized_snapshot_data(self) -> dict:
         """Read and deserialize snapshot data."""
@@ -155,7 +164,8 @@ class DictExpect(BaseSnapshot[dict]):
         """
         Assert that values are close within the provided delta.
 
-        delta is a 
+        The comparison walks mappings and sequences recursively. Numeric values must be within
+        the given delta. Booleans and non-numeric primitives must match exactly.
         """
         if isinstance(actual, Mapping) and isinstance(expected, Mapping):
             self._assert_close_mapping(actual, expected, delta, path)
@@ -178,7 +188,7 @@ class DictExpect(BaseSnapshot[dict]):
                 msg = f"Boolean mismatch at {joined_path}: {actual!r} != {expected!r}"
                 raise AssertionError(msg)
             return
-        if isinstance(actual, Number) and isinstance(expected, Number):
+        if isinstance(actual, Real) and isinstance(expected, Real):
             if abs(float(actual) - float(expected)) > delta:
                 joined_path = "".join(path)
                 msg = f"Numeric mismatch at {joined_path}: {actual!r} is not within {delta} of {expected!r}."

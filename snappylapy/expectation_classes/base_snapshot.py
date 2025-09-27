@@ -9,6 +9,7 @@ from snappylapy.models import Settings
 from snappylapy.serialization import Serializer
 from snappylapy.session import SnapshotSession
 from typing import Generic, TypeVar
+from typing_extensions import Self
 
 T = TypeVar("T")
 
@@ -49,7 +50,7 @@ class BaseSnapshot(ABC, Generic[T]):
     ) -> BaseSnapshot[T]:
         """Prepare data for snapshot testing."""
 
-    def to_match_snapshot(self) -> None:
+    def to_match_snapshot(self) -> Self:
         """Assert test results match the snapshot."""
         if not (self.settings.snapshot_dir / self.settings.filename).exists():
             if not self.settings.snapshot_update:
@@ -57,7 +58,7 @@ class BaseSnapshot(ABC, Generic[T]):
                 raise FileNotFoundError(error_msg)
             self.snappylapy_session.add_created_snapshot(self.settings.filename)
             self._update_snapshot()
-            return
+            return self
 
         snapshot_data = self._read_snapshot_data()
         test_data = self._read_test_data()
@@ -74,6 +75,7 @@ class BaseSnapshot(ABC, Generic[T]):
                 raise AssertionError(error_msg)  # noqa: B904
         else:
             self.snappylapy_session.add_snapshot_test_succeeded(self.settings.filename)
+        return self
 
     def compare_snapshot_data(self, snapshot_data: bytes, test_data: bytes) -> None:
         """
