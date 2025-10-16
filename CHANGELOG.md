@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.8.0]
 - 🆕 Used integration with toolit to make snappylapy commands available for AI coding assistants
+- ❗Deprecated support for Python 3.9. Snappylapy now requires Python 3.10 or higher. Add python 3.14 to the test matrix.
 
 ## [0.7.0] - 2025-08-27
 - 🆕 Added csv serializer for pandas dataframes for making the deserialization work on windows and make a more suitable and human readable format.

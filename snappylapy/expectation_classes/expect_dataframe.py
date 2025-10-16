@@ -2,16 +2,11 @@
 
 from __future__ import annotations
 
-import sys
 from .base_snapshot import BaseSnapshot
+from collections.abc import Callable
 from functools import wraps
 from snappylapy.serialization import PandasCsvSerializer
-from typing import TYPE_CHECKING, Any, Callable, TypeVar, cast
-
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    from typing_extensions import TypeAlias
+from typing import TYPE_CHECKING, Any, TypeAlias, TypeVar, cast
 
 if TYPE_CHECKING:
     import pandas as pd
