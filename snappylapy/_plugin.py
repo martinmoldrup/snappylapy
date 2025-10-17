@@ -20,7 +20,7 @@ from typing import Any
 def _get_kwargs_from_depend_function(
     depends_function: Callable,
     marker_name: str,
-    kwags_key: str,
+    kwargs_key: str,
 ) -> str | None:
     """Get a test function with a pytest marker assigned and get a value from the marker."""
     if not hasattr(depends_function, "pytestmark"):
@@ -28,7 +28,7 @@ def _get_kwargs_from_depend_function(
     marks: list[_pytest.mark.structures.Mark] = depends_function.pytestmark
     for mark in marks:
         if mark.name == marker_name:
-            return mark.kwargs.get(kwags_key, None)
+            return mark.kwargs.get(kwargs_key, None)
     return None
 
 
@@ -132,7 +132,7 @@ def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line(
         "markers",
         "snappylapy(foreach_folder_in=None, output_dir=None, depends=None): Mark the test to use snappylapy plugin functionalities.",
-    )
+    )  # TODO: Add link to documentation
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
