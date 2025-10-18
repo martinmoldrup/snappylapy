@@ -3,9 +3,18 @@ All notable changes to this project will be documented in this file.
 
 *NOTE:* Version 0.X.X might have breaking changes in bumps of the minor version number. This is because the project is still in early development and the API is not yet stable. It will still be marked clearly in the release notes.
 
-## [0.8.0]
+Icons:
+- 🆕 New feature
+- 🐞 Bug fix
+- 🗑️ Deprecated feature
+- 💥 Breaking change
+- 🔄 Changed
+
+## [0.8.0] - 2025-10-18
 - 🆕 Used integration with toolit to make snappylapy commands available for AI coding assistants
-- ❗Deprecated support for Python 3.9. Snappylapy now requires Python 3.10 or higher. Add python 3.14 to the test matrix.
+- 🆕 Add a `@configure_snappylapy()` decorator as an alternative for using @pytest.mark.snappylapy for improved documentation support, type checking and IDE integration.
+- 🔄 Improve documentation and examples for using snappylapy for advanced snapshot testing scenarios.
+- 🗑️ Deprecated support for Python 3.9. Snappylapy now requires Python 3.10 or higher. Add Python 3.14 to the test matrix.
 
 ## [0.7.0] - 2025-08-27
 - 🆕 Added csv serializer for pandas dataframes for making the deserialization work on windows and make a more suitable and human readable format.
@@ -43,9 +52,10 @@ All notable changes to this project will be documented in this file.
 - Add snappylapy parametization functionality to snappylapy and allow it to be loaded in the load_snapshot fixture
 - Do reporting showing count of updated, created and deleted snapshots
 - **Breaking Changes**
-  - Change setting of path to only have a single path configurable and update such it is configured through the marker
-  - Make the folder names of __snapshots__ and __test_results__ enforced to be fixed (needed for cleanup and diffing)
-  - Rename output file names of snapshots to match [filename][testname][name].extention conversion
+  - 💥 Change setting of path to only have a single path configurable and update such it is configured through the marker
+  - 💥 Make the folder names of __snapshots__ and __test_results__ enforced to be fixed (needed for cleanup and diffing)
+  - 💥 Rename output file names of snapshots to match [filename][testname][name].extention conversion
+
 ## [0.2.1] - 2025-01-13
 - Added missing dependency for typer to make the CLI work
 

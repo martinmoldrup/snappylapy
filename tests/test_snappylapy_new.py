@@ -1,7 +1,8 @@
-import pathlib
-from snappylapy import Expect, LoadSnapshot
 import json
 import pytest
+import pathlib
+from snappylapy import Expect, LoadSnapshot, configure_snappylapy
+
 
 def test_snapshot_string(expect: Expect):
     """Test snapshot with string data."""
@@ -58,6 +59,12 @@ def test_snapshot_with_custom_directories(expect: Expect):
     """Test snapshot with custom directories."""
     expect.string("Hello World").to_match_snapshot()
 
+@configure_snappylapy(output_dir="custom_dir", depends=[test_snapshot_string])
+def test_snapshot_with_loading_custom_directories_using_configure_snappylapy(expect: Expect, load_snapshot: LoadSnapshot):
+    """Test snapshot with custom directories."""
+    data = load_snapshot.string()
+    expect.string(data).to_match_snapshot()
+
 @pytest.mark.snappylapy(depends=[test_snapshot_with_custom_directories])
 def test_load_snapshot_from_custom_dir(load_snapshot: LoadSnapshot):
     """Test loading snapshot data created in test_snapshot_with_custom_directories from a file using the deserializer."""
@@ -93,7 +100,7 @@ def test_snapshot_multiple_folders_pytest_parametrize(test_directory: pathlib.Pa
     expect.string("Hello World").to_match_snapshot()
 
 @pytest.mark.snappylapy(depends=[test_snapshot_multiple_folders_pytest_parametrize])
-@pytest.mark.skip(reason="Functionaility not implemented yet.")
+@pytest.mark.skip(reason="Functionality not implemented yet.")
 def test_load_parametrized_snapshot_from_file(load_snapshot: LoadSnapshot):
     """Test loading snapshot data created in test_snapshot_parametrized from a file using the deserializer."""
     data = load_snapshot.string()
