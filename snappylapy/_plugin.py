@@ -131,7 +131,7 @@ def pytest_configure(config: pytest.Config) -> None:
     """Register the markers used."""
     config.addinivalue_line(
         "markers",
-        "snappylapy(foreach_folder_in=None, output_dir=None, depends=None): Mark the test to use snappylapy plugin functionalities.",
+        "snappylapy(foreach_folder_in=None, output_dir=None, depends=None): Mark the test to use snappylapy plugin functionalities.",  # noqa: E501
     )  # TODO: Add link to documentation
 
 
