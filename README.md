@@ -1,5 +1,12 @@
+<center>
+<img src="snappylapy-logo.svg" alt="Snappylapy Logo" style="width:200px;"/>
+
 # Snappylapy
-   
+Boost test reliability and speed by effortlessly capturing, diffing, and reusing complex data structures across pytest runs.
+
+---
+</center>
+
 Welcome to **Snappylapy**, a powerful and intuitive snapshot testing plugin for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity. 
 
 Snappylapy is following the api-style of the very popular Jest testing framework, making it familiar and easy to use for JavaScript developers.
