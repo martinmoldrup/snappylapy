@@ -11,16 +11,17 @@ Effortlessly capture, diff, and reuse complex, non-deterministic, and AI-generat
 </p>
 <!-- Badges -->
 <p align="center">
-    <a href="https://img.shields.io/badge/status-beta-yellow"><img src="https://img.shields.io/badge/status-beta-yellow" alt="Beta Status"/></a>
+    <a href="https://github.com/martinmoldrup/snappylapy/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/status-beta-yellow" alt="Beta Status"/></a>
     <a href="https://github.com/martinmoldrup/snappylapy/blob/main/LICENSE"><img src="https://img.shields.io/github/license/martinmoldrup/snappylapy" alt="License"/></a>
     <a href="https://martinmoldrup.github.io/snappylapy/"><img src="https://img.shields.io/badge/docs-MkDocs-blue" alt="Documentation"/></a>
-    <a href="https://github.com/martinmoldrup/snappylapy/tags"><img src="https://img.shields.io/github/v/tag/martinmoldrup/snappylapy?label=version&logo=github&color=purple" alt="Version"/></a>
+    <a href="https://github.com/martinmoldrup/snappylapy/blob/main/CHANGELOG.md"><img src="https://img.shields.io/github/v/tag/martinmoldrup/snappylapy?label=version&logo=github&color=purple" alt="Version"/></a>
     <br/>
     <!-- Quality Assurance steps. Note the success of these steps is enforced in the CI pipeline. -->
     <a href="https://github.com/martinmoldrup/snappylapy/actions/workflows/continuous_integration.yaml"><img src="https://img.shields.io/badge/type%20check-mypy-success?logo=python" alt="mypy"/></a>
     <a href="https://github.com/martinmoldrup/snappylapy/actions/workflows/continuous_integration.yaml"><img src="https://img.shields.io/badge/lint-ruff-success?logo=ruff" alt="ruff"/></a>
     <a href="https://github.com/martinmoldrup/snappylapy/actions/workflows/continuous_integration.yaml"><img src="https://img.shields.io/badge/tested%20with-pytest-success?logo=pytest" alt="pytest"/></a>
     <a href="https://github.com/martinmoldrup/snappylapy/blob/main/pyproject.toml"><img src="https://img.shields.io/badge/package%20manager-uv-success?logo=uv" alt="uv"/></a>
+    <a href="https://github.com/martinmoldrup/toolit"><img src="https://img.shields.io/badge/command%20runner-toolit-success" alt="toolit"/></a>
 </p>
 
 ---
