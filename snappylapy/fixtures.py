@@ -24,11 +24,14 @@ from .serialization import (
     BytesSerializer,
     JsonPickleSerializer,
     PandasCsvSerializer,
+    Serializer,
     StringSerializer,
 )
 from snappylapy.constants import DIRECTORY_NAMES
 from snappylapy.session import SnapshotSession
-from typing import Any, Protocol, overload
+from typing import Any, Protocol, TypeVar, overload
+
+T = TypeVar("T")
 
 
 class _CallableExpectation(Protocol):
@@ -375,18 +378,32 @@ class LoadSnapshot:
     def __init__(self, settings: Settings) -> None:
         """Do not initialize the LoadSnapshot class directly, should be used through the `load_snapshot` fixture in pytest."""  # noqa: E501
         self.settings = settings
-        self._dependency_loaded_counter = 0
+        self._current_dependency_index = 0
 
     def _read_snapshot(self) -> bytes:
         """Read the snapshot file."""
-        if not self.settings.depending_tests[self._dependency_loaded_counter].snapshots_base_dir:
+        if self._current_dependency_index >= len(self.settings.depending_tests):
+            msg = (
+                f"Attempted to load more dependencies ({self._current_dependency_index + 1}) "
+                f"than available ({len(self.settings.depending_tests)}). "
+                "Check your test's dependency configuration."
+            )
+            raise IndexError(msg)
+        if not self.settings.depending_tests[self._current_dependency_index].snapshots_base_dir:
             msg = "Depending snapshots base directory is not set."
             raise ValueError(msg)
         return (
-            self.settings.depending_tests[self._dependency_loaded_counter].snapshots_base_dir
+            self.settings.depending_tests[self._current_dependency_index].snapshots_base_dir
             / DIRECTORY_NAMES.snapshot_dir_name
-            / self.settings.depending_tests[self._dependency_loaded_counter].filename
+            / self.settings.depending_tests[self._current_dependency_index].filename
         ).read_bytes()
+
+    def _load_and_deserialize(self, filename_extension: str, deserializer: Serializer[T]) -> T:
+        """Set filename extension, read, deserialize, and increment dependency index."""
+        self.settings.depending_tests[self._current_dependency_index].filename_extension = filename_extension
+        deserialized_data = deserializer.deserialize(self._read_snapshot())
+        self._current_dependency_index += 1
+        return deserialized_data
 
     def dict(self) -> dict[Any, Any]:
         """
@@ -416,10 +433,10 @@ class LoadSnapshot:
             assert data["bananas"] == 5
         ```
         """
-        self.settings.depending_tests[self._dependency_loaded_counter].filename_extension = "dict.json"
-        deserialized_data = JsonPickleSerializer[dict]().deserialize(self._read_snapshot())
-        self._dependency_loaded_counter += 1
-        return deserialized_data
+        return self._load_and_deserialize(
+            "dict.json",
+            JsonPickleSerializer[dict](),
+        )
 
     def list(self) -> list[Any]:
         """
@@ -454,10 +471,10 @@ class LoadSnapshot:
             expect(result).to_match_snapshot()
         ```
         """
-        self.settings.depending_tests[self._dependency_loaded_counter].filename_extension = "list.json"
-        deserialized_data = JsonPickleSerializer[list[Any]]().deserialize(self._read_snapshot())
-        self._dependency_loaded_counter += 1
-        return deserialized_data
+        return self._load_and_deserialize(
+            "list.json",
+            JsonPickleSerializer[list[Any]](),
+        )
 
     def string(self) -> str:
         """
@@ -483,10 +500,10 @@ class LoadSnapshot:
             assert data == "Hello, pytest!"
         ```
         """
-        self.settings.depending_tests[self._dependency_loaded_counter].filename_extension = "string.txt"
-        deserialized_data = StringSerializer().deserialize(self._read_snapshot())
-        self._dependency_loaded_counter += 1
-        return deserialized_data
+        return self._load_and_deserialize(
+            "string.txt",
+            StringSerializer(),
+        )
 
     def bytes(self) -> bytes:
         r"""
@@ -512,10 +529,10 @@ class LoadSnapshot:
             assert data == b"\x01\x02\x03"
         ```
         """
-        self.settings.depending_tests[self._dependency_loaded_counter].filename_extension = "bytes.txt"
-        deserialized_data = BytesSerializer().deserialize(self._read_snapshot())
-        self._dependency_loaded_counter += 1
-        return deserialized_data
+        return self._load_and_deserialize(
+            "bytes.txt",
+            BytesSerializer(),
+        )
 
     def dataframe(self) -> DataframeExpect.DataFrame:
         """
@@ -542,10 +559,10 @@ class LoadSnapshot:
             assert df["numbers"].sum() == 6
         ```
         """
-        self.settings.depending_tests[self._dependency_loaded_counter].filename_extension = "dataframe.csv"
-        deserialized_data = PandasCsvSerializer().deserialize(self._read_snapshot())
-        self._dependency_loaded_counter += 1
-        return deserialized_data
+        return self._load_and_deserialize(
+            "dataframe.csv",
+            PandasCsvSerializer(),
+        )
 
     def object(self) -> object:
         """
@@ -576,7 +593,7 @@ class LoadSnapshot:
             assert obj.value == 42
         ```
         """
-        self.settings.depending_tests[self._dependency_loaded_counter].filename_extension = "object.json"
-        deserialized_data = JsonPickleSerializer[object]().deserialize(self._read_snapshot())
-        self._dependency_loaded_counter += 1
-        return deserialized_data
+        return self._load_and_deserialize(
+            "object.json",
+            JsonPickleSerializer[object](),
+        )

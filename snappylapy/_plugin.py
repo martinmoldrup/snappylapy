@@ -82,10 +82,12 @@ def snappylapy_settings(request: pytest.FixtureRequest) -> Settings:
             if input_dir_from_depends:
                 path_output_dir = pathlib.Path(input_dir_from_depends)
             dependency_setting = DependingSettings(
-                test_filename=depend.__module__, test_function=depend.__name__, snapshots_base_dir=path_output_dir or DEFAULT_SNAPSHOT_BASE_DIR
+                test_filename=depend.__module__,
+                test_function=depend.__name__,
+                snapshots_base_dir=path_output_dir or DEFAULT_SNAPSHOT_BASE_DIR,
             )
-            if isinstance(dependency_setting.test_filename, str):
-                dependency_setting.test_filename = dependency_setting.test_filename.split(".")[-1]
+            # Extract only the module name (without package path) for test_filename.
+            dependency_setting.test_filename = dependency_setting.test_filename.split(".")[-1]
             settings.depending_tests.append(dependency_setting)
 
     return settings

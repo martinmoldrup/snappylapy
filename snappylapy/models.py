@@ -29,11 +29,11 @@ class DependingSettings:
     @property
     def filename(self) -> str:
         """Get the depending snapshot filename."""
-        if not self.test_filename or not self.test_function or not self.filename_extension:
-            msg = "Missing depending test filename, function or extension."
+        if not self.filename_extension:
+            msg = "Missing depending snapshot filename extension."
             raise ValueError(msg)
         if self.custom_name is not None:
-            return f"[{self.test_filename}][{self.test_function}][{self.custom_name}].{self.filename_extension}"  # noqa: E501
+            return f"[{self.test_filename}][{self.test_function}][{self.custom_name}].{self.filename_extension}"
         return f"[{self.test_filename}][{self.test_function}].{self.filename_extension}"
 
 
