@@ -61,6 +61,11 @@ class Settings:
 
     # Configurations for depending
     depending_tests: list[DependingSettings] = field(default_factory=list)
+    """
+    Depending tests are used for loading snapshots from other tests.
+
+    Information about each test the users have specified in a test decorator will be stored here.
+    """
 
     @property
     def snapshot_dir(self) -> pathlib.Path:
