@@ -61,7 +61,6 @@ class Expect:
     ---------------
     `test_expect_direct_call.py`
     ```python
-    import pytest
     from snappylapy.fixtures import Expect
 
     def test_expect_direct_call(expect: Expect) -> None:

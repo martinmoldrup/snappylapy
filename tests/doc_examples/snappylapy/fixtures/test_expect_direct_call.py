@@ -1,6 +1,7 @@
 import pytest
 from snappylapy.fixtures import Expect
 
+
 def test_expect_direct_call(expect: Expect) -> None:
     # Dict input
     data_dict: dict[str, int] = {"a": 1, "b": 2}
@@ -19,9 +20,13 @@ def test_expect_direct_call(expect: Expect) -> None:
     expect(data_bytes).to_match_snapshot()
 
     # DataFrame input (requires pandas)
-    import pandas as pd
-    df: pd.DataFrame = pd.DataFrame({"x": [1, 2]})
-    expect(df).to_match_snapshot()
+    try:
+        import pandas as pd
+    except ImportError:
+        pass
+    else:
+        df: pd.DataFrame = pd.DataFrame({"x": [1, 2]})
+        expect(df).to_match_snapshot()
 
     # Custom object input (falls back to ObjectExpect)
     class Custom:

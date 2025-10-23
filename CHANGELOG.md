@@ -12,7 +12,8 @@ Icons:
 
 ## [0.9.0] - 2025-10-23
 - 🆕 Added class method for handling objects in LoadSnapshot fixture
-  
+- 🐞 Fix snappylapy logo not showing correctly in documentation
+
 ## [0.8.0] - 2025-10-18
 - 🆕 Used integration with toolit to make snappylapy commands available for AI coding assistants
 - 🆕 Add a `@configure_snappylapy()` decorator as an alternative for using @pytest.mark.snappylapy for improved documentation support, type checking and IDE integration.
