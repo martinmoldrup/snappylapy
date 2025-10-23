@@ -1,5 +1,5 @@
 <div align="center">
-<img src="snappylapy-logo.svg" alt="Snappylapy Logo" style="width:200px;"/>
+<img src="https://raw.githubusercontent.com/martinmoldrup/snappylapy/refs/heads/main/docs/snappylapy-logo.svg" alt="Snappylapy Logo" style="width:200px;"/>
 
 <h1> Snappylapy</h1>
 <h3>Pytest Plugin for Snapshot Testing</h3>
@@ -26,7 +26,7 @@ Effortlessly capture, diff, and reuse complex, non-deterministic, and AI-generat
 
 ---
 
-Welcome to **Snappylapy**, a powerful and intuitive snapshot testing plugin for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity. 
+Welcome to **Snappylapy**, a powerful and intuitive snapshot testing plugin for Python's pytest framework. Snappylapy simplifies the process of capturing and verifying snapshots of your data, ensuring your code behaves as expected across different test case runs. With Snappylapy, you can save snapshots in a human-readable format and deserialize them for robust integration testing, providing a clear separation layer to help isolate errors and maintain code integrity. 
 
 Snappylapy is following the api-style of the very popular Jest testing framework, making it familiar and easy to use for JavaScript developers.
 
@@ -118,6 +118,9 @@ In snappylapy, you can customize the output directory for your snapshots. This i
 
 `test_expect_snapshot_custom_dir.py`
 ```python
+import pytest
+from snappylapy import Expect
+
 @pytest.mark.snappylapy(output_dir="custom_dir")
 def test_snapshot_with_custom_directories(expect: Expect):
     """Test snapshot with custom directories."""
@@ -152,6 +155,10 @@ When we add the `foreach_folder_in` parameter to the `snappylapy` marker, it wil
 `test_expect_snapshot_multiple_folders.py`
 ```python
 import json
+import pytest
+import pathlib
+from snappylapy import Expect
+
 
 def transform_data(data: dict) -> dict:
     """A sample transformation function."""
@@ -159,8 +166,9 @@ def transform_data(data: dict) -> dict:
     data["transformed"] = True
     return data
 
+
 @pytest.mark.snappylapy(foreach_folder_in="test_data")
-def test_snapshot_parametrized_multiple_test_case_folders(test_directory: pathlib.Path, expect: Expect):
+def test_snapshot_parametrized_multiple_test_case_folders(test_directory: pathlib.Path, expect: Expect) -> None:
     """Test snapshot with multiple folders."""
     data = json.loads((test_directory / "input.json").read_text())
     transformed_data = transform_data(data)

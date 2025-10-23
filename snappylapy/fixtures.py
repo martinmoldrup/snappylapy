@@ -61,7 +61,6 @@ class Expect:
     ---------------
     `test_expect_direct_call.py`
     ```python
-    import pytest
     from snappylapy.fixtures import Expect
 
     def test_expect_direct_call(expect: Expect) -> None:
@@ -536,3 +535,35 @@ class LoadSnapshot:
         """
         self.settings.depending_filename_extension = "dataframe.csv"
         return PandasCsvSerializer().deserialize(self._read_snapshot())
+
+    def object(self) -> object:
+        """
+        Load object snapshot.
+
+        Use this method to load a generic object snapshot that was created in a previous test.
+        This is useful for reusing test data, isolating dependencies, and verifying integration between components.
+
+        Example usage:
+        --------------
+        `test_load_snapshot_from_file_object.py`
+        ```python
+        import pytest
+        from snappylapy import Expect, LoadSnapshot
+
+        class Custom:
+            def __init__(self) -> None:
+                self.value = 42
+
+        def test_save_object_snapshot(expect: Expect) -> None:
+            obj = Custom()
+            expect(obj).to_match_snapshot()
+
+        @pytest.mark.snappylapy(depends=[test_save_object_snapshot])
+        def test_load_snapshot_object(load_snapshot: LoadSnapshot) -> None:
+            obj = load_snapshot.object()
+            assert hasattr(obj, "value")
+            assert obj.value == 42
+        ```
+        """
+        self.settings.depending_filename_extension = "object.json"
+        return JsonPickleSerializer[object]().deserialize(self._read_snapshot())

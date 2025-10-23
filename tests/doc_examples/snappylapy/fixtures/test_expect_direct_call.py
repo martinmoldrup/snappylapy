@@ -1,6 +1,7 @@
 import pytest
 from snappylapy.fixtures import Expect
 
+
 def test_expect_direct_call(expect: Expect) -> None:
     # Dict input
     data_dict: dict[str, int] = {"a": 1, "b": 2}
