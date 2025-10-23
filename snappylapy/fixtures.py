@@ -378,13 +378,13 @@ class LoadSnapshot:
 
     def _read_snapshot(self) -> bytes:
         """Read the snapshot file."""
-        if not self.settings.depending_snapshots_base_dir:
+        if not self.settings.depending_tests[0].snapshots_base_dir:
             msg = "Depending snapshots base directory is not set."
             raise ValueError(msg)
         return (
-            self.settings.depending_snapshots_base_dir
+            self.settings.depending_tests[0].snapshots_base_dir
             / DIRECTORY_NAMES.snapshot_dir_name
-            / self.settings.depending_filename
+            / self.settings.depending_tests[0].filename
         ).read_bytes()
 
     def dict(self) -> dict[Any, Any]:
@@ -415,7 +415,7 @@ class LoadSnapshot:
             assert data["bananas"] == 5
         ```
         """
-        self.settings.depending_filename_extension = "dict.json"
+        self.settings.depending_tests[0].filename_extension = "dict.json"
         return JsonPickleSerializer[dict]().deserialize(self._read_snapshot())
 
     def list(self) -> list[Any]:
@@ -451,7 +451,7 @@ class LoadSnapshot:
             expect(result).to_match_snapshot()
         ```
         """
-        self.settings.depending_filename_extension = "list.json"
+        self.settings.depending_tests[0].filename_extension = "list.json"
         return JsonPickleSerializer[list[Any]]().deserialize(self._read_snapshot())
 
     def string(self) -> str:
@@ -478,7 +478,7 @@ class LoadSnapshot:
             assert data == "Hello, pytest!"
         ```
         """
-        self.settings.depending_filename_extension = "string.txt"
+        self.settings.depending_tests[0].filename_extension = "string.txt"
         return StringSerializer().deserialize(self._read_snapshot())
 
     def bytes(self) -> bytes:
@@ -505,7 +505,7 @@ class LoadSnapshot:
             assert data == b"\x01\x02\x03"
         ```
         """
-        self.settings.depending_filename_extension = "bytes.txt"
+        self.settings.depending_tests[0].filename_extension = "bytes.txt"
         return BytesSerializer().deserialize(self._read_snapshot())
 
     def dataframe(self) -> DataframeExpect.DataFrame:
@@ -533,7 +533,7 @@ class LoadSnapshot:
             assert df["numbers"].sum() == 6
         ```
         """
-        self.settings.depending_filename_extension = "dataframe.csv"
+        self.settings.depending_tests[0].filename_extension = "dataframe.csv"
         return PandasCsvSerializer().deserialize(self._read_snapshot())
 
     def object(self) -> object:
@@ -565,5 +565,5 @@ class LoadSnapshot:
             assert obj.value == 42
         ```
         """
-        self.settings.depending_filename_extension = "object.json"
+        self.settings.depending_tests[0].filename_extension = "object.json"
         return JsonPickleSerializer[object]().deserialize(self._read_snapshot())

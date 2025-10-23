@@ -13,6 +13,7 @@ from snappylapy._utils_directories import DirectoryNamesUtil
 from snappylapy.constants import DEFAULT_SNAPSHOT_BASE_DIR
 from snappylapy.exceptions import TestDirectoryNotParametrizedError
 from snappylapy.fixtures import Settings
+from snappylapy.models import DependingSettings
 from snappylapy.session import SnapshotSession
 from typing import Any
 
@@ -70,18 +71,23 @@ def snappylapy_settings(request: pytest.FixtureRequest) -> Settings:
             # TODO: Add a better error message
             msg = "Path output directory cannot be None"
             raise ValueError(msg)
-        settings.depending_snapshots_base_dir = pathlib.Path(path_output_dir)
+        # settings.depending_snapshots_base_dir = pathlib.Path(path_output_dir)
         settings.snapshots_base_dir = pathlib.Path(path_output_dir)
         settings.custom_name = path_output_dir.name
     # If not parametrized, get the depends from the marker
     depends: list = marker.kwargs.get("depends", []) if marker else []
     if depends:
-        input_dir_from_depends = _get_kwargs_from_depend_function(depends[0], "snappylapy", "output_dir")
-        if input_dir_from_depends:
-            path_output_dir = pathlib.Path(input_dir_from_depends)
-        settings.depending_test_filename = depends[0].__module__
-        settings.depending_test_function = depends[0].__name__
-    settings.depending_snapshots_base_dir = path_output_dir or DEFAULT_SNAPSHOT_BASE_DIR
+        for depend in depends:
+            input_dir_from_depends = _get_kwargs_from_depend_function(depend, "snappylapy", "output_dir")
+            if input_dir_from_depends:
+                path_output_dir = pathlib.Path(input_dir_from_depends)
+            dependency_setting = DependingSettings(
+                test_filename=depend.__module__, test_function=depend.__name__, snapshots_base_dir=path_output_dir or DEFAULT_SNAPSHOT_BASE_DIR
+            )
+            if isinstance(dependency_setting.test_filename, str):
+                dependency_setting.test_filename = dependency_setting.test_filename.split(".")[-1]
+            settings.depending_tests.append(dependency_setting)
+
     return settings
 
 
