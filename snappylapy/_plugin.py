@@ -94,6 +94,7 @@ def snappylapy_settings(request: pytest.FixtureRequest) -> Settings:
                 test_filename=_extract_module_name(depend.__module__),
                 test_function=depend.__name__,
                 snapshots_base_dir=path_output_dir or DEFAULT_SNAPSHOT_BASE_DIR,
+                custom_name=settings.custom_name,
             )
             settings.depending_tests.append(dependency_setting)
 
