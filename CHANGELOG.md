@@ -12,7 +12,9 @@ Icons:
 
 ## [0.9.0] - 2025-10-23
 - 🆕 Added class method for handling objects in LoadSnapshot fixture
+- 🆕 Added support for multiple snapshots loaded in the same LoadSnapshot fixture, if multiple functions are added to the depends.
 - 🐞 Fix snappylapy logo not showing correctly in documentation
+- 🐞 Fix issue when snapshots is loaded from another folder and the path is added to the depending file name
 
 ## [0.8.0] - 2025-10-18
 - 🆕 Used integration with toolit to make snappylapy commands available for AI coding assistants

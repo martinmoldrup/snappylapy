@@ -13,8 +13,18 @@ from snappylapy._utils_directories import DirectoryNamesUtil
 from snappylapy.constants import DEFAULT_SNAPSHOT_BASE_DIR
 from snappylapy.exceptions import TestDirectoryNotParametrizedError
 from snappylapy.fixtures import Settings
+from snappylapy.models import DependingSettings
 from snappylapy.session import SnapshotSession
 from typing import Any
+
+
+def _extract_module_name(module_path: str) -> str:
+    """
+    Extract the module name from a dotted module path, returning only the last component.
+
+    This is used to strip package paths and keep only the module's filename for snapshot tracking.
+    """
+    return module_path.split(".", maxsplit=1)[-1]
 
 
 def _get_kwargs_from_depend_function(
@@ -70,18 +80,24 @@ def snappylapy_settings(request: pytest.FixtureRequest) -> Settings:
             # TODO: Add a better error message
             msg = "Path output directory cannot be None"
             raise ValueError(msg)
-        settings.depending_snapshots_base_dir = pathlib.Path(path_output_dir)
+        # settings.depending_snapshots_base_dir = pathlib.Path(path_output_dir)
         settings.snapshots_base_dir = pathlib.Path(path_output_dir)
         settings.custom_name = path_output_dir.name
     # If not parametrized, get the depends from the marker
     depends: list = marker.kwargs.get("depends", []) if marker else []
     if depends:
-        input_dir_from_depends = _get_kwargs_from_depend_function(depends[0], "snappylapy", "output_dir")
-        if input_dir_from_depends:
-            path_output_dir = pathlib.Path(input_dir_from_depends)
-        settings.depending_test_filename = depends[0].__module__
-        settings.depending_test_function = depends[0].__name__
-    settings.depending_snapshots_base_dir = path_output_dir or DEFAULT_SNAPSHOT_BASE_DIR
+        for depend in depends:
+            input_dir_from_depends = _get_kwargs_from_depend_function(depend, "snappylapy", "output_dir")
+            if input_dir_from_depends:
+                path_output_dir = pathlib.Path(input_dir_from_depends)
+            dependency_setting = DependingSettings(
+                test_filename=_extract_module_name(depend.__module__),
+                test_function=depend.__name__,
+                snapshots_base_dir=path_output_dir or DEFAULT_SNAPSHOT_BASE_DIR,
+                custom_name=settings.custom_name,
+            )
+            settings.depending_tests.append(dependency_setting)
+
     return settings
 
 
