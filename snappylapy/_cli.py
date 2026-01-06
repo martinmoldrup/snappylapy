@@ -52,6 +52,15 @@ def init() -> None:
         file.writelines(lines)
     typer.echo(f"Added {DIRECTORY_NAMES.test_results_dir_name}/ to .gitignore.")
 
+@app.command()
+def status() -> None:
+    """
+    Show the status of all files in the snapshot directory.
+
+    This will list how many files are unchanged, changed, or not found compared to the snapshots.
+    """
+    status_counts = get_status_counts()
+    print_status(status_counts)
 
 @app.command()
 def clear(
@@ -165,6 +174,15 @@ def diff() -> None:
             )
 
 
+
+class FileStatus(Enum):
+    """Enum to represent the status of a file."""
+
+    NOT_FOUND = "not_found"
+    CHANGED = "changed"
+    UNCHANGED = "unchanged"
+
+
 def delete_files(list_of_files_to_delete: list[pathlib.Path]) -> None:
     """Delete files."""
     # Delete files
@@ -201,15 +219,6 @@ def _try_open_diff(file1: pathlib.Path, file2: pathlib.Path) -> bool:
             return True
     return False
 
-
-class FileStatus(Enum):
-    """Enum to represent the status of a file."""
-
-    NOT_FOUND = "not_found"
-    CHANGED = "changed"
-    UNCHANGED = "unchanged"
-
-
 def check_file_statuses(
     file_paths: list[pathlib.Path],
 ) -> dict[pathlib.Path, FileStatus]:
@@ -228,6 +237,34 @@ def check_file_statuses(
         else:
             file_statuses[file_path] = FileStatus.UNCHANGED
     return file_statuses
+
+def get_status_counts() -> dict[FileStatus, int]:
+    """Return a dict with counts of each file status for snapshot files."""
+    files_test_results: list[pathlib.Path] = DirectoryNamesUtil().get_all_file_paths_test_results()
+    file_statuses: dict[pathlib.Path, FileStatus] = check_file_statuses(files_test_results)
+    status_counts: dict[FileStatus, int] = dict.fromkeys(FileStatus, 0)
+    for status in file_statuses.values():
+        status_counts[status] += 1
+    return status_counts
+
+def print_status(status_counts: dict[FileStatus, int]) -> None:
+    """Print the current status of the snapshot files to the console."""
+    if not status_counts or sum(status_counts.values()) == 0:
+        typer.secho("No test result files found.", fg=typer.colors.YELLOW)
+        return
+
+    typer.secho("Snapshot status:", underline=True, bold=True)
+    for status in FileStatus:
+        typer.echo(f"- {status.value}: {status_counts[status]} file(s)")
+
+    if status_counts[FileStatus.CHANGED] > 0 or status_counts[FileStatus.NOT_FOUND] > 0:
+        typer.secho("Some files are changed or missing snapshots.", fg=typer.colors.RED)
+    else:
+        typer.secho("All files are up to date.", fg=typer.colors.GREEN)
+
+def any_files_changed(status_counts: dict[FileStatus, int]) -> bool:
+    """Return True if any files are changed or missing snapshots, else False."""
+    return status_counts[FileStatus.CHANGED] > 0 or status_counts[FileStatus.NOT_FOUND] > 0
 
 
 if __name__ == "__main__":
