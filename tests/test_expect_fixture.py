@@ -9,11 +9,10 @@ At runtime `assert_type` is a no-op returning the original value; we also add
 
 from __future__ import annotations
 
+import pytest
 from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
-
-import pytest
 
 try:  # Python <3.11 fallback
     from typing import assert_type  # type: ignore[attr-defined]
@@ -30,8 +29,8 @@ from snappylapy.expectation_classes import (
     DataframeExpect,
     DictExpect,
     ListExpect,
-    StringExpect,
     ObjectExpect,
+    StringExpect,
 )
 from snappylapy.fixtures import Expect
 from snappylapy.models import Settings
@@ -86,14 +85,17 @@ def test_overload_dataframe(expect_fixture: Expect) -> None:  # pragma: no cover
     assert isinstance(result, DataframeExpect)
     assert_type(result, DataframeExpect)
 
+
 def test_overload_object(expect_fixture: Expect) -> None:
     """Object input returns ObjectExpect."""
+
     class Custom:
         pass
 
     result = expect_fixture(Custom())
     assert isinstance(result, ObjectExpect)
     assert_type(result, ObjectExpect)
+
 
 @pytest.mark.parametrize(
     "data,expected_attr",
@@ -104,7 +106,11 @@ def test_overload_object(expect_fixture: Expect) -> None:
         (b"bytes", "bytes"),
     ],
 )
-def test_expect_selects_correct_class_for_builtin_types(data, expected_attr, expect_fixture):
+def test_expect_selects_correct_class_for_builtin_types(
+    data: dict | list | str | bytes,
+    expected_attr: str,
+    expect_fixture: Expect,
+) -> None:
     """Test that Expect.__call__ selects the correct class for builtin types."""
     # Patch all expectation attributes with mocks
     expect_fixture.dict = MagicMock(return_value="called_dict")
@@ -120,6 +126,7 @@ def test_expect_selects_correct_class_for_builtin_types(data, expected_attr, exp
 
 def test_expect_selects_object_for_custom_type(expect_fixture: Expect):
     """Test that Expect.__call__ falls back to object for custom types."""
+
     class Custom:
         pass
 

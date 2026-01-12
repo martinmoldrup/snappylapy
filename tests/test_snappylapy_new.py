@@ -71,6 +71,11 @@ def test_load_snapshot_from_custom_dir(load_snapshot: LoadSnapshot):
     data = load_snapshot.string()
     assert data == "Hello World"
 
+def test_to_align_with_snapshot(expect: Expect):
+    """Test to_align_with_snapshot method."""
+    expect.string("Hello World").to_align_with_snapshot()
+    expect.string("Hello World1").to_align_with_snapshot()
+
 def test_snapshot_multiple_assertions(expect: Expect):
     """Test snapshot with multiple assertions."""
     expect.string("Hello World").to_match_snapshot()
