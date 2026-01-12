@@ -67,10 +67,16 @@ class BaseSnapshot(ABC, Generic[T]):
             if self.settings.snapshot_update:
                 self.snappylapy_session.add_updated_snapshot(self.settings.filename)
                 self._update_snapshot()
-            self.snappylapy_session.add_snapshot_test_failed(self.settings.filename)
-            diff_msg = str(error)
-            error_msg = f"Failed `to_match_snapshot()` expectation. Snapshot does not match test results. Run pytest with the --snapshot-update flag to update the snapshot.\n{diff_msg}"  # noqa: E501
-            raise AssertionError(error_msg)  # noqa: B904
+                return
+            else:
+                self.snappylapy_session.add_snapshot_test_failed(self.settings.filename)
+                diff_msg = str(error)
+                error_msg = (
+                    "Failed `to_match_snapshot()` expectation. Snapshot does not match test "
+                    "results. Run pytest with the --snapshot-update flag to update the "
+                    f"snapshot.\n{diff_msg}"
+                )
+                raise AssertionError(error_msg)  # noqa: B904
         else:
             self.snappylapy_session.add_snapshot_test_succeeded(self.settings.filename)
 

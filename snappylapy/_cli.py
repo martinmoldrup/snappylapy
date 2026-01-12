@@ -108,7 +108,7 @@ def update() -> None:
     """  # noqa: E501
     status_fetcher = _SnapshotStatusFetcher()
     if status_fetcher.get_count_of_test_results_files() == 0:
-        typer.echo("No files to update, run some pytests with expectations first.")
+        typer.echo("No test result files found. Run pytest tests that use snappylapy expectations first.")
         return
     files_to_update = status_fetcher.get_files_to_be_updated()
     count_up_to_date_files = status_fetcher.get_count_of_test_results_files() - len(files_to_update)
@@ -244,7 +244,7 @@ def _try_open_diff(file1: pathlib.Path, file2: pathlib.Path) -> bool:
 
 
 class _SnapshotStatusFetcher:
-    """Various unitilities to get various snapshot statuses and information."""
+    """Various utilities to get various snapshot statuses and information."""
 
     def _check_file_statuses(
         self,
