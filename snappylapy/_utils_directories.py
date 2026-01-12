@@ -1,6 +1,6 @@
 """Utility functions for handling directories in snappylapy."""
-from functools import cached_property, lru_cache
 import pathlib
+from functools import cached_property
 from snappylapy.constants import DIRECTORY_NAMES
 
 
