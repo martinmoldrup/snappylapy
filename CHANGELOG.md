@@ -11,7 +11,7 @@ Icons:
 - 🔄 Changed
 
 ## [Unreleased]
-- 🆕 Added CLI command 'status', to show the current status of whether snapshots are up-to-date, missing or changed.
+- 🆕 Added CLI command `snappylapy status`, to show the current status of whether snapshots are up-to-date, missing or changed.
 
 ## [0.9.0] - 2025-10-23
 - 🆕 Added class method for handling objects in LoadSnapshot fixture
