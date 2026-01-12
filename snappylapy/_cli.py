@@ -61,7 +61,7 @@ def status() -> None:
 
     This will list how many files are unchanged, changed, or not found compared to the snapshots.
     """
-    status_fetcher = _SnapshotStatusFetcher()
+    status_fetcher = _SnapshotStatusManager()
     status_fetcher.print_status()
 
 
@@ -82,12 +82,12 @@ def clear(
 
     This finds and deletes all `__test_results__` and `__snapshots__` directories recursively across the working directory.
     """  # noqa: E501
-    list_of_files_to_delete = DirectoryNamesUtil().get_all_file_paths_created_by_snappylapy()
+    list_of_files_to_delete = DirectoryNamesUtil().all_file_paths_created_by_snappylapy
     if not list_of_files_to_delete:
         typer.echo("No files to delete.")
         return
     _print_deletion_summary(
-        directories_to_delete=DirectoryNamesUtil().get_all_directories_created_by_snappylapy(),
+        directories_to_delete=DirectoryNamesUtil().all_directories_created_by_snappylapy,
         list_of_files_to_delete=list_of_files_to_delete,
     )
     if not force and not _user_approved_deletion_in_cli():
@@ -106,7 +106,7 @@ def update() -> None:
 
     The file contents of any files in any of the `__test_results__` folders will be copied to the corresponding `__snapshots__` folder.
     """  # noqa: E501
-    status_fetcher = _SnapshotStatusFetcher()
+    status_fetcher = _SnapshotStatusManager()
     if status_fetcher.get_count_of_test_results_files() == 0:
         typer.echo("No test result files found. Run pytest tests that use snappylapy expectations first.")
         return
@@ -139,7 +139,7 @@ def diff() -> None:
 
     More diff viewers will be supported in the future, please raise a request on github with your needs.
     """
-    status_fetcher = _SnapshotStatusFetcher()
+    status_fetcher = _SnapshotStatusManager()
     files_to_diff = status_fetcher.get_files_with_status(FileStatus.CHANGED)
     if not files_to_diff:
         status_fetcher.print_status()
@@ -243,14 +243,14 @@ def _try_open_diff(file1: pathlib.Path, file2: pathlib.Path) -> bool:
     return False
 
 
-class _SnapshotStatusFetcher:
+class _SnapshotStatusManager:
     """Various utilities to get various snapshot statuses and information."""
 
     def _check_file_statuses(
         self,
     ) -> dict[pathlib.Path, FileStatus]:
         """Check the status of files in the snapshot directory."""
-        files_test_results = DirectoryNamesUtil().get_all_file_paths_test_results()
+        files_test_results = DirectoryNamesUtil().all_file_paths_test_results
         file_statuses: dict[pathlib.Path, FileStatus] = {}
         for file_path in files_test_results:
             snapshot_file = file_path.parent.parent / DIRECTORY_NAMES.snapshot_dir_name / file_path.name
@@ -268,7 +268,7 @@ class _SnapshotStatusFetcher:
 
     def get_count_of_test_results_files(self) -> int:
         """Return the count of all test results files."""
-        files_test_results = DirectoryNamesUtil().get_all_file_paths_test_results()
+        files_test_results = DirectoryNamesUtil().all_file_paths_test_results
         return len(files_test_results)
 
     def _get_status_counts(self) -> dict[FileStatus, int]:
