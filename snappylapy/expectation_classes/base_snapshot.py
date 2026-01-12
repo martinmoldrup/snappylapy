@@ -67,7 +67,6 @@ class BaseSnapshot(ABC, Generic[T]):
             if self.settings.snapshot_update:
                 self.snappylapy_session.add_updated_snapshot(self.settings.filename)
                 self._update_snapshot()
-                return
             else:
                 self.snappylapy_session.add_snapshot_test_failed(self.settings.filename)
                 diff_msg = str(error)
@@ -85,13 +84,14 @@ class BaseSnapshot(ABC, Generic[T]):
         Non-deterministic snapshot alignment.
 
         Data structure specific implementations, can fuzzy match strings or compare
-        data structures. The default behaivior defined is always accepting the snapshot,
-        but fails if the snapshot is missing.
+        data structures. The default behavior defined is always accepting the snapshot,
+        but fails if the snapshot has not been created yet.
         """
         if not (self.settings.snapshot_dir / self.settings.filename).exists():
             if not self.settings.snapshot_update:
                 error_msg = f"Failed `to_align_with_snapshot()` expectation. Snapshot file not found: {self.settings.filename}, run 'snappylapy update' command in the terminal, or run pytest with the --snapshot-update flag to create it."  # noqa: E501
                 raise FileNotFoundError(error_msg)
+            self.snappylapy_session.add_created_snapshot(self.settings.filename)
             self._update_snapshot()
         try:
             self._to_align_with_snapshot_validation()
@@ -107,11 +107,17 @@ class BaseSnapshot(ABC, Generic[T]):
 
     def _to_align_with_snapshot_validation(self) -> None:
         """
-        Validate the alignment with snapshot, this is a hook for implementing data structure specific validations.
+        Validate the alignment with the existing snapshot.
 
-        To be overwritten in subclasses. Raise AssertionError if validation fails.
+        This is a hook for implementing data-structure-specific validations used by
+        :meth:`to_align_with_snapshot`. In the base implementation this method is a
+        no-op and never raises, meaning that if the snapshot file exists,
+        ``to_align_with_snapshot`` will treat the snapshot as accepted/aligned.
+
+        Subclasses should override this method and raise ``AssertionError`` if the
+        alignment/validation fails.
         """
-        # TODO: The subclass implementations does not exist yet.
+        # TODO: The subclass implementations do not exist yet.
 
     def compare_snapshot_data(self, snapshot_data: bytes, test_data: bytes) -> None:
         """
