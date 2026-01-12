@@ -2,6 +2,8 @@ Markdown Checkbox VSCode Extension
 - ctl+shift+enter to toggle checkbox
 
 # Todo
+- [ ] Make sure we have good error messages when required snapshot input arguments are missing. Ideally we should avoid collection errors from pytest, since it is difficult to debug.
+- [ ] Do not fail collection if the depends on snapshot and foreach snapshot folders is missing. Instead make it fail at runtime with a helpful error message.
 - [ ] Update README.md with example of how to use the parameterization functionality
 - [ ] Do a significant boost in testing both manually and adding automated tests
 - [ ] Update README.md such that todo items is shown here instead of in the README.md

@@ -1,5 +1,6 @@
 """Utility functions for handling directories in snappylapy."""
 import pathlib
+from functools import cached_property
 from snappylapy.constants import DIRECTORY_NAMES
 
 
@@ -30,34 +31,41 @@ class DirectoryNamesUtil:
     and file paths created by snappylapy.
     """
 
-    def get_all_directory_names(self) -> list[str]:
+    @cached_property
+    def all_directory_names(self) -> list[str]:
         """Get all directory names."""
         return [DIRECTORY_NAMES.snapshot_dir_name, DIRECTORY_NAMES.test_results_dir_name]
 
-    def get_all_directories_for_test_results(self) -> list[pathlib.Path]:
+    @cached_property
+    def all_directories_for_test_results(self) -> list[pathlib.Path]:
         """Get all directories for test results."""
         return find_directories([DIRECTORY_NAMES.test_results_dir_name])
 
-    def get_all_directories_for_snapshots(self) -> list[pathlib.Path]:
+    @cached_property
+    def all_directories_for_snapshots(self) -> list[pathlib.Path]:
         """Get all directories for snapshots."""
         return find_directories([DIRECTORY_NAMES.snapshot_dir_name])
 
-    def get_all_file_paths_test_results(self) -> list[pathlib.Path]:
+    @cached_property
+    def all_file_paths_test_results(self) -> list[pathlib.Path]:
         """Get all file paths in the test results directory."""
         directories = find_directories([DIRECTORY_NAMES.test_results_dir_name])
         return get_file_paths_from_directories(directories)
 
-    def get_all_file_paths_snapshots(self) -> list[pathlib.Path]:
+    @cached_property
+    def all_file_paths_snapshots(self) -> list[pathlib.Path]:
         """Get all file paths in the snapshot directory."""
         directories = find_directories([DIRECTORY_NAMES.snapshot_dir_name])
         return get_file_paths_from_directories(directories)
 
-    def get_all_directories_created_by_snappylapy(self) -> list[pathlib.Path]:
+    @cached_property
+    def all_directories_created_by_snappylapy(self) -> list[pathlib.Path]:
         """Get all directories created by snappylapy."""
-        return find_directories(self.get_all_directory_names())
+        return find_directories(self.all_directory_names)
 
-    def get_all_file_paths_created_by_snappylapy(self) -> list[pathlib.Path]:
+    @cached_property
+    def all_file_paths_created_by_snappylapy(self) -> list[pathlib.Path]:
         """Get all file paths created by snappylapy."""
         return get_file_paths_from_directories(
-            self.get_all_directories_created_by_snappylapy(),
+            self.all_directories_created_by_snappylapy,
         )

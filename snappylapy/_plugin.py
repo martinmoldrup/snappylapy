@@ -171,7 +171,7 @@ def pytest_sessionstart(session: pytest.Session) -> None:
 
     session.config.snappylapy_session = SnapshotSession()  # type: ignore[attr-defined]
     directory_util: DirectoryNamesUtil = DirectoryNamesUtil()
-    files_to_delete: list[pathlib.Path] = directory_util.get_all_file_paths_test_results()
+    files_to_delete: list[pathlib.Path] = directory_util.all_file_paths_test_results
     for file_path in files_to_delete:
         file_path.unlink()
 
