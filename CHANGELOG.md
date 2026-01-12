@@ -10,6 +10,10 @@ Icons:
 - 💥 Breaking change
 - 🔄 Changed
 
+## [Unreleased]
+- 🆕 Added CLI command `snappylapy status`, to show the current status of whether snapshots are up-to-date, missing or changed.
+- 🆕 Added `to_align_with_snapshot()` expectation method for non-deterministic data structures. This is enabled for all datastructures to be used for saving snapshot, but not failing if they dont match. This is useful to use the diff viewer, load easily updated snapshots.
+
 ## [0.9.0] - 2025-10-23
 - 🆕 Added class method for handling objects in LoadSnapshot fixture
 - 🆕 Added support for multiple snapshots loaded in the same LoadSnapshot fixture, if multiple functions are added to the depends.

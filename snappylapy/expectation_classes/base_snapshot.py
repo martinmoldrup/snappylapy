@@ -53,7 +53,7 @@ class BaseSnapshot(ABC, Generic[T]):
         """Assert test results match the snapshot."""
         if not (self.settings.snapshot_dir / self.settings.filename).exists():
             if not self.settings.snapshot_update:
-                error_msg = f"Snapshot file not found: {self.settings.filename}, run 'snappylapy update' command in the terminal, or run pytest with the --snapshot-update flag to create it."  # noqa: E501
+                error_msg = f"Failed `to_match_snapshot()` expectation. Snapshot file not found: {self.settings.filename}, run 'snappylapy update' command in the terminal, or run pytest with the --snapshot-update flag to create it."  # noqa: E501
                 raise FileNotFoundError(error_msg)
             self.snappylapy_session.add_created_snapshot(self.settings.filename)
             self._update_snapshot()
@@ -70,10 +70,54 @@ class BaseSnapshot(ABC, Generic[T]):
             else:
                 self.snappylapy_session.add_snapshot_test_failed(self.settings.filename)
                 diff_msg = str(error)
-                error_msg = f"Snapshot does not match test results. Run pytest with the --snapshot-update flag to update the snapshot.\n{diff_msg}"  # noqa: E501
+                error_msg = (
+                    "Failed `to_match_snapshot()` expectation. Snapshot does not match test "
+                    "results. Run pytest with the --snapshot-update flag to update the "
+                    f"snapshot.\n{diff_msg}"
+                )
                 raise AssertionError(error_msg)  # noqa: B904
         else:
             self.snappylapy_session.add_snapshot_test_succeeded(self.settings.filename)
+
+    def to_align_with_snapshot(self) -> None:
+        """
+        Non-deterministic snapshot alignment.
+
+        Data structure specific implementations, can fuzzy match strings or compare
+        data structures. The default behavior defined is always accepting the snapshot,
+        but fails if the snapshot has not been created yet.
+        """
+        if not (self.settings.snapshot_dir / self.settings.filename).exists():
+            if not self.settings.snapshot_update:
+                error_msg = f"Failed `to_align_with_snapshot()` expectation. Snapshot file not found: {self.settings.filename}, run 'snappylapy update' command in the terminal, or run pytest with the --snapshot-update flag to create it."  # noqa: E501
+                raise FileNotFoundError(error_msg)
+            self.snappylapy_session.add_created_snapshot(self.settings.filename)
+            self._update_snapshot()
+        try:
+            self._to_align_with_snapshot_validation()
+        except AssertionError:
+            if self.settings.snapshot_update:
+                self._update_snapshot()
+                self.snappylapy_session.add_updated_snapshot(self.settings.filename)
+                return
+            self.snappylapy_session.add_snapshot_test_failed(self.settings.filename)
+            raise
+        else:
+            self.snappylapy_session.add_snapshot_test_succeeded(self.settings.filename)
+
+    def _to_align_with_snapshot_validation(self) -> None:
+        """
+        Validate the alignment with the existing snapshot.
+
+        This is a hook for implementing data-structure-specific validations used by
+        :meth:`to_align_with_snapshot`. In the base implementation this method is a
+        no-op and never raises, meaning that if the snapshot file exists,
+        ``to_align_with_snapshot`` will treat the snapshot as accepted/aligned.
+
+        Subclasses should override this method and raise ``AssertionError`` if the
+        alignment/validation fails.
+        """
+        # TODO: The subclass implementations do not exist yet.
 
     def compare_snapshot_data(self, snapshot_data: bytes, test_data: bytes) -> None:
         """
