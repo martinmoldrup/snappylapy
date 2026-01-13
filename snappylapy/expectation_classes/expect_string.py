@@ -16,7 +16,7 @@ class StringExpect(BaseSnapshot[str]):
                  filetype: str = "string.txt") -> StringExpect:
         """Prepare a string for snapshot testing."""
         if not hasattr(data_to_snapshot, "encode"):
-            msg = f"data_to_snapshot of type {type(data_to_snapshot)} must be a string-like object supporting 'encode' methods."
+            msg = f"data_to_snapshot of type {type(data_to_snapshot)} must be a string-like object supporting an 'encode' method."
             raise TypeError(msg)
         self._prepare_test(data_to_snapshot, name, filetype)
         return self

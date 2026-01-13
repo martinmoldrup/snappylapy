@@ -215,8 +215,8 @@ def _parametrize_snappylapy_settings_with_test_cases(
     try:
         test_cases = [p for p in foreach_folder_in.iterdir() if p.is_dir()]
     except FileNotFoundError:
-        msg = f"The path provided to 'foreach_folder_in' is not a directory: {foreach_folder_in}"
-        warnings.warn(msg, UserWarning, stacklevel=2)
+        msg = f"The path provided to 'foreach_folder_in' does not exist: {foreach_folder_in}"
+        warnings.warn(msg, UserWarning, stacklevel=1)
         raise
     ids = [p.name for p in test_cases]
     metafunc.parametrize("snappylapy_settings", test_cases, indirect=True, ids=ids)
