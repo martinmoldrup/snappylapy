@@ -207,6 +207,7 @@ def test_directory(snappylapy_settings: Settings) -> pathlib.Path:
     except Exception as e:
         raise TestDirectoryNotParametrizedError from e
 
+
 def _parametrize_snappylapy_settings_with_test_cases(
     metafunc: pytest.Metafunc,
     foreach_folder_in: pathlib.Path,
@@ -220,6 +221,7 @@ def _parametrize_snappylapy_settings_with_test_cases(
         raise
     ids = [p.name for p in test_cases]
     metafunc.parametrize("snappylapy_settings", test_cases, indirect=True, ids=ids)
+
 
 def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     """Generate parametrized tests for the pipeline output and input."""
