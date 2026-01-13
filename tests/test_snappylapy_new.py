@@ -99,6 +99,12 @@ def test_snapshot_multiple_folders_snappylapy_marker(test_directory: pathlib.Pat
     """Test snapshot with multiple folders."""
     expect.string("Hello World").to_match_snapshot()
 
+@pytest.mark.snappylapy(foreach_folder_in="test_data_missing")
+def test_snapshot_multiple_folders_snappylapy_marker_missing_foreach_folder(test_directory: pathlib.Path, expect: Expect):
+    """Test snapshot with multiple folders."""
+    with pytest.raises(FileNotFoundError):
+        expect.string("Hello World").to_match_snapshot()
+
 @pytest.mark.parametrize("test_directory", list(pathlib.Path("test_data").iterdir()), ids=lambda x: x.name)
 def test_snapshot_multiple_folders_pytest_parametrize(test_directory: pathlib.Path, expect: Expect):
     """Test snapshot with multiple folders."""
