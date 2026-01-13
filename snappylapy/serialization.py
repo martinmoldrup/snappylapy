@@ -57,6 +57,7 @@ class JsonPickleSerializer(Serializer, Generic[T]):
         json_string: str = jsonpickle.encode(
             data,
             indent=OUTPUT_JSON_INDENTATION_LEVEL,
+            make_refs=False,
         )
         json_string = json_string.replace("\r\n", "\n").replace("\r", "\n")  # Normalize all line endings to LF
         return json_string.encode(encoding=ENCODING_TO_USE)

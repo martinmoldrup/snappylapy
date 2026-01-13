@@ -71,6 +71,11 @@ def test_load_snapshot_from_custom_dir(load_snapshot: LoadSnapshot):
     data = load_snapshot.string()
     assert data == "Hello World"
 
+def test_to_align_with_snapshot(expect: Expect):
+    """Test to_align_with_snapshot method."""
+    expect.string("Hello World").to_align_with_snapshot()
+    expect.string("Hello World1").to_align_with_snapshot()
+
 def test_snapshot_multiple_assertions(expect: Expect):
     """Test snapshot with multiple assertions."""
     expect.string("Hello World").to_match_snapshot()
@@ -93,6 +98,12 @@ def test_snapshot_parametrized(data: str, expect: Expect):
 def test_snapshot_multiple_folders_snappylapy_marker(test_directory: pathlib.Path, expect: Expect):
     """Test snapshot with multiple folders."""
     expect.string("Hello World").to_match_snapshot()
+
+@pytest.mark.snappylapy(foreach_folder_in="test_data_missing")
+def test_snapshot_multiple_folders_snappylapy_marker_missing_foreach_folder(test_directory: pathlib.Path, expect: Expect):
+    """Test snapshot with multiple folders."""
+    with pytest.raises(FileNotFoundError):
+        expect.string("Hello World").to_match_snapshot()
 
 @pytest.mark.parametrize("test_directory", list(pathlib.Path("test_data").iterdir()), ids=lambda x: x.name)
 def test_snapshot_multiple_folders_pytest_parametrize(test_directory: pathlib.Path, expect: Expect):

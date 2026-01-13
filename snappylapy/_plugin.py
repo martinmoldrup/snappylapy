@@ -6,6 +6,7 @@ import os
 import re
 import pytest
 import pathlib
+import warnings
 import _pytest.mark
 from collections.abc import Callable
 from snappylapy import Expect, LoadSnapshot
@@ -207,6 +208,21 @@ def test_directory(snappylapy_settings: Settings) -> pathlib.Path:
         raise TestDirectoryNotParametrizedError from e
 
 
+def _parametrize_snappylapy_settings_with_test_cases(
+    metafunc: pytest.Metafunc,
+    foreach_folder_in: pathlib.Path,
+) -> None:
+    """Parametrize the snappylapy_settings fixture with test cases from the given directory."""
+    try:
+        test_cases = [p for p in foreach_folder_in.iterdir() if p.is_dir()]
+    except FileNotFoundError:
+        msg = f"The path provided to 'foreach_folder_in' does not exist: {foreach_folder_in}"
+        warnings.warn(msg, UserWarning, stacklevel=1)
+        raise
+    ids = [p.name for p in test_cases]
+    metafunc.parametrize("snappylapy_settings", test_cases, indirect=True, ids=ids)
+
+
 def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     """Generate parametrized tests for the pipeline output and input."""
     marker = metafunc.definition.get_closest_marker("snappylapy")
@@ -214,9 +230,10 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
         return
     foreach_folder_in: str | pathlib.Path | None = marker.kwargs.get("foreach_folder_in", None)
     if foreach_folder_in:
-        test_cases = [p for p in pathlib.Path(foreach_folder_in).iterdir() if p.is_dir()]
-        ids = [p.name for p in test_cases]
-        metafunc.parametrize("snappylapy_settings", test_cases, indirect=True, ids=ids)
+        try:
+            _parametrize_snappylapy_settings_with_test_cases(metafunc, pathlib.Path(foreach_folder_in))
+        except FileNotFoundError:
+            return
     depends = marker.kwargs.get("depends", []) if marker else []
     if depends:
         function_depends = marker.kwargs["depends"][0]
@@ -233,6 +250,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
             foreach_folder_in = _get_kwargs_from_depend_function(depends[0], "snappylapy", "foreach_folder_in")
             if not foreach_folder_in:
                 return
-            test_cases = [p for p in pathlib.Path(foreach_folder_in).iterdir() if p.is_dir()]
-            ids = [p.name for p in test_cases]
-            metafunc.parametrize("snappylapy_settings", test_cases, indirect=True, ids=ids)
+            try:
+                _parametrize_snappylapy_settings_with_test_cases(metafunc, pathlib.Path(foreach_folder_in))
+            except FileNotFoundError:
+                return

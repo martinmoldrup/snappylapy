@@ -3,7 +3,6 @@ Markdown Checkbox VSCode Extension
 
 # Todo
 - [ ] Make sure we have good error messages when required snapshot input arguments are missing. Ideally we should avoid collection errors from pytest, since it is difficult to debug.
-- [ ] Do not fail collection if the depends on snapshot and foreach snapshot folders is missing. Instead make it fail at runtime with a helpful error message.
 - [ ] Update README.md with example of how to use the parameterization functionality
 - [ ] Do a significant boost in testing both manually and adding automated tests
 - [ ] Update README.md such that todo items is shown here instead of in the README.md
@@ -22,6 +21,7 @@ Markdown Checkbox VSCode Extension
    - [ ] A diff report in html can be generated with `pytest --snappylapy-html=report.html`
 
 # Done
+- [X] ~~*Do not fail collection if the foreach snapshot folders is missing. Instead make it fail at runtime with a helpful error message.*~~ [2026-01-13]
 - [X] ~~*Make the installation of pandas optional (as it is not needed for the basic functionality)*~~ [2025-07-31]
 - [X] ~~*Improve api so that expect can be used directly which seems more natural*~~ [2025-07-31]
 - [X] ~~*Add a generic fallback handler for all other datatypes that is not supported today*~~ [2025-08-23]

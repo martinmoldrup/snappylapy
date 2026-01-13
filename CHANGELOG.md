@@ -10,9 +10,12 @@ Icons:
 - 💥 Breaking change
 - 🔄 Changed
 
-## [Unreleased]
+## [0.10.0] - 2026-01-13
 - 🆕 Added CLI command `snappylapy status`, to show the current status of whether snapshots are up-to-date, missing or changed.
 - 🆕 Added `to_align_with_snapshot()` expectation method for non-deterministic data structures. This is enabled for all datastructures to be used for saving snapshot, but not failing if they dont match. This is useful to use the diff viewer, load easily updated snapshots.
+- 🔄 Now the test collection will not fail if the `foreach_folder_in` directory does not exist, it will instead fail at runtime, making configuration issues easier to debug.
+- 🔄 Provide a better error message if a not string-like object is provided to the string snapshot creation module, for easier debugging.
+- 💥 Changed how the snapshot output json of complicated python objects is saved. Resulting JSON stream will be conceptually simpler to read and understand (setting make_refs configuration in jsonpickle to False).
 
 ## [0.9.0] - 2025-10-23
 - 🆕 Added class method for handling objects in LoadSnapshot fixture
