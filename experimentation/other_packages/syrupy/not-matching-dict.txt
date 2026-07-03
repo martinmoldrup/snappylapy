@@ -1,0 +1,46 @@
+(snapshot-testing) C:\code\snappylapy>C:/Users/61603/AppData/Local/miniconda3/envs/snapshot-testing/python.exe c:/code/snappylapy/experimentation/test_try_out_other_snapshot_packages.py
+c:\code\snappylapy\experimentation\test_try_out_other_snapshot_packages.py
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: syrupy-4.8.0
+collected 2 items
+
+experimentation\test_try_out_other_snapshot_packages.py sF                                           [100%]
+
+================================================ FAILURES ================================================= 
+__________________________________________ test_snapshot_syrupy ___________________________________________ 
+
+snapshot = '''
+{
+    "key": "value",
+    "key2": "value3"
+}
+'''
+
+    def test_snapshot_syrupy(snapshot):
+        """
+        Test the snapshot dict.
+
+        pip install pytest-snapshot
+        """
+        data = {"key": "value", "key2": "value2"}
+        data_str = dumps(data, indent=4)
+>       assert data_str == snapshot
+E       assert [+ received] == [- snapshot]
+E           '''
+E             ...
+E               "key": "value",
+E         -     "key2": "val
+E
+E         ...Full output truncated (4 lines hidden), use '-vv' to show
+
+experimentation\test_try_out_other_snapshot_packages.py:29: AssertionError
+----------------------------------------- snapshot report summary ----------------------------------------- 
+1 snapshot failed.
+========================================= short test summary info ========================================= 
+FAILED experimentation/test_try_out_other_snapshot_packages.py::test_snapshot_syrupy - assert [+ received] == [- snapshot]
+====================================== 1 failed, 1 skipped in 0.16s ======================================= 
+
+(snapshot-testing) C:\code\snappylapy>

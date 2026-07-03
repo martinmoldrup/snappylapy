@@ -1,0 +1,22 @@
+There is only a single test, it adds another failing test when it updates a snapshot.
+
+
+(snapshot-testing) C:\code\snappylapy>pytest experimentation --snapshot-update
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: snapshot-0.9.0
+collected 1 item
+
+experimentation\test_try_out_other_snapshot_packages.py .E                                           [100%]
+
+================================================= ERRORS ================================================== 
+_________________________________ ERROR at teardown of test_snapshot_dict _________________________________ 
+Snapshot directory was modified: experimentation\snapshots\test_try_out_other_snapshot_packages\test_snapshot_dict
+  (verify that the changes are expected before committing them to version control)
+  Updated snapshots:
+    test_snapshot_dict
+========================================= short test summary info ========================================= 
+ERROR experimentation/test_try_out_other_snapshot_packages.py::test_snapshot_dict - Failed: Snapshot directory was modified: experimentation\snapshots\test_try_out_other_snapshot_packages...
+======================================= 1 passed, 1 error in 0.08s ======================================== 

@@ -1,0 +1,31 @@
+Different report depending on if the snapshot is generated or updated
+
+
+(snapshot-testing) C:\code\snappylapy>pytest experimentation --snapshot-update
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: syrupy-4.8.0
+collected 2 items
+
+experimentation\test_try_out_other_snapshot_packages.py s.                                           [100%] 
+
+----------------------------------------- snapshot report summary ----------------------------------------- 
+1 snapshot generated.
+====================================== 1 passed, 1 skipped in 0.06s ======================================= 
+
+
+
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: syrupy-4.8.0
+collected 2 items
+
+experimentation\test_try_out_other_snapshot_packages.py s.                                           [100%]
+
+----------------------------------------- snapshot report summary -----------------------------------------
+1 snapshot updated.
+====================================== 1 passed, 1 skipped in 0.04s ======================================= 

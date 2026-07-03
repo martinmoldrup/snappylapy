@@ -1,0 +1,32 @@
+(snapshot-testing) C:\code\snappylapy>pytest experimentation                                                
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: snapshot-0.9.0
+collected 1 item
+
+experimentation\test_try_out_other_snapshot_packages.py F                                            [100%]
+
+================================================ FAILURES ================================================= 
+___________________________________________ test_snapshot_dict ____________________________________________ 
+
+snapshot = <pytest_snapshot.plugin.Snapshot object at 0x0000020BB541D180>
+
+    def test_snapshot_dict(snapshot):
+        """
+        Test the snapshot dict.
+
+        pip install pytest-snapshot
+        """
+        data = {"key": "value", "key2": "value2"}
+        data_str = dumps(data, indent=4)
+>       snapshot.assert_match(data_str, "test_snapshot_dict")
+E       AssertionError: snapshot experimentation\snapshots\test_try_out_other_snapshot_packages\test_snapshot_dict\test_snapshot_dict doesn't exist. (run pytest with --snapshot-update to create it)
+
+experimentation\test_try_out_other_snapshot_packages.py:17: AssertionError
+========================================= short test summary info ========================================= 
+FAILED experimentation/test_try_out_other_snapshot_packages.py::test_snapshot_dict - AssertionError: snapshot experimentation\snapshots\test_try_out_other_snapshot_packages\test_snapshot_d...
+============================================ 1 failed in 0.11s ============================================
+
+(snapshot-testing) C:\code\snappylapy>

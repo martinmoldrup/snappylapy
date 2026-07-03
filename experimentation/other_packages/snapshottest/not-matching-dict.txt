@@ -1,0 +1,58 @@
+(snapshot-testing) C:\code\snappylapy>pytest experimentation 
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: snapshottest-0.6.0
+collected 2 items
+
+experimentation\test_try_out_other_snapshot_packages.py Fs                                           [100%]
+
+================================================ FAILURES ================================================= 
+_______________________________________ test_snapshot_snapshottest ________________________________________ 
+
+snapshot = <snapshottest.pytest.PyTestSnapshotTest object at 0x000001790DFC7220>
+
+    def test_snapshot_snapshottest(snapshot):
+        """
+        Test the snapshot dict.
+
+        pip install pytest-snapshot
+        pip install snapshottest
+        """
+        data = {"key": "value", "key2": "value2"}
+        data_str = dumps(data, indent=4)
+>       snapshot.assert_match(data_str, "test_snapshot_dict")
+
+experimentation\test_try_out_other_snapshot_packages.py:18:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+C:\Users\61603\AppData\Local\miniconda3\envs\snapshot-testing\lib\site-packages\snapshottest\module.py:247: in assert_match
+    self.assert_value_matches_snapshot(value, prev_snapshot)
+C:\Users\61603\AppData\Local\miniconda3\envs\snapshot-testing\lib\site-packages\snapshottest\module.py:230: in assert_value_matches_snapshot
+    formatter.assert_value_matches_snapshot(self, test_value, snapshot_value, Formatter())
+C:\Users\61603\AppData\Local\miniconda3\envs\snapshot-testing\lib\site-packages\snapshottest\formatters.py:20: in assert_value_matches_snapshot
+    test.assert_equals(formatter.normalize(test_value), snapshot_value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <snapshottest.pytest.PyTestSnapshotTest object at 0x000001790DFC7220>
+value = '{\n    "key": "value",\n    "key2": "value2"\n}'
+snapshot = '{\n    "key": "value",\n    "key2": "value3"\n}'
+
+    def assert_equals(self, value, snapshot):
+>       assert value == snapshot
+E       assert '{\n    "key"...: "value2"\n}' == '{\n    "key"...: "value3"\n}'
+E
+E           {
+E               "key": "value",
+E         -     "key2": "value3"
+E         ?                   ^
+E         +     "key2": "value2"
+E         ?                   ^
+E           }
+
+C:\Users\61603\AppData\Local\miniconda3\envs\snapshot-testing\lib\site-packages\snapshottest\module.py:233: AssertionError
+========================================== SnapshotTest summary =========================================== 
+1 snapshots failed in 1 test suites. Inspect your code or run with `pytest --snapshot-update` to update them.
+========================================= short test summary info ========================================= 
+FAILED experimentation/test_try_out_other_snapshot_packages.py::test_snapshot_snapshottest - assert '{\n    "key"...: "value2"\n}' == '{\n    "key"...: "value3"\n}'
+====================================== 1 failed, 1 skipped in 0.14s ======================================= 

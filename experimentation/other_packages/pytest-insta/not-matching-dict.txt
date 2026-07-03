@@ -1,0 +1,30 @@
+experimentation\test_try_out_other_snapshot_packages.py sssF                                         [100%]
+
+================================================ FAILURES ================================================= 
+_______________________________________ test_snapshot_pytest_insta ________________________________________ 
+
+snapshot = snapshot
+
+    def test_snapshot_pytest_insta(snapshot):
+        """
+        Test the snapshot dict.
+
+        pip install pytest-insta
+        """
+        data = {"key": "value", "key2": "value2"}
+        data_str = dumps(data, indent=4)
+>       assert snapshot() == data_str
+E       assert '{\n    "key"...: "value3"\n}' == '{\n    "key"...: "value2"\n}'
+E
+E           {
+E               "key": "value",
+E         -     "key2": "value2"
+E         ?                   ^
+E         +     "key2": "value3"
+E         ?                   ^
+E           }
+
+experimentation\test_try_out_other_snapshot_packages.py:56: AssertionError
+========================================= short test summary info ========================================= 
+FAILED experimentation/test_try_out_other_snapshot_packages.py::test_snapshot_pytest_insta - assert '{\n    "key"...: "value3"\n}' == '{\n    "key"...: "value2"\n}'
+====================================== 1 failed, 3 skipped in 0.14s ======================================= 

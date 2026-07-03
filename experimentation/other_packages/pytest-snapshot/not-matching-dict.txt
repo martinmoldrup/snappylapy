@@ -1,0 +1,28 @@
+experimentation\test_try_out_other_snapshot_packages.py F                                            [100%]
+
+================================================ FAILURES ================================================= 
+___________________________________________ test_snapshot_dict ____________________________________________ 
+
+snapshot = <pytest_snapshot.plugin.Snapshot object at 0x00000272848ABD30>
+
+    def test_snapshot_dict(snapshot):
+        """Test the snapshot dict."""
+        data = {"key": "value", "key2": "value2"}
+        data_str = dumps(data, indent=4)
+>       snapshot.assert_match(data_str, "test_snapshot_dict")
+E       AssertionError: value does not match the expected value in snapshot experimentation\snapshots\test_try_out_other_snapshot_packages\test_snapshot_dict\test_snapshot_dict
+E         (run pytest with --snapshot-update to update snapshots)
+E       assert '{\n    "key"...: "value2"\n}' == '{\n    "key"...: "value3"\n}'
+E
+E           {
+E               "key": "value",
+E         -     "key2": "value3"
+E         ?                   ^
+E         +     "key2": "value2"
+E         ?                   ^
+E           }
+
+experimentation\test_try_out_other_snapshot_packages.py:14: AssertionError
+========================================= short test summary info ========================================= 
+FAILED experimentation/test_try_out_other_snapshot_packages.py::test_snapshot_dict - AssertionError: value does not match the expected value in snapshot experimentation\snapshots\test_try_...
+============================================ 1 failed in 0.11s ============================================ 

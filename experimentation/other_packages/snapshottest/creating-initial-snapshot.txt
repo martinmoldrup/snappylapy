@@ -1,0 +1,60 @@
+(snapshot-testing) C:\code\snappylapy>C:/Users/61603/AppData/Local/miniconda3/envs/snapshot-testing/python.exe c:/code/snappylapy/experimentation/test_try_out_other_snapshot_packages.py
+c:\code\snappylapy\experimentation\test_try_out_other_snapshot_packages.py
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: snapshottest-0.6.0
+collected 2 items
+
+experimentation\test_try_out_other_snapshot_packages.py .s                                           [100%] 
+
+========================================== SnapshotTest summary =========================================== 
+1 snapshots passed.
+1 snapshots written in 1 test suites.
+====================================== 1 passed, 1 skipped in 0.06s ======================================= 
+
+(snapshot-testing) C:\code\snappylapy>pytest experimentation
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: snapshottest-0.6.0
+collected 2 items
+
+experimentation\test_try_out_other_snapshot_packages.py .s                                           [100%]
+
+========================================== SnapshotTest summary =========================================== 
+1 snapshots passed.
+1 snapshots written in 1 test suites.
+1 snapshots deprecated in 1 test suites. Inspect your code or run with `pytest --snapshot-update` to update them.
+====================================== 1 passed, 1 skipped in 0.06s ======================================= 
+
+(snapshot-testing) C:\code\snappylapy>pytest experimentation
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: snapshottest-0.6.0
+collected 2 items
+
+experimentation\test_try_out_other_snapshot_packages.py .s                                           [100%] 
+
+========================================== SnapshotTest summary =========================================== 
+1 snapshots passed.
+1 snapshots deprecated in 1 test suites. Inspect your code or run with `pytest --snapshot-update` to update them.
+====================================== 1 passed, 1 skipped in 0.06s =======================================
+
+(snapshot-testing) C:\code\snappylapy>pytest experimentation --snapshot-update
+=========================================== test session starts ===========================================
+platform win32 -- Python 3.10.16, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\code\snappylapy
+configfile: pyproject.toml
+plugins: snapshottest-0.6.0
+collected 2 items
+
+experimentation\test_try_out_other_snapshot_packages.py .s                                           [100%] 
+
+========================================== SnapshotTest summary =========================================== 
+1 snapshots passed.
+====================================== 1 passed, 1 skipped in 0.06s ======================================= 
