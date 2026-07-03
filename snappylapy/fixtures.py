@@ -564,7 +564,7 @@ class LoadSnapshot:
             PandasCsvSerializer(),
         )
 
-    def object(self) -> object:
+    def object(self) -> Any:  # noqa: ANN401
         """
         Load object snapshot.
 
@@ -595,5 +595,5 @@ class LoadSnapshot:
         """
         return self._load_and_deserialize(
             "object.json",
-            JsonPickleSerializer[object](),
+            JsonPickleSerializer[Any](),
         )

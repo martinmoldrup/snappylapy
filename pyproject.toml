@@ -91,6 +91,7 @@ dev = [
 
 [project.entry-points.toolit_plugins]
 snappylapy_init = "snappylapy._cli:init"
+snappylapy_status = "snappylapy._cli:status"
 snappylapy_clear = "snappylapy._cli:clear"
 snappylapy_update = "snappylapy._cli:update"
 snappylapy_diff = "snappylapy._cli:diff"

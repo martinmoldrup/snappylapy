@@ -1,7 +1,9 @@
 """Test cases for serialization module."""
-from snappylapy.serialization import StringSerializer, JsonSerializer, JsonPickleSerializer
-from datetime import datetime
 import pytest
+from dataclasses import dataclass
+from datetime import datetime
+from snappylapy.serialization import JsonPickleSerializer, JsonSerializer, StringSerializer
+
 
 def test_string_serializer_serialize():
     """Test serialization of a string."""
@@ -127,3 +129,36 @@ def test_jsonpickle_serializer_custom_object():
     assert deserialized_data["obj"].name == "test"
     assert deserialized_data["obj"].value == 123
     assert deserialized_data["obj"].get_string() == "test - 123 - 234"
+
+# @dataclass
+# class Person:
+#     """Dataclass representing a person."""
+#     name: str
+#     age: int
+
+# def test_dataclass_serializer_serialize() -> None:
+#     """Test serialization of a dataclass instance."""
+#     serializer = DataclassSerializer[Person]()
+#     person = Person(name="Alice", age=30)
+#     serialized_data = serializer.serialize(person)
+#     assert isinstance(serialized_data, bytes)
+#     assert b"Alice" in serialized_data
+#     assert b"30" in serialized_data
+
+# def test_dataclass_serializer_deserialize() -> None:
+#     """Test deserialization of bytes to dataclass instance."""
+#     serializer = DataclassSerializer[Person]()
+#     person = Person(name="Bob", age=25)
+#     serialized_data = serializer.serialize(person)
+#     deserialized_person = serializer.deserialize(serialized_data)
+#     assert isinstance(deserialized_person, Person)
+#     assert deserialized_person.name == "Bob"
+#     assert deserialized_person.age == 25
+
+# def test_dataclass_serializer_round_trip() -> None:
+#     """Test round-trip serialization and deserialization for dataclass."""
+#     serializer = DataclassSerializer[Person]()
+#     person = Person(name="Charlie", age=40)
+#     serialized_data = serializer.serialize(person)
+#     deserialized_person = serializer.deserialize(serialized_data)
+#     assert deserialized_person == person
